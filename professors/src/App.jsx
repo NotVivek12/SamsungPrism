@@ -12,16 +12,16 @@ export default function App() {
     // ++ Wrap your entire application with the ThemeProvider
     <ThemeProvider>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/home" element={<Dashboard />} />
+        {/* <Route path="/" element={<Login />} /> */}
+        <Route path="/" element={<Dashboard />} />
       
-        <Route path="/request-update" element={<RequestUpdate/>} />
+        {/* <Route path="/request-update" element={<RequestUpdate/>} />
         <Route path="/ray" element={<Ray />} />
         <Route path="/share-suggestion" element={<Dashboard />} />
         <Route path="/internship-referral" element={<Dashboard />} />
         <Route path="/submit-feedback" element={<Dashboard />} />
         <Route path="/worklets" element={<WorkletsPage />} />
-        <Route path="/worklet/:id" element={<WorkletDetailPage />} />
+        <Route path="/worklet/:id" element={<WorkletDetailPage />} /> */}
       </Routes>
     </ThemeProvider>
   );
