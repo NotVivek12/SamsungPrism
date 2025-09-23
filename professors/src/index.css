@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradientMove 10s ease infinite;
+}
+
+@keyframes sineWave {
+  0%   { transform: translateY(0); }
+  25%  { transform: translateY(-6px); }
+  50%  { transform: translateY(0); }
+  75%  { transform: translateY(6px); }
+  100% { transform: translateY(0); }
+}
+
+.animate-sine {
+  animation: sineWave 1.5s ease-in-out;
+}
+.animate-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6), /* The color of the shine */
+    transparent
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text; /* For Safari compatibility */
+  color: transparent;
+  animation: shimmer 7s linear infinite;
+}
