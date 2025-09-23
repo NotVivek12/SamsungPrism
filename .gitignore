@@ -1,0 +1,211 @@
+# ========================
+# Python
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+myenv/
+myvenv/
+
+# ========================
+# Node.js / React
+# ========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Production builds
+build/
+dist/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ========================
+# Databases
+# ========================
+*.db
+*.sqlite
+*.sqlite3
+professors.db
+teachers.db
+*.db-journal
+
+# ========================
+# Logs and temporary files
+# ========================
+*.log
+error_log.txt
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# ========================
+# Data files (project specific)
+# ========================
+teachers_data.json
+*.xlsx
+*.xls
+*.csv
+# Add back specific data files you want to track
+# !important_data.xlsx
+
+# ========================
+# IDE and Editor files
+# ========================
+.vscode/
+.idea/
+*.iml
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+.sublime-project
+.sublime-workspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ========================
+# Docker
+# ========================
+.dockerignore
+
+# ========================
+# Jupyter Notebook
+# ========================
+.ipynb_checkpoints
+
+# ========================
+# Machine Learning / AI
+# ========================
+*.model
+*.pkl
+*.joblib
+models/
+checkpoints/
+*.h5
+*.hdf5
+
+# ========================
+# Miscellaneous
+# ========================
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.out/
+.vercel/
+.netlify/
+
+# Local Netlify folder
+.netlify
+
+# Documentation builds
+docs/_build/
+site/
+
+# Secrets and keys
+*.pem
+*.key
+secrets.json
+config/secrets.yaml
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# OS generated files
+Icon?
+.Spotlight-V100
+.Trashes
