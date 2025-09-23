@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 DATABASE = 'teachers.db'
-EXCEL_FILE_PATH = r"c:\Users\ssd99\OneDrive\Desktop\new prism\sirs.xlsx"
+EXCEL_FILE_PATH = r"../prof.xlsx"
 
 def init_teachers_db():
     """Initialize the teachers database with enhanced schema"""

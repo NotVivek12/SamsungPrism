@@ -574,7 +574,7 @@ const ComprehensiveTeacherSearch = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-500 font-sans tracking-tight mb-4">
-            🤖 AI-Powered Faculty Research Directory
+            AI-Powered Faculty Research Directory
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400">
             Find experts using natural language search - "Show me professors good at artificial intelligence"
@@ -776,12 +776,12 @@ const ComprehensiveTeacherSearch = () => {
             <>
               {/* Grid View */}
               {viewMode === 'grid' && (
-                <div className="w-full max-w-7xl mx-auto grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                <div className="w-full max-w-none mx-auto grid gap-6 grid-cols-3">
                   {filteredTeachers.length > 0 ? (
                     filteredTeachers.map(teacher => (
-                      <div key={teacher.id} className="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border border-gray-100 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+                      <div key={teacher.id} className="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border border-gray-100 overflow-hidden dark:bg-gray-800 dark:border-gray-700 h-[480px] flex flex-col">
                         {/* Card Header with Gradient Background */}
-                        <div className="relative p-6 pb-4 bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900">
+                        <div className="relative p-4 md:p-6 pb-4 bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900 flex-shrink-0">
                           <div className="absolute top-4 right-4 flex gap-2">
                             {/* Favorite Button */}
                             <button
@@ -849,12 +849,12 @@ const ComprehensiveTeacherSearch = () => {
                             </div>
                             
                             <div className="flex-1 min-w-0">
-                              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-blue-600 transition-colors duration-300">
+                              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
                                 {teacher.name}
                               </h3>
                               <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
                                 <MapPin className="w-4 h-4 flex-shrink-0" />
-                                <span className="truncate">{teacher.college}</span>
+                                <span className="line-clamp-2">{teacher.college}</span>
                               </div>
                               {teacher.email && (
                                 <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-500">
@@ -867,10 +867,10 @@ const ComprehensiveTeacherSearch = () => {
                         </div>
 
                         {/* Card Body */}
-                        <div className="p-6 pt-4">
+                        <div className="p-6 pt-4 flex-grow flex flex-col overflow-hidden">
                           {/* Research Areas */}
-                          <div className="mb-5">
-                            <div className="flex items-center gap-2 mb-3">
+                          <div className="mb-4 flex-shrink-0">
+                            <div className="flex items-center gap-2 mb-2">
                               <Briefcase className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                               <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Research Areas</span>
                             </div>
@@ -893,8 +893,8 @@ const ComprehensiveTeacherSearch = () => {
 
                           {/* Academic Profiles Links */}
                           {(teacher.google_scholar_url || teacher.semantic_scholar_url || teacher.profile_link) && (
-                            <div className="mb-5">
-                              <div className="flex items-center gap-2 mb-3">
+                            <div className="mb-4">
+                              <div className="flex items-center gap-2 mb-2">
                                 <LinkIcon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                                 <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Academic Links</span>
                               </div>
@@ -966,14 +966,16 @@ const ComprehensiveTeacherSearch = () => {
                           </div>
 
                           {/* Action Button */}
-                          <button
-                            onClick={() => handleTeacherClick(teacher)}
-                            className="w-full py-3 px-4 text-white font-semibold rounded-2xl shadow-lg bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-3 group-hover:shadow-xl"
-                          >
-                            <Eye className="w-5 h-5 transform group-hover:scale-110 transition-transform duration-300" />
-                            <span>View Full Profile</span>
-                            <ExternalLink className="w-4 h-4 opacity-70" />
-                          </button>
+                          <div className="mt-auto pt-4">
+                            <button
+                              onClick={() => handleTeacherClick(teacher)}
+                              className="w-full py-3 px-4 text-white font-semibold rounded-2xl shadow-lg bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-3 group-hover:shadow-xl text-sm"
+                            >
+                              <Eye className="w-4 h-4 transform group-hover:scale-110 transition-transform duration-300" />
+                              <span>View Full Profile</span>
+                              <ExternalLink className="w-4 h-4 opacity-70" />
+                            </button>
+                          </div>
                         </div>
 
                         {/* Hover Effect Overlay */}
