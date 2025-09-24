@@ -4,6 +4,7 @@ import RequestUpdate from "../layouts/RequestUpdate";
 import ScheduleMeeting from "../layouts/ScheduleMeeting";
 import Feedback from "../layouts/FeedBack";
 import ComprehensiveTeacherSearch from "../components/ComprehensiveTeacherSearch";
+import ProjectExpertiseMatcher from "../components/ProjectExpertiseMatcher";
 
 import {
   Home, BarChart, GraduationCap, MessageSquare, Bell, Calendar,
@@ -81,6 +82,7 @@ export default function App() {
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [isSuggestionModalOpen, setIsSuggestionModalOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('search'); // 'search' or 'project'
 
   const handleNavigation = (path) => {
     console.log(`Simulating navigation to: ${path}`);
@@ -124,8 +126,36 @@ export default function App() {
           </div>
         </div>
         
-        {/* Comprehensive Teacher Search Component */}
-        <ComprehensiveTeacherSearch />
+        {/* Navigation Tabs */}
+        <div className="flex space-x-4 my-4">
+          <button
+            onClick={() => setActiveTab('search')}
+            className={`px-6 py-2 font-semibold rounded-lg transition-all ${
+              activeTab === 'search'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+            }`}
+          >
+            Faculty Search
+          </button>
+          <button
+            onClick={() => setActiveTab('project')}
+            className={`px-6 py-2 font-semibold rounded-lg transition-all ${
+              activeTab === 'project'
+                ? 'bg-purple-600 text-white shadow-md'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+            }`}
+          >
+            Project-Based Matching
+          </button>
+        </div>
+        
+        {/* Conditional Rendering Based on Active Tab */}
+        {activeTab === 'search' ? (
+          <ComprehensiveTeacherSearch />
+        ) : (
+          <ProjectExpertiseMatcher />
+        )}
       </main>
       
       {/* Right Sidebar */}
