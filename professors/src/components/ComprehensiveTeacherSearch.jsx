@@ -3,7 +3,7 @@ import { Search, Users, GraduationCap, Mail, ExternalLink, ArrowLeft, Eye, BookO
 
 const ComprehensiveTeacherSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [isAISearching, setIsAISearching] = useState(false);
+  const [, setIsAISearching] = useState(false);
   const [aiServerResults, setAiServerResults] = useState(null);
   const [teachers, setTeachers] = useState([]);
   const [filteredTeachers, setFilteredTeachers] = useState([]);
@@ -18,10 +18,11 @@ const ComprehensiveTeacherSearch = () => {
   const [sortBy, setSortBy] = useState('name'); // 'name', 'college', 'expertise'
   const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
   const [filterBy, setFilterBy] = useState('all'); // 'all', 'scholar', 'semantic', 'both'
-  const [showProfilePicturesOnly, setShowProfilePicturesOnly] = useState(false); // New filter for profile pictures
+  const [showProfilePicturesOnly] = useState(false); // New filter for profile pictures
   const [favoriteTeachers, setFavoriteTeachers] = useState(new Set());
 
   // Computed variable for teachers with profile pictures
+  // eslint-disable-next-line no-unused-vars
   const teachersWithPictures = teachers.filter(teacher => 
     teacher.profile_picture_url || teacher.scholar_profile_picture
   );

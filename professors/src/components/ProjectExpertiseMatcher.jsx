@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Search, FileText, Rocket, AlertCircle, CheckCircle, Award, 
-  User, Briefcase, ChevronRight, ArrowRight, RefreshCw, X
+  User, ChevronRight, ArrowRight, RefreshCw, X
 } from 'lucide-react';
 import aiSearchService from '../services/aiSearchService';
 

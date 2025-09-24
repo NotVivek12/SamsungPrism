@@ -6,6 +6,7 @@ class AISearchService {
 
   // Extract search intent and keywords from natural language query
   async parseSearchQuery(query) {
+    // eslint-disable-next-line no-unused-vars
     const prompt = `
 You are a search assistant for a faculty research directory. Analyze the following search query and extract relevant information:
 
@@ -226,4 +227,5 @@ Examples:
   }
 }
 
-export default new AISearchService();
+const aiSearchServiceInstance = new AISearchService();
+export default aiSearchServiceInstance;

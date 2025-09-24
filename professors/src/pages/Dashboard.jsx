@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import prismlogo from '../assets/prism_logo.png';
 import RequestUpdate from "../layouts/RequestUpdate";
 import ScheduleMeeting from "../layouts/ScheduleMeeting";
@@ -8,7 +8,7 @@ import ProjectExpertiseMatcher from "../components/ProjectExpertiseMatcher";
 
 import {
   Home, BarChart, GraduationCap, MessageSquare, Bell, Calendar,
-  MessageCircle, Zap, Rocket, Key, Crown, PlusCircle, Bot, UserCircle, Columns, Lightbulb
+  MessageCircle, Zap, PlusCircle, Bot, Lightbulb
 } from "lucide-react";
 
 // The entire application is contained within this single file,
