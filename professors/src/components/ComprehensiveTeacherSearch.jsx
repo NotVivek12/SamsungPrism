@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Users, GraduationCap, Mail, ExternalLink, ArrowLeft, Eye, BookOpen, Award, Link as LinkIcon, Calendar, MapPin, Star, TrendingUp, User, Briefcase, FileText, Filter, Grid3X3, List, SortAsc, SortDesc, Heart, Bookmark, Sparkles, Brain } from 'lucide-react';
-import aiSearchService from '../services/aiSearchService';
+import { Search, Users, GraduationCap, Mail, ExternalLink, ArrowLeft, Eye, BookOpen, Award, Link as LinkIcon, Calendar, MapPin, Star, TrendingUp, User, Briefcase, FileText, Filter, Grid3X3, List, SortAsc, SortDesc, Heart } from 'lucide-react';
 
 const ComprehensiveTeacherSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isAISearching, setIsAISearching] = useState(false);
-  const [aiSearchResult, setAiSearchResult] = useState(null);
-  const [showAIHelper, setShowAIHelper] = useState(false);
+  const [aiServerResults, setAiServerResults] = useState(null);
   const [teachers, setTeachers] = useState([]);
   const [filteredTeachers, setFilteredTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,67 +61,58 @@ const ComprehensiveTeacherSearch = () => {
     loadTeachers();
   }, []);
 
-  // Handle AI-powered search
-  const handleAISearch = async (query) => {
-    if (!query || query.trim().length < 3) {
-      setAiSearchResult(null);
+  // Debounced server-side AI search while typing
+  useEffect(() => {
+    const q = searchTerm?.trim() || '';
+    // Trigger for 2+ chars to allow short skills like "AI"
+    if (q.length < 2) {
+      setAiServerResults(null);
+      setIsAISearching(false);
       return;
     }
 
-    try {
-      setIsAISearching(true);
-      const aiResult = await aiSearchService.parseSearchQuery(query);
-      setAiSearchResult(aiResult);
-    } catch (error) {
-      console.error('AI search failed:', error);
-      setAiSearchResult(null);
-    } finally {
-      setIsAISearching(false);
-    }
-  };
-
-  // Enhanced search with AI
-  const performSearch = (term) => {
-    setSearchTerm(term);
-    
-    // Trigger AI search for natural language queries
-    if (term.length >= 3) {
-      // Check if the query is a natural language question
-      const isNaturalLanguageQuery = 
-        term.includes('expert') || 
-        term.includes('good at') || 
-        term.includes('skilled') ||
-        term.includes('show me') ||
-        term.includes('find') ||
-        term.includes('who are') ||
-        term.includes('professional') ||
-        term.includes('specialist') ||
-        term.includes('researcher') ||
-        term.includes('professor') ||
-        term.includes('teacher') ||
-        term.split(' ').length > 3; // Multi-word queries are likely natural language
-      
-      if (isNaturalLanguageQuery) {
-        handleAISearch(term);
-      } else {
-        setAiSearchResult(null);
+    const controller = new AbortController();
+    setIsAISearching(true);
+    const timer = setTimeout(async () => {
+      try {
+        const resp = await fetch((process.env.REACT_APP_API_BASE || 'http://localhost:5000') + '/api/ai/search-teachers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q }),
+          signal: controller.signal
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          setAiServerResults(Array.isArray(data.teachers) ? data.teachers : []);
+        } else {
+          setAiServerResults(null);
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('AI search failed:', err);
+          setAiServerResults(null);
+        }
+      } finally {
+        setIsAISearching(false);
       }
-    } else {
-      setAiSearchResult(null);
-    }
-  };
+    }, 350);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [searchTerm]);
 
   // Filter and sort teachers based on search term and filters
   useEffect(() => {
-    let filtered = [...teachers];
-    
-    // AI-powered search when available
-    if (searchTerm && aiSearchResult) {
-      filtered = aiSearchService.smartSearch(teachers, searchTerm, aiSearchResult);
-    } else if (searchTerm) {
-      // Fallback to regular search
+    // Prefer server-side AI results when available; else use full teachers list
+    let baseList = aiServerResults && Array.isArray(aiServerResults) ? [...aiServerResults] : [...teachers];
+    let filtered = baseList;
+
+    // Fallback to regular search when no server results
+    if (searchTerm && (!aiServerResults || aiServerResults.length === 0)) {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(teacher => 
+      filtered = baseList.filter(teacher =>
         teacher.name?.toLowerCase().includes(term) ||
         teacher.domain_expertise?.toLowerCase().includes(term) ||
         teacher.college?.toLowerCase().includes(term) ||
@@ -186,7 +175,7 @@ const ComprehensiveTeacherSearch = () => {
     });
     
     setFilteredTeachers(filtered);
-  }, [searchTerm, teachers, sortBy, sortOrder, filterBy, showProfilePicturesOnly, aiSearchResult]);
+  }, [searchTerm, teachers, sortBy, sortOrder, filterBy, showProfilePicturesOnly, aiServerResults]);
   
   // Toggle favorite teacher
   const toggleFavorite = (teacherId) => {
@@ -236,8 +225,7 @@ const ComprehensiveTeacherSearch = () => {
   // Clear search
   const clearSearch = () => {
     setSearchTerm('');
-    setAiSearchResult(null);
-    setShowAIHelper(false);
+    setAiServerResults(null);
   };
 
   // Comprehensive Profile Page Component
@@ -573,7 +561,7 @@ const ComprehensiveTeacherSearch = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-500 font-sans tracking-tight mb-4">
+          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-500 font-sans tracking-tight mb-4 leading-[1.34]">
             AI-Powered Faculty Research Directory
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400">
@@ -587,29 +575,17 @@ const ComprehensiveTeacherSearch = () => {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
-              {isAISearching && (
-                <Brain className="absolute left-12 top-1/2 transform -translate-y-1/2 text-blue-500 w-5 h-5 animate-pulse" />
-              )}
               <input
                 type="text"
-                placeholder="🤖 AI-Powered Search: Try 'Show me experts in artificial intelligence' or 'Find professors good at machine learning'..."
+                placeholder="Search by name, skill, or domain (AI-backed)"
                 value={searchTerm}
-                onChange={(e) => performSearch(e.target.value)}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full p-4 pl-12 pr-16 text-lg border border-gray-300 dark:border-gray-600 rounded-full 
                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white
                            focus:ring-2 focus:ring-blue-500 focus:border-transparent 
                            transition duration-300 shadow-lg"
               />
               <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-                {aiSearchResult && (
-                  <button
-                    onClick={() => setShowAIHelper(!showAIHelper)}
-                    className="p-1 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
-                    title="AI Search Details"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                  </button>
-                )}
                 {searchTerm && (
                   <button
                     onClick={clearSearch}
@@ -620,27 +596,6 @@ const ComprehensiveTeacherSearch = () => {
                 )}
               </div>
             </div>
-            
-            {/* AI Search Result Info */}
-            {aiSearchResult && showAIHelper && (
-              <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-                <div className="flex items-center gap-2 mb-2">
-                  <Brain className="w-4 h-4 text-blue-600" />
-                  <span className="text-sm font-semibold text-blue-800 dark:text-blue-200">AI Search Understanding</span>
-                </div>
-                <p className="text-sm text-blue-700 dark:text-blue-300 mb-2">{aiSearchResult.intent}</p>
-                {aiSearchResult.keywords && aiSearchResult.keywords.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    <span className="text-xs text-blue-600 dark:text-blue-400">Keywords:</span>
-                    {aiSearchResult.keywords.slice(0, 6).map((keyword, index) => (
-                      <span key={index} className="px-2 py-1 bg-blue-100 dark:blue-800 text-blue-800 dark:text-blue-200 text-xs rounded-full">
-                        {keyword}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
             
             {/* AI Search Suggestions */}
             {!searchTerm && (
@@ -658,7 +613,7 @@ const ComprehensiveTeacherSearch = () => {
                   ].map((suggestion, index) => (
                     <button
                       key={index}
-                      onClick={() => performSearch(suggestion)}
+                      onClick={() => setSearchTerm(suggestion)}
                       className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded-full hover:bg-blue-100 dark:hover:bg-blue-900 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
                     >
                       {suggestion}

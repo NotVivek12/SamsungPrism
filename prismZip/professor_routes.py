@@ -16,6 +16,7 @@ import logging
 import time
 import os
 from auto_extract_teachers import force_refresh_teachers, check_database_status
+from gemma_service import parse_search_query_with_gemma, analyze_project_description
 
 # Create a Blueprint for professor routes
 professor_bp = Blueprint('professors', __name__)
@@ -71,6 +72,232 @@ def api_get_domain_experts():
 def api_get_professors():
     """API endpoint to get all professors"""
     return get_professors()
+
+@professor_bp.route('/api/ai/parse-search', methods=['POST'])
+def api_ai_parse_search():
+    """Parse a natural language search query using Gemma (or fallback)."""
+    try:
+        data = request.get_json(silent=True) or {}
+        query = (data.get('query') or '').strip()
+        if not query:
+            return jsonify({
+                'error': 'query is required'
+            }), 400
+
+        result = parse_search_query_with_gemma(query)
+        return jsonify({
+            'success': True,
+            'result': result
+        })
+    except Exception as e:
+        logging.error(f"AI parse search failed: {e}")
+        return jsonify({'success': False, 'error': 'Internal error'}), 500
+
+@professor_bp.route('/api/project/analyze', methods=['POST'])
+def api_analyze_project():
+    """
+    Analyze a project description and find professors with matching expertise.
+    
+    This endpoint uses Gemma to analyze the project description, extract required expertise domains,
+    and then finds professors whose expertise matches these domains.
+    """
+    try:
+        data = request.get_json(silent=True) or {}
+        description = (data.get('description') or '').strip()
+        
+        if not description:
+            return jsonify({
+                'error': 'Project description is required'
+            }), 400
+        
+        # Analyze the project using Gemma
+        analysis_result = analyze_project_description(description)
+        
+        if not analysis_result or not analysis_result.get('required_expertise'):
+            return jsonify({
+                'error': 'Failed to analyze project description',
+                'analysis': analysis_result
+            }), 500
+        
+        # Extract required expertise domains
+        required_expertise = analysis_result.get('required_expertise', [])
+        
+        # Find professors with matching expertise
+        import sqlite3
+        conn = sqlite3.connect('teachers.db')
+        cursor = conn.cursor()
+        
+        # Build a query to find teachers with matching domain expertise
+        where_clauses = []
+        params = []
+        
+        for domain in required_expertise:
+            where_clauses.append("LOWER(domain_expertise) LIKE ? OR LOWER(research_interests) LIKE ?")
+            domain_param = f"%{domain.lower()}%"
+            params.extend([domain_param, domain_param])
+        
+        if not where_clauses:
+            return jsonify({
+                'analysis': analysis_result,
+                'teachers': [],
+                'message': 'No expertise domains identified in the project description'
+            }), 200
+        
+        # Query database for matching professors
+        sql = f"""
+            SELECT id, name, college, email, profile_link, domain_expertise,
+                   research_interests, phd_thesis, google_scholar_url, semantic_scholar_url
+            FROM teachers
+            WHERE {' OR '.join(where_clauses)}
+            ORDER BY name
+        """
+        
+        cursor.execute(sql, params)
+        rows = cursor.fetchall()
+        conn.close()
+        
+        # Prepare results
+        teachers = []
+        for t in rows:
+            # Calculate matching score based on number of expertise areas matched
+            matching_domains = []
+            teacher_domains = []
+            
+            # Extract domains from domain_expertise and research_interests
+            if t[5]:  # domain_expertise
+                teacher_domains.extend([d.strip().lower() for d in t[5].split(',')])
+            
+            if t[6]:  # research_interests
+                research_interests = t[6]
+                # Handle both string and JSON array formats
+                if research_interests.startswith('[') and research_interests.endswith(']'):
+                    try:
+                        import json
+                        interests = json.loads(research_interests)
+                        teacher_domains.extend([i.lower() for i in interests])
+                    except:
+                        teacher_domains.extend([d.strip().lower() for d in research_interests.split(',')])
+                else:
+                    teacher_domains.extend([d.strip().lower() for d in research_interests.split(',')])
+            
+            # Count matching domains
+            for domain in required_expertise:
+                if any(domain.lower() in td for td in teacher_domains):
+                    matching_domains.append(domain)
+            
+            # Calculate match percentage
+            match_percentage = round((len(matching_domains) / len(required_expertise)) * 100)
+            
+            teachers.append({
+                'id': t[0],
+                'name': t[1],
+                'college': t[2],
+                'email': t[3],
+                'profile_link': t[4],
+                'domain_expertise': t[5],
+                'research_interests': t[6],
+                'phd_thesis': t[7],
+                'google_scholar_url': t[8],
+                'semantic_scholar_url': t[9],
+                'matching_domains': matching_domains,
+                'match_percentage': match_percentage
+            })
+        
+        # Sort by match percentage (descending)
+        teachers.sort(key=lambda x: x['match_percentage'], reverse=True)
+        
+        return jsonify({
+            'analysis': analysis_result,
+            'teachers': teachers,
+            'total_matches': len(teachers),
+            'message': f'Found {len(teachers)} teachers with expertise matching the project requirements'
+        }), 200
+        
+    except Exception as e:
+        logging.error(f"Error analyzing project: {e}")
+        return jsonify({
+            'error': f'Project analysis failed: {str(e)}'
+        }), 500
+
+
+@professor_bp.route('/api/ai/search-teachers', methods=['POST'])
+def api_ai_search_teachers():
+    """Search teachers using AI-parsed keywords against multiple fields."""
+    try:
+        import sqlite3
+        data = request.get_json(silent=True) or {}
+        query = (data.get('query') or '').strip()
+        if not query:
+            return jsonify({'teachers': [], 'total_count': 0, 'message': 'Empty query'}), 400
+
+        parsed = parse_search_query_with_gemma(query)
+        keywords = [k.lower() for k in (parsed.get('keywords') or [])]
+        if not keywords:
+            keywords = [w for w in query.lower().split() if len(w) > 2]
+
+        conn = sqlite3.connect('teachers.db')
+        cursor = conn.cursor()
+
+        # Build dynamic WHERE with LIKEs for each keyword across fields
+        fields = [
+            'name', 'college', 'email', 'domain_expertise', 'phd_thesis',
+            'research_interests', 'affiliation', 'bio'
+        ]
+
+        where_clauses = []
+        params = []
+        for kw in keywords:
+            like = f"%{kw}%"
+            sub = ' OR '.join([f"LOWER({f}) LIKE ?" for f in fields])
+            where_clauses.append(f"({sub})")
+            params.extend([like] * len(fields))
+
+        sql = f"""
+            SELECT id, name, college, email, profile_link, domain_expertise,
+                   phd_thesis, google_scholar_url, semantic_scholar_url,
+                   timestamp, has_google_scholar, has_semantic_scholar,
+                   row_number, extraction_timestamp, created_at,
+                   profile_picture_url, scholar_profile_picture, bio, phone,
+                   office_location, education, teaching_areas, awards,
+                   college_publications, total_citations, h_index, i10_index,
+                   research_interests, affiliation, recent_publications,
+                   frequent_coauthors, semantic_h_index, total_papers,
+                   semantic_citations, semantic_research_areas, notable_papers,
+                   profile_data_updated
+            FROM teachers
+            { 'WHERE ' + ' AND '.join(where_clauses) if where_clauses else '' }
+            ORDER BY name
+        """
+
+        cursor.execute(sql, params)
+        rows = cursor.fetchall()
+        conn.close()
+
+        results = []
+        for t in rows:
+            results.append({
+                'id': t[0], 'name': t[1], 'college': t[2], 'email': t[3],
+                'profile_link': t[4], 'domain_expertise': t[5], 'phd_thesis': t[6],
+                'google_scholar_url': t[7], 'semantic_scholar_url': t[8], 'timestamp': t[9],
+                'has_google_scholar': bool(t[10]), 'has_semantic_scholar': bool(t[11]),
+                'row_number': t[12], 'extraction_timestamp': t[13], 'created_at': t[14],
+                'profile_picture_url': t[15], 'scholar_profile_picture': t[16], 'bio': t[17],
+                'phone': t[18], 'office_location': t[19], 'education': t[20], 'teaching_areas': t[21],
+                'awards': t[22], 'college_publications': t[23], 'total_citations': t[24],
+                'h_index': t[25], 'i10_index': t[26], 'research_interests': t[27], 'affiliation': t[28],
+                'recent_publications': t[29], 'frequent_coauthors': t[30], 'semantic_h_index': t[31],
+                'total_papers': t[32], 'semantic_citations': t[33], 'semantic_research_areas': t[34],
+                'notable_papers': t[35], 'profile_data_updated': t[36]
+            })
+
+        return jsonify({
+            'teachers': results,
+            'total_count': len(results),
+            'keywords': keywords
+        }), 200
+    except Exception as e:
+        logging.error(f"AI search teachers failed: {e}")
+        return jsonify({'teachers': [], 'total_count': 0, 'error': 'Internal error'}), 500
 
 @professor_bp.route('/api/teachers', methods=['GET'])
 def api_get_all_teachers():

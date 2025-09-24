@@ -1,9 +1,7 @@
-// AI-powered search service using Gemini API
+// AI-powered search service using Gemini API for faculty search and project analysis
 class AISearchService {
   constructor() {
-    // You'll need to get your API key from Google AI Studio
-    this.API_KEY = process.env.REACT_APP_GEMINI_API_KEY || 'your-gemini-api-key-here';
-    this.API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+    this.BACKEND_URL = process.env.REACT_APP_API_BASE || 'http://localhost:5000';
   }
 
   // Extract search intent and keywords from natural language query
@@ -39,33 +37,15 @@ Examples:
 `;
 
     try {
-      const response = await fetch(`${this.API_URL}?key=${this.API_KEY}`, {
+      const response = await fetch(`${this.BACKEND_URL}/api/ai/parse-search`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{ text: prompt }]
-          }]
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query })
       });
-
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
-      }
-
+      if (!response.ok) throw new Error(`Backend AI parse failed: ${response.status}`);
       const data = await response.json();
-      const aiResponse = data.candidates[0].content.parts[0].text;
-      
-      // Extract JSON from the response
-      const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      } else {
-        // Fallback parsing if AI doesn't return proper JSON
-        return this.fallbackParsing(query);
-      }
+      if (data && data.success && data.result) return data.result;
+      return this.fallbackParsing(query);
     } catch (error) {
       console.warn('AI search parsing failed, using fallback:', error);
       return this.fallbackParsing(query);
@@ -222,6 +202,27 @@ Examples:
     }
 
     return score;
+  }
+  
+  // Analyze project description and find matching professors
+  async analyzeProject(projectDescription) {
+    try {
+      const response = await fetch(`${this.BACKEND_URL}/api/project/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: projectDescription })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Server responded with ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Project analysis failed:', error);
+      throw error;
+    }
   }
 }
 

@@ -5,6 +5,13 @@ from datetime import datetime
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+# Load configuration from .env as early as possible (search parent dirs)
+try:
+    from dotenv import load_dotenv, find_dotenv
+    load_dotenv(find_dotenv())
+except Exception:
+    print("python-dotenv not available; relying on environment variables")
+
 # Try to import spaCy and related modules, but make them optional
 try:
     import spacy
@@ -43,13 +50,6 @@ CORS(app)
 
 # Register professor blueprint
 app.register_blueprint(professor_bp)
-
-# Load configuration from .env file
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    print("python-dotenv not installed, using environment variables directly")
 
 # Google Scholar request delay (in seconds)
 REQUEST_DELAY = int(os.getenv('REQUEST_DELAY', 5))
