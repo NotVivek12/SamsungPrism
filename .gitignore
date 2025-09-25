@@ -123,10 +123,7 @@ error_log.txt
 # ========================
 # Data files (project specific)
 # ========================
-teachers_data.json
-*.xlsx
-*.xls
-*.csv
+
 # Add back specific data files you want to track
 # !important_data.xlsx
 
