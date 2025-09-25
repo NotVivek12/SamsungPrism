@@ -1,15 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import prismlogo from '../assets/prism_logo.png';
 import RequestUpdate from "../layouts/RequestUpdate";
 import ScheduleMeeting from "../layouts/ScheduleMeeting";
+import Suggestion from "../layouts/Suggestion";
 import Feedback from "../layouts/FeedBack";
 import ComprehensiveTeacherSearch from "../components/ComprehensiveTeacherSearch";
 import ProjectExpertiseMatcher from "../components/ProjectExpertiseMatcher";
+//import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 
 import {
   Home, BarChart, GraduationCap, MessageSquare, Bell, Calendar,
-  MessageCircle, Zap, PlusCircle, Bot, Lightbulb
+  MessageCircle, Zap, Rocket, Key, Crown, PlusCircle, Bot, UserCircle, Columns, Lightbulb
 } from "lucide-react";
+
+
+import HomePage from './Dashboard'; // Import your page components
+import KnowledgeGraphPage from './Knowledgegraph';
+import ChatsPage from './Chats';
+import UpdatesPage from './Updates';
+//import SidebarItem from './SidebarItem'; // Assuming this component exists
 
 // The entire application is contained within this single file,
 // including all components, styles, and logic.
@@ -78,28 +88,32 @@ const Modal = ({ isOpen, onClose, children }) => {
 
 // Main App component
 export default function App() {
+  const navigate = useNavigate();
   const [isRequestUpdateOpen, setIsRequestUpdateOpen] = useState(false);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
-  const [isSuggestionModalOpen, setIsSuggestionModalOpen] = useState(false);
+  const [isSuggestionOpen, setIsSuggestionOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('search'); // 'search' or 'project'
 
+  const [isHomeModalOpen, setIsHomeModalOpen] = useState(false);
+  const [isKnowledgeGraphModalOpen, setIsKnowledgeGraphModalOpen] = useState(false);
+  const [isChatsModalOpen, setIsChatsModalOpen] = useState(false);
+  const [isUpdatesModalOpen, setIsUpdatesModalOpen] = useState(false);
+
   const handleNavigation = (path) => {
-    console.log(`Simulating navigation to: ${path}`);
-    // In a real application with react-router-dom, this would be:
-    // navigate(path);
+    navigate(path);
   };
 
   return (
+    
     <div className="flex h-screen w-full bg-slate-50 text-gray-800 overflow-hidden dark:bg-slate-900 dark:text-slate-200">
       {/* Left Sidebar */}
       <aside className="w-20 lg:w-30 bg-gradient-to-t from-purple-300 via-indigo-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black flex flex-col py-2 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <nav className="flex flex-col gap-6 items-center">
-          <SidebarItem icon={<Home className="w-5 h-5" />} label="Home" onClick={() => handleNavigation("/home")} />
-          <SidebarItem icon={<BarChart className="w-5 h-5" />} label="Knowledge Graph" onClick={() => handleNavigation("/statistics")} />
-          <SidebarItem icon={<GraduationCap className="w-5 h-5" />} label="Colleges" onClick={() => handleNavigation("/colleges")} />
-          <SidebarItem icon={<MessageSquare className="w-5 h-5" />} label="Chats" onClick={() => handleNavigation("/chats")} />
-          <SidebarItem icon={<Bell className="w-5 h-5" />} label="Updates" onClick={() => handleNavigation("/updates")} />
+          <SidebarItem icon={<Home className="w-5 h-5" />} label="Home" onClick={() => window.location.reload()} />
+          <SidebarItem icon={<BarChart className="w-5 h-5" />} label="Knowledge Graph" onClick={() => setIsKnowledgeGraphModalOpen(true)} />
+          <SidebarItem icon={<MessageSquare className="w-5 h-5" />} label="Chats" onClick={() => setIsChatsModalOpen(true)} />
+          <SidebarItem icon={<Bell className="w-5 h-5" />} label="Updates" onClick={() => setIsUpdatesModalOpen(true)} />
           <SidebarItem icon={<MessageCircle className="w-5 h-5" />} label="Feedbacks" onClick={() => setIsFeedbackOpen(true)} />
         </nav>
       </aside>
@@ -163,7 +177,7 @@ export default function App() {
         <div>
           <button
             className="w-full bg-blue-100 hover:bg-blue-200 text-blue-900 font-bold rounded-xl py-2 mb-4 flex items-center justify-center gap-2 text-xl dark:bg-blue-900/50 dark:hover:bg-blue-800/60 dark:text-blue-200"
-            onClick={() => handleNavigation("/new-worklet")}
+            onClick={() => handleNavigation("/new-professors")}
           >
             <PlusCircle className="w-5 h-10" /> <span className="text-2xl">New Professor</span>
           </button>
@@ -176,7 +190,7 @@ export default function App() {
           <ActivityButton
             icon={<Lightbulb className="w-5 h-10 text-sky-500" />}
             label={<span className="text-lg font-semibold">Share Suggestion</span>}
-            onClick={() => setIsSuggestionModalOpen(true)}
+            onClick={() => setIsSuggestionOpen(true)}
           />
           <ActivityButton
             icon={<Calendar className="w-5 h-10 text-blue-600" />}
@@ -216,14 +230,10 @@ export default function App() {
         onClose={() => setIsRequestUpdateOpen(false)}
       />
 
-      <Modal
-        isOpen={isSuggestionModalOpen}
-        onClose={() => setIsSuggestionModalOpen(false)}
-      >
-        <h2 className="text-2xl font-bold mb-4">Share Suggestion</h2>
-        <p>This is a placeholder for the Share Suggestion modal content.</p>
-      </Modal>
-
+      <Suggestion
+        isOpen={isSuggestionOpen}
+        onClose={() => setIsSuggestionOpen(false)}
+      />
       <ScheduleMeeting
         isOpen={isScheduleOpen}
         onClose={() => setIsScheduleOpen(false)}
@@ -234,6 +244,23 @@ export default function App() {
         <Feedback onClose={() => setIsFeedbackOpen(false)} />
       )}
 
+        {/* New modals for Left Sidebar items */}
+          <Modal isOpen={isHomeModalOpen} onClose={() => setIsHomeModalOpen(false)}>
+            <HomePage />
+          </Modal>
+
+          <Modal isOpen={isKnowledgeGraphModalOpen} onClose={() => setIsKnowledgeGraphModalOpen(false)}>
+            <KnowledgeGraphPage />
+          </Modal>
+
+          <Modal isOpen={isChatsModalOpen} onClose={() => setIsChatsModalOpen(false)}>
+            <ChatsPage />
+          </Modal>
+
+          <Modal isOpen={isUpdatesModalOpen} onClose={() => setIsUpdatesModalOpen(false)}>
+            <UpdatesPage />
+          </Modal>
     </div>
+
   );
 }
