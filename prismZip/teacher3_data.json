@@ -1,0 +1,103 @@
+{
+  "academic_data": {
+    "citations": 972,
+    "data_sources": [
+      "Google Scholar"
+    ],
+    "h_index": 16,
+    "has_academic_data": true,
+    "i10_index": 25,
+    "recent_publications": [
+      {
+        "authors": "FA Vasluianu, T Seizinger, Z Zhou, Z Wu, C Chen, R Timofte, W Dong, ...",
+        "citations": 87,
+        "title": "NTIRE 2024 image shadow removal challenge report",
+        "venue": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern\u00a0\u2026, 2024",
+        "year": "2024"
+      },
+      {
+        "authors": "X Liu, Z Wu, A Li, FA Vasluianu, Y Zhang, S Gu, L Zhang, C Zhu, ...",
+        "citations": 74,
+        "title": "NTIRE 2024 challenge on low light image enhancement: Methods and results",
+        "venue": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern\u00a0\u2026, 2024",
+        "year": "2024"
+      },
+      {
+        "authors": "Z Chen, Z Wu, E Zamfir, K Zhang, Y Zhang, R Timofte, X Yang, H Yu, ...",
+        "citations": 71,
+        "title": "NTIRE 2024 Challenge on Image Super-resolution (x4): Methods and Results",
+        "venue": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern\u00a0\u2026, 2024",
+        "year": "2024"
+      }
+    ],
+    "research_interests": [
+      "AI/ML |Computer Vision |Engineered Data |Representation Learning |Computer Graphics |"
+    ],
+    "total_publications": 20
+  },
+  "college": "KLE Technological Univeristy",
+  "domain_expertise": "Visual Intelligence, GenAI, Computer Vision",
+  "email": "ramesh_t@kletech.ac.in",
+  "google_scholar_url": "https://scholar.google.com/citations?view_op=list_works&hl=en&authuser=1&hl=en&user=hZbrO4IAAAAJ&authuser=1",
+  "id": 3,
+  "name": "Ramesh Ashok Tabib",
+  "phd_thesis": "Learning Representation",
+  "scholar_data": {
+    "Google Scholar Data": {
+      "Affiliation": "Asst Professor@School of ECE | CoE in Visual Intelligence (CEVI) | KLE Technological University",
+      "Citations": 972,
+      "Locations": [],
+      "Name": "Ramesh Ashok Tabib",
+      "Organizations": [
+        "Asst",
+        "ECE",
+        "CoE",
+        "Visual Intelligence",
+        "CEVI",
+        "KLE Technological University"
+      ],
+      "Publications": [
+        {
+          "authors": "FA Vasluianu, T Seizinger, Z Zhou, Z Wu, C Chen, R Timofte, W Dong, ...",
+          "citations": 87,
+          "title": "NTIRE 2024 image shadow removal challenge report",
+          "venue": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern\u00a0\u2026, 2024",
+          "year": "2024"
+        },
+        {
+          "authors": "X Liu, Z Wu, A Li, FA Vasluianu, Y Zhang, S Gu, L Zhang, C Zhu, ...",
+          "citations": 74,
+          "title": "NTIRE 2024 challenge on low light image enhancement: Methods and results",
+          "venue": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern\u00a0\u2026, 2024",
+          "year": "2024"
+        },
+        {
+          "authors": "Z Chen, Z Wu, E Zamfir, K Zhang, Y Zhang, R Timofte, X Yang, H Yu, ...",
+          "citations": 71,
+          "title": "NTIRE 2024 Challenge on Image Super-resolution (x4): Methods and Results",
+          "venue": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern\u00a0\u2026, 2024",
+          "year": "2024"
+        },
+        {
+          "authors": "E Ershov, A Savchik, D Shepelev, N Bani\u0107, MS Brown, R Timofte, ...",
+          "citations": 67,
+          "title": "NTIRE 2022 challenge on night photography rendering",
+          "venue": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern\u00a0\u2026, 2022",
+          "year": "2022"
+        },
+        {
+          "authors": "Y Zhang, K Zhang, Z Chen, Y Li, R Timofte, J Zhang, K Zhang, R Peng, ...",
+          "citations": 65,
+          "title": "NTIRE 2023 challenge on image super-resolution (x4): Methods and results",
+          "venue": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern\u00a0\u2026, 2023",
+          "year": "2023"
+        }
+      ],
+      "Research Interests": "AI/ML |Computer Vision |Engineered Data |Representation Learning |Computer Graphics |",
+      "Total Publications": 20,
+      "h-index": 16,
+      "i10-index": 25
+    }
+  },
+  "semantic_scholar_url": "https://www.semanticscholar.org/search?q=%22R.%20Tabib%22&sort=relevance"
+}

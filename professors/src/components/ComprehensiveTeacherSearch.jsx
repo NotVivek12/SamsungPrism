@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Users, GraduationCap, Mail, ExternalLink, ArrowLeft, Eye, BookOpen, Award, Link as LinkIcon, Calendar, MapPin, Star, TrendingUp, User, Briefcase, FileText, Filter, Grid3X3, List, SortAsc, SortDesc, Heart } from 'lucide-react';
+import { Search, Users, GraduationCap, Mail, ExternalLink, ArrowLeft, Eye, BookOpen, Award, Calendar, MapPin, Star, TrendingUp, User, Briefcase, FileText, Filter, Grid3X3, List, SortAsc, SortDesc, Heart } from 'lucide-react';
 
 const ComprehensiveTeacherSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -17,9 +17,12 @@ const ComprehensiveTeacherSearch = () => {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [sortBy, setSortBy] = useState('name'); // 'name', 'college', 'expertise'
   const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
-  const [filterBy, setFilterBy] = useState('all'); // 'all', 'scholar', 'semantic', 'both'
+  const [filterBy, setFilterBy] = useState('all'); // 'all', 'scholar', 'semantic', 'both', 'none', or college name
   const [showProfilePicturesOnly] = useState(false); // New filter for profile pictures
   const [favoriteTeachers, setFavoriteTeachers] = useState(new Set());
+  
+  // College filter state (simplified since it's now part of filterBy)
+  const [availableColleges, setAvailableColleges] = useState([]);
 
   // Computed variable for teachers with profile pictures
   // eslint-disable-next-line no-unused-vars
@@ -41,7 +44,25 @@ const ComprehensiveTeacherSearch = () => {
           if (data && data.teachers) {
             setTeachers(data.teachers);
             setFilteredTeachers(data.teachers);
+            
+            // Extract unique colleges for filter dropdown (normalize case to avoid duplicates)
+            const collegeSet = new Set();
+            data.teachers.forEach(teacher => {
+              if (teacher.college && teacher.college.trim()) {
+                // Normalize college name: trim whitespace and convert to title case
+                const normalizedCollege = teacher.college.trim()
+                  .toLowerCase()
+                  .split(' ')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ');
+                collegeSet.add(normalizedCollege);
+              }
+            });
+            const colleges = Array.from(collegeSet).sort();
+            setAvailableColleges(colleges);
+            
             console.log('✅ All 206 teachers displayed in dashboard:', data.teachers.length);
+            console.log('✅ Extracted unique colleges:', colleges.length);
           } else {
             setError('No teachers data available');
             console.error('❌ No teachers data in response');
@@ -124,21 +145,18 @@ const ComprehensiveTeacherSearch = () => {
       );
     }
     
-    // Apply profile filter
+    // Apply filter
     if (filterBy !== 'all') {
+      // Handle college filter (filterBy is a college name)
       filtered = filtered.filter(teacher => {
-        switch (filterBy) {
-          case 'scholar':
-            return teacher.has_google_scholar && !teacher.has_semantic_scholar;
-          case 'semantic':
-            return teacher.has_semantic_scholar && !teacher.has_google_scholar;
-          case 'both':
-            return teacher.has_google_scholar && teacher.has_semantic_scholar;
-          case 'none':
-            return !teacher.has_google_scholar && !teacher.has_semantic_scholar;
-          default:
-            return true;
-        }
+        if (!teacher.college) return false;
+        // Normalize the teacher's college name to match our normalized list
+        const normalizedTeacherCollege = teacher.college.trim()
+          .toLowerCase()
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+        return normalizedTeacherCollege === filterBy;
       });
     }
     
@@ -629,18 +647,36 @@ const ComprehensiveTeacherSearch = () => {
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             {/* Left side - Filters and Sort */}
             <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-3 order-2 lg:order-1">
-              {/* Filter Dropdown */}
+              {/* College Filter Dropdown */}
               <div className="relative w-full sm:w-auto">
                 <select
                   value={filterBy}
                   onChange={(e) => setFilterBy(e.target.value)}
                   className="w-full sm:w-auto appearance-none bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 pr-8 text-sm font-medium text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
                 >
-                  <option value="all">All Profiles</option>
-                  <option value="scholar">Google Scholar Only</option>
-                  <option value="semantic">Semantic Scholar Only</option>
-                  <option value="both">Both Profiles</option>
-                  <option value="none">No Profiles</option>
+                  <option value="all">All Colleges ({teachers.length} teachers)</option>
+                  {availableColleges.length > 0 && (
+                    <>
+                      {availableColleges.map((college, index) => {
+                        // Count teachers for this normalized college name
+                        const teacherCount = teachers.filter(teacher => {
+                          if (!teacher.college) return false;
+                          const normalizedTeacherCollege = teacher.college.trim()
+                            .toLowerCase()
+                            .split(' ')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
+                          return normalizedTeacherCollege === college;
+                        }).length;
+                        
+                        return (
+                          <option key={index} value={college}>
+                            {college} ({teacherCount} teachers)
+                          </option>
+                        );
+                      })}
+                    </>
+                  )}
                 </select>
                 <Filter className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
               </div>
@@ -679,8 +715,18 @@ const ComprehensiveTeacherSearch = () => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between sm:justify-end gap-4 w-full lg:w-auto order-1 lg:order-2">
               {/* Results Count */}
               <span className="text-sm text-gray-600 dark:text-gray-400 font-medium order-2 sm:order-1">
-                {loading ? 'Loading...' : 
-                 `${filteredTeachers.length} teacher${filteredTeachers.length !== 1 ? 's' : ''} ${searchTerm ? 'found' : 'in database'}`}
+                {loading ? 'Loading...' : (
+                  <>
+                    {`${filteredTeachers.length} teacher${filteredTeachers.length !== 1 ? 's' : ''}`}
+                    {filterBy && filterBy !== 'all' && (
+                      <span className="text-blue-600 dark:text-blue-400"> from {filterBy}</span>
+                    )}
+                    {searchTerm ? ' found' : 
+                     (filterBy && filterBy !== 'all') ? '' : 
+                     ' in database'
+                    }
+                  </>
+                )}
               </span>
 
               {/* View Mode Toggle */}
@@ -753,14 +799,6 @@ const ComprehensiveTeacherSearch = () => {
                             >
                               <Heart className={`w-4 h-4 ${favoriteTeachers.has(teacher.id) ? 'fill-current' : ''}`} />
                             </button>
-                            
-                            {/* Scholar Status Indicators */}
-                            {teacher.has_google_scholar && (
-                              <div className="w-3 h-3 bg-green-500 rounded-full shadow-lg animate-pulse" title="Google Scholar Profile"></div>
-                            )}
-                            {teacher.has_semantic_scholar && (
-                              <div className="w-3 h-3 bg-purple-500 rounded-full shadow-lg animate-pulse" title="Semantic Scholar Profile"></div>
-                            )}
                           </div>
                           
                           {/* Avatar and Basic Info with Profile Pictures */}
@@ -848,76 +886,50 @@ const ComprehensiveTeacherSearch = () => {
                           </div>
 
                           {/* Academic Profiles Links */}
-                          {(teacher.google_scholar_url || teacher.semantic_scholar_url || teacher.profile_link) && (
-                            <div className="mb-4">
-                              <div className="flex items-center gap-2 mb-2">
-                                <LinkIcon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Academic Links</span>
-                              </div>
-                              <div className="flex flex-wrap gap-2">
-                                {teacher.google_scholar_url && (
-                                  <a 
-                                    href={teacher.google_scholar_url} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="px-3 py-1.5 bg-green-50 border border-green-200 text-green-700 text-xs rounded-lg flex items-center gap-1 hover:bg-green-100 transition-colors"
-                                  >
-                                    <GraduationCap className="w-3 h-3" />
-                                    Google Scholar
-                                  </a>
-                                )}
-                                {teacher.semantic_scholar_url && (
-                                  <a 
-                                    href={teacher.semantic_scholar_url} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="px-3 py-1.5 bg-purple-50 border border-purple-200 text-purple-700 text-xs rounded-lg flex items-center gap-1 hover:bg-purple-100 transition-colors"
-                                  >
-                                    <BookOpen className="w-3 h-3" />
-                                    Semantic Scholar
-                                  </a>
-                                )}
-                                {teacher.profile_link && (
-                                  <a 
-                                    href={teacher.profile_link} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-700 text-xs rounded-lg flex items-center gap-1 hover:bg-blue-100 transition-colors"
-                                  >
-                                    <User className="w-3 h-3" />
-                                    Profile
-                                  </a>
-                                )}
-                              </div>
+                          <div className="mb-4">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Award className="w-4 h-4 text-yellow-500" />
+                              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Academic Profiles</span>
                             </div>
-                          )}
-
-                          {/* Academic Status */}
-                          <div className="mb-5">
-                            <div className="flex items-center gap-3">
-                              <div className="flex items-center gap-2">
-                                <Award className="w-4 h-4 text-yellow-500" />
-                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Academic Profiles</span>
-                              </div>
-                              <div className="flex gap-2">
-                                {teacher.has_google_scholar && (
-                                  <span className="px-2 py-1 bg-green-50 border border-green-200 text-green-700 text-xs rounded-lg flex items-center gap-1">
-                                    <GraduationCap className="w-3 h-3" />
-                                    Scholar
-                                  </span>
-                                )}
-                                {teacher.has_semantic_scholar && (
-                                  <span className="px-2 py-1 bg-purple-50 border border-purple-200 text-purple-700 text-xs rounded-lg flex items-center gap-1">
-                                    <BookOpen className="w-3 h-3" />
-                                    Semantic
-                                  </span>
-                                )}
-                                {!teacher.has_google_scholar && !teacher.has_semantic_scholar && (
-                                  <span className="px-2 py-1 bg-gray-50 border border-gray-200 text-gray-500 text-xs rounded-lg">
-                                    No profiles
-                                  </span>
-                                )}
-                              </div>
+                            <div className="flex flex-wrap gap-2">
+                              {teacher.google_scholar_url && (
+                                <a 
+                                  href={teacher.google_scholar_url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="px-3 py-1.5 bg-green-50 border border-green-200 text-green-700 text-xs rounded-lg flex items-center gap-1 hover:bg-green-100 transition-colors"
+                                >
+                                  <GraduationCap className="w-3 h-3" />
+                                  Google Scholar
+                                </a>
+                              )}
+                              {teacher.semantic_scholar_url && (
+                                <a 
+                                  href={teacher.semantic_scholar_url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="px-3 py-1.5 bg-purple-50 border border-purple-200 text-purple-700 text-xs rounded-lg flex items-center gap-1 hover:bg-purple-100 transition-colors"
+                                >
+                                  <BookOpen className="w-3 h-3" />
+                                  Semantic Scholar
+                                </a>
+                              )}
+                              {teacher.profile_link && (
+                                <a 
+                                  href={teacher.profile_link} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-700 text-xs rounded-lg flex items-center gap-1 hover:bg-blue-100 transition-colors"
+                                >
+                                  <User className="w-3 h-3" />
+                                  Profile
+                                </a>
+                              )}
+                              {!teacher.google_scholar_url && !teacher.semantic_scholar_url && !teacher.profile_link && (
+                                <span className="px-2 py-1 bg-gray-50 border border-gray-200 text-gray-500 text-xs rounded-lg">
+                                  No profiles available
+                                </span>
+                              )}
                             </div>
                           </div>
 
@@ -1082,7 +1094,7 @@ const ComprehensiveTeacherSearch = () => {
                                     )}
                                     {!teacher.google_scholar_url && !teacher.semantic_scholar_url && !teacher.profile_link && (
                                       <span className="px-2 py-1 bg-gray-50 border border-gray-200 text-gray-500 text-xs rounded">
-                                        No profiles
+                                        No profiles available
                                       </span>
                                     )}
                                   </div>
@@ -1091,16 +1103,6 @@ const ComprehensiveTeacherSearch = () => {
 
                               {/* Status Indicators & Actions */}
                               <div className="flex-shrink-0 flex items-center gap-3">
-                                {/* Academic Status Indicators */}
-                                <div className="flex gap-1">
-                                  {teacher.has_google_scholar && (
-                                    <div className="w-3 h-3 bg-green-500 rounded-full shadow-lg animate-pulse" title="Google Scholar Profile"></div>
-                                  )}
-                                  {teacher.has_semantic_scholar && (
-                                    <div className="w-3 h-3 bg-purple-500 rounded-full shadow-lg animate-pulse" title="Semantic Scholar Profile"></div>
-                                  )}
-                                </div>
-
                                 {/* Database Info */}
                                 {teacher.row_number && (
                                   <div className="text-xs text-gray-400 dark:text-gray-500">

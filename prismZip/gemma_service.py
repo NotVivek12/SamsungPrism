@@ -6,6 +6,10 @@ from typing import Dict, Any, List
 
 import requests
 
+# Ollama configuration
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma3:4b")
+
 
 def analyze_project_description(description: str) -> Dict[str, Any]:
     """
@@ -19,14 +23,18 @@ def analyze_project_description(description: str) -> Dict[str, Any]:
     Returns:
         Dictionary containing identified expertise areas and skills
     """
-    api_key = os.getenv("GEMMA_API_KEY")
-    model = os.getenv("GEMMA_MODEL", "gemma-2-9b-it")
-    api_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-
-    if not description or not api_key:
-        if not api_key:
-            logging.warning("GEMMA_API_KEY not set; using fallback analysis")
+    if not description:
         return _fallback_project_analysis(description or "")
+    
+    # Check if Ollama is available
+    try:
+        health_response = requests.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=5)
+        if health_response.status_code != 200:
+            logging.warning("Ollama server not available; using fallback analysis")
+            return _fallback_project_analysis(description)
+    except Exception as e:
+        logging.warning(f"Cannot connect to Ollama server: {e}; using fallback analysis")
+        return _fallback_project_analysis(description)
 
     prompt = f"""
 You are an AI analyzing research projects to identify required expertise areas. Given a project description, extract the key technical domains and skills needed to successfully complete the project.
@@ -45,25 +53,25 @@ Return ONLY the JSON object and nothing else.
 
     try:
         resp = requests.post(
-            f"{api_url}?key={api_key}",
+            f"{OLLAMA_BASE_URL}/api/generate",
             headers={"Content-Type": "application/json"},
             json={
-                "contents": [{
-                    "parts": [{"text": prompt}]
-                }]
+                "model": OLLAMA_MODEL,
+                "prompt": prompt,
+                "stream": False,
+                "options": {
+                    "temperature": 0.7,
+                    "top_p": 0.9
+                }
             },
-            timeout=20,
+            timeout=60,
         )
         resp.raise_for_status()
         data = resp.json()
 
-        # Extract text from response
-        text = None
-        try:
-            text = data["candidates"][0]["content"]["parts"][0]["text"]
-        except Exception:
-            pass
-
+        # Extract text from Ollama response
+        text = data.get("response", "")
+        
         if not text:
             return _fallback_project_analysis(description)
 
@@ -84,7 +92,7 @@ Return ONLY the JSON object and nothing else.
 
         return _fallback_project_analysis(description)
     except Exception as e:
-        logging.warning(f"Gemma API call failed for project analysis, using fallback: {e}")
+        logging.warning(f"Ollama API call failed for project analysis, using fallback: {e}")
         return _fallback_project_analysis(description)
 
 
@@ -199,14 +207,18 @@ def _fallback_parsing(query: str) -> Dict[str, Any]:
 
 
 def parse_search_query_with_gemma(query: str) -> Dict[str, Any]:
-    api_key = os.getenv("GEMMA_API_KEY")
-    model = os.getenv("GEMMA_MODEL", "gemma-2-9b-it")
-    api_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-
-    if not query or not api_key:
-        if not api_key:
-            logging.warning("GEMMA_API_KEY not set; using fallback parsing")
+    if not query:
         return _fallback_parsing(query or "")
+    
+    # Check if Ollama is available
+    try:
+        health_response = requests.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=5)
+        if health_response.status_code != 200:
+            logging.warning("Ollama server not available; using fallback parsing")
+            return _fallback_parsing(query)
+    except Exception as e:
+        logging.warning(f"Cannot connect to Ollama server: {e}; using fallback parsing")
+        return _fallback_parsing(query)
 
     prompt = f"""
 You are a search assistant for a faculty research directory. Analyze the following search query and extract relevant information in JSON only with no extra text.
@@ -224,25 +236,25 @@ Examples mapping:
 
     try:
         resp = requests.post(
-            f"{api_url}?key={api_key}",
+            f"{OLLAMA_BASE_URL}/api/generate",
             headers={"Content-Type": "application/json"},
             json={
-                "contents": [{
-                    "parts": [{"text": prompt}]
-                }]
+                "model": OLLAMA_MODEL,
+                "prompt": prompt,
+                "stream": False,
+                "options": {
+                    "temperature": 0.7,
+                    "top_p": 0.9
+                }
             },
-            timeout=20,
+            timeout=60,
         )
         resp.raise_for_status()
         data = resp.json()
 
-        # Try to pull text from candidates
-        text = None
-        try:
-            text = data["candidates"][0]["content"]["parts"][0]["text"]
-        except Exception:
-            pass
-
+        # Extract text from Ollama response
+        text = data.get("response", "")
+        
         if not text:
             return _fallback_parsing(query)
 
@@ -263,5 +275,5 @@ Examples mapping:
 
         return _fallback_parsing(query)
     except Exception as e:
-        logging.warning(f"Gemma API call failed, using fallback: {e}")
+        logging.warning(f"Ollama API call failed, using fallback: {e}")
         return _fallback_parsing(query)

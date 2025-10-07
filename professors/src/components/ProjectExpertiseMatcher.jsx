@@ -121,7 +121,7 @@ const ProjectExpertiseMatcher = () => {
                 ) : (
                   <>
                     <Rocket className="w-5 h-5" />
-                    Analyze Project
+                    Analyze
                   </>
                 )}
               </button>

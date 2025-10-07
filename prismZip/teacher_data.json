@@ -1,0 +1,100 @@
+{
+  "academic_data": {
+    "citations": 404,
+    "data_sources": [
+      "Google Scholar"
+    ],
+    "h_index": 7,
+    "has_academic_data": true,
+    "i10_index": 6,
+    "recent_publications": [
+      {
+        "authors": "SR Krishnan, MK Nallakaruppan, R Chengoden, S Koppu, M Iyapparaja, ...",
+        "citations": 213,
+        "title": "Smart water resource management using Artificial Intelligence\u2014A review",
+        "venue": "Sustainability 14 (20), 13384, 2022",
+        "year": "2022"
+      },
+      {
+        "authors": "J Sadhasivam, RB Kalivardhan",
+        "citations": 54,
+        "title": "Sentiment analysis of Amazon products using ensemble machine learning algorithm",
+        "venue": "International Journal of Mathematical, Engineering and Management Sciences 4\u00a0\u2026, 2019",
+        "year": "2019"
+      },
+      {
+        "authors": "J Sadhasivam",
+        "citations": 33,
+        "title": "Educational paradigm shift: are we ready to adopt MOOC?",
+        "venue": "International Journal of Emerging Technologies in Learning (Online) 9 (4), 50, 2014",
+        "year": "2014"
+      }
+    ],
+    "research_interests": [
+      "MOOCLearningNetwork SecurityMachine LearningSentimental Analysis"
+    ],
+    "total_publications": 20
+  },
+  "college": "Vellore Institute of Technology, Vellore",
+  "domain_expertise": "Network and Cyber Security, AI, Web3.0",
+  "email": "jayakumars@vit.ac.in",
+  "google_scholar_url": "https://scholar.google.com/citations?user=aCCuo_IAAAAJ&hl=en",
+  "id": 2,
+  "name": "Dr. Jayakumar Sadhasivam",
+  "phd_thesis": "Hybrid Machine Learning Technique for Massive Open Online Course Using Sentiment Classification and Opinion Analysis for Product Review",
+  "scholar_data": {
+    "Google Scholar Data": {
+      "Affiliation": "Professor atVellore Institute of Technology, Vellore",
+      "Citations": 404,
+      "Locations": [
+        "Vellore"
+      ],
+      "Name": "Jayakumar Sadhasivam",
+      "Organizations": [
+        "Institute of Technology"
+      ],
+      "Publications": [
+        {
+          "authors": "SR Krishnan, MK Nallakaruppan, R Chengoden, S Koppu, M Iyapparaja, ...",
+          "citations": 213,
+          "title": "Smart water resource management using Artificial Intelligence\u2014A review",
+          "venue": "Sustainability 14 (20), 13384, 2022",
+          "year": "2022"
+        },
+        {
+          "authors": "J Sadhasivam, RB Kalivardhan",
+          "citations": 54,
+          "title": "Sentiment analysis of Amazon products using ensemble machine learning algorithm",
+          "venue": "International Journal of Mathematical, Engineering and Management Sciences 4\u00a0\u2026, 2019",
+          "year": "2019"
+        },
+        {
+          "authors": "J Sadhasivam",
+          "citations": 33,
+          "title": "Educational paradigm shift: are we ready to adopt MOOC?",
+          "venue": "International Journal of Emerging Technologies in Learning (Online) 9 (4), 50, 2014",
+          "year": "2014"
+        },
+        {
+          "authors": "J Sadhasivam, RB Kalivaradhan",
+          "citations": 17,
+          "title": "MOOC - A framework for learners using learning style",
+          "venue": "International Education and Research Journal - IERJ 3 (2), 21-24, 2017",
+          "year": "2017"
+        },
+        {
+          "authors": "J Sadhasivam, V Muthukumaran, JT Raja, V Vinothkumar, R Deepa, ...",
+          "citations": 14,
+          "title": "Applying data mining technique to predict trends in air pollution in Mumbai",
+          "venue": "Journal of Physics: Conference Series 1964 (4), 042055, 2021",
+          "year": "2021"
+        }
+      ],
+      "Research Interests": "MOOCLearningNetwork SecurityMachine LearningSentimental Analysis",
+      "Total Publications": 20,
+      "h-index": 7,
+      "i10-index": 6
+    }
+  },
+  "semantic_scholar_url": ""
+}
