@@ -1,0 +1,123 @@
+{
+  "citations_included": true,
+  "filtered_count": 5,
+  "message": "Successfully loaded 5 professors",
+  "professors": [
+    {
+      "citations_count": 406,
+      "college": "Vellore Institute of Technology, Vellore",
+      "domain_expertise": "Artificial Intelligence | Deep Learning | Machine Learning",
+      "email": "jayakumars@vit.ac.in",
+      "expertise_array": [
+        "Artificial Intelligence",
+        "Deep Learning",
+        "Machine Learning"
+      ],
+      "google_scholar_url": "https://scholar.google.com/citations?user=aCCuo_IAAAAJ&hl=en",
+      "h_index": 7,
+      "has_google_scholar": true,
+      "has_semantic_scholar": false,
+      "i10_index": 6,
+      "id": 1,
+      "json_id": "f82927e5",
+      "name": "Dr. Jayakumar Sadhasivam",
+      "phd_thesis": "Hybrid Machine Learning Technique for Massive Open Online Course Using Sentiment Classification and Opinion Analysis for Product Review",
+      "profile_link": "",
+      "row_number": 1,
+      "semantic_scholar_url": ""
+    },
+    {
+      "citations_count": 1003,
+      "college": "KLE Technological Univeristy",
+      "domain_expertise": "Artificial Intelligence | Computer Vision | Natural Language Processing",
+      "email": "ramesh_t@kletech.ac.in",
+      "expertise_array": [
+        "Artificial Intelligence",
+        "Computer Vision",
+        "Natural Language Processing"
+      ],
+      "google_scholar_url": "https://scholar.google.com/citations?view_op=list_works&hl=en&authuser=1&hl=en&user=hZbrO4IAAAAJ&authuser=1",
+      "h_index": 17,
+      "has_google_scholar": true,
+      "has_semantic_scholar": true,
+      "i10_index": 26,
+      "id": 2,
+      "json_id": "269d1df4",
+      "name": "Ramesh Ashok Tabib",
+      "phd_thesis": "Learning Representation",
+      "profile_link": "",
+      "row_number": 2,
+      "semantic_scholar_url": "https://www.semanticscholar.org/search?q=%22R.%20Tabib%22&sort=relevance"
+    },
+    {
+      "citations_count": 191,
+      "college": "PSG College of Technology",
+      "domain_expertise": "Big Data Analytics | Data Mining | Data Science",
+      "email": "nhp.it@psgtech.ac.in",
+      "expertise_array": [
+        "Big Data Analytics",
+        "Data Mining",
+        "Data Science"
+      ],
+      "google_scholar_url": "https://scholar.google.com/citations?user=fxUYVl4AAAAJ&hl=en&authuser=1",
+      "h_index": 6,
+      "has_google_scholar": true,
+      "has_semantic_scholar": false,
+      "i10_index": 6,
+      "id": 3,
+      "json_id": "330b2ec8",
+      "name": "N.Hema Priya",
+      "phd_thesis": "",
+      "profile_link": "",
+      "row_number": 3,
+      "semantic_scholar_url": ""
+    },
+    {
+      "citations_count": 127,
+      "college": "B.M.S College Of Engineering",
+      "domain_expertise": "Artificial Intelligence | Database Systems | Software Engineering",
+      "email": "panimozhi.cse@bmsce.ac.in",
+      "expertise_array": [
+        "Artificial Intelligence",
+        "Database Systems",
+        "Software Engineering"
+      ],
+      "google_scholar_url": "https://scholar.google.com/citations?user=CZNNBZ0AAAAJ",
+      "h_index": 6,
+      "has_google_scholar": true,
+      "has_semantic_scholar": true,
+      "i10_index": 4,
+      "id": 4,
+      "json_id": "604acafb",
+      "name": "Dr.K.Panimozhi",
+      "phd_thesis": "QoS Framework for WSN",
+      "profile_link": "https://bmsce.ac.in/home/facultyProfile/37/Dr-K-PANIMOZHI",
+      "row_number": 4,
+      "semantic_scholar_url": "https://www.semanticscholar.org/me/recommendations?folderIds=12753259"
+    },
+    {
+      "citations_count": 0,
+      "college": "Ramaiah Institute of Technology",
+      "domain_expertise": "Computer Networks | Cybersecurity | Information Security",
+      "email": "sowmyabj@msrit.edu",
+      "expertise_array": [
+        "Computer Networks",
+        "Cybersecurity",
+        "Information Security"
+      ],
+      "google_scholar_url": "https://scholar.google.co.in/citations?user=ikBb_PoAAAAJ&hl=en",
+      "h_index": 0,
+      "has_google_scholar": true,
+      "has_semantic_scholar": true,
+      "i10_index": 0,
+      "id": 5,
+      "json_id": "27a5af22",
+      "name": "Dr. Sowmya BJ",
+      "phd_thesis": "Building an Utility system to provide Data Analytic solutions for Agricultural Challenges in context with Cyber Physical Systems",
+      "profile_link": "https://msrit.edu/department/faculty-detail.html?dept=ai_ds&ID=2",
+      "row_number": 5,
+      "semantic_scholar_url": "https://www.semanticscholar.org/author/Sowmya-Bj/2280541217"
+    }
+  ],
+  "total_count": 206
+}

@@ -8,6 +8,8 @@ from flask_cors import CORS
 from professor_routes import professor_bp
 # Import the database module for MySQL access
 import database
+# Import citation extraction functionality
+from extract_citations import start_background_extraction
 
 # Load configuration from .env as early as possible (search parent dirs)
 try:
@@ -104,6 +106,10 @@ except Exception as e:
 
 if __name__ == '__main__':
     try:
+        print("Starting background citation extraction...")
+        citation_thread = start_background_extraction()
+        print("✅ Background citation extraction started!")
+        
         print("Starting Flask application...")
         print(f"Server will run on port {int(os.environ.get('PORT', 5000))}")
         app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
