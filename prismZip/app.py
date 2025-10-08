@@ -2,12 +2,12 @@ import os
 import time
 import logging
 import json
-import uuid
-import pandas as pd
 from datetime import datetime
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from professor_routes import professor_bp
+# Import the database module for MySQL access
+import database
 
 # Load configuration from .env as early as possible (search parent dirs)
 try:
@@ -53,119 +53,54 @@ CORS(app)
 # Register professor blueprint
 app.register_blueprint(professor_bp)
 
-# Setup Excel data access
-print("📊 Excel data reading function ready")
-print("🔍 Excel data will be read directly on API requests")
-print("✅ Direct Excel data access configured!")
+# Setup database access
+print("📊 MySQL database connection ready")
+print("🔍 Professor data will be read directly from database on API requests")
+print("✅ Database access configured!")
 
 # Google Scholar request delay (in seconds)
 REQUEST_DELAY = int(os.getenv('REQUEST_DELAY', 5))
 
-# Define the Excel file path - adjust as needed
-EXCEL_FILE_PATH = "../prof.xlsx"
-TEACHERS_DATA_PATH = "teachers_data.json"
+# Load database configuration from environment variables
+DB_HOST = os.getenv('DB_HOST', 'localhost')
+DB_NAME = os.getenv('DB_NAME', 'prism_professors')
+DB_USER = os.getenv('DB_USER', 'root')
+DB_PASSWORD = os.getenv('DB_PASSWORD', '')
+DB_PORT = int(os.getenv('DB_PORT', 3306))
 
-def extract_data_from_excel():
-    """Extract teacher data from Excel and create JSON file"""
+# Register a route to test database connection
+@app.route('/api/test-database', methods=['GET'])
+def api_test_database():
+    """Test database connection"""
     try:
-        print(f"📊 Reading Excel file: {EXCEL_FILE_PATH}")
-        df = pd.read_excel(EXCEL_FILE_PATH)
-        print(f"✅ Successfully read {len(df)} rows from Excel")
-        
-        # Clean up column names
-        df.columns = [str(col).strip() for col in df.columns]
-        
-        # Convert DataFrame to list of dictionaries
-        teachers = []
-        
-        for index, row in df.iterrows():
-            # Extract basic info
-            teacher = {
-                'id': str(uuid.uuid4())[:8],  # Generate unique ID
-                'name': str(row.get('name', row.get('Name', ''))),
-                'college': str(row.get('college', row.get('College', row.get('institution', '')))),
-                'email': str(row.get('email', row.get('Email', ''))),
-                'profile_link': str(row.get('profile_link', row.get('Profile Link', ''))),
-                'domain_expertise': str(row.get('domain_expertise', row.get('Domain Expertise', ''))),
-                'phd_thesis': str(row.get('phd_thesis', row.get('PhD Thesis', ''))),
-                'google_scholar_url': str(row.get('google_scholar_url', row.get('Google Scholar URL', ''))),
-                'semantic_scholar_url': str(row.get('semantic_scholar_url', row.get('Semantic Scholar URL', ''))),
-                'profile_picture_url': str(row.get('profile_picture_url', row.get('Profile Picture URL', ''))),
-                'has_google_scholar': bool(row.get('google_scholar_url', row.get('Google Scholar URL', ''))),
-                'has_semantic_scholar': bool(row.get('semantic_scholar_url', row.get('Semantic Scholar URL', ''))),
-            }
-            
-            # Clean up data - replace 'nan' with empty string
-            for key, value in teacher.items():
-                if str(value).lower() == 'nan':
-                    teacher[key] = ''
-                    
-            # Extract domain expertise as a list
-            if teacher['domain_expertise'] and teacher['domain_expertise'] != 'nan':
-                expertise_list = [area.strip() for area in str(teacher['domain_expertise']).split(',')]
-                teacher['expertise_array'] = expertise_list
-            else:
-                teacher['expertise_array'] = []
-                
-            teachers.append(teacher)
-        
-        # Save to JSON file
-        data = {'teachers': teachers}
-        with open(TEACHERS_DATA_PATH, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
-            
-        print(f"💾 Saved {len(teachers)} teachers to {TEACHERS_DATA_PATH}")
-        return teachers
-        
-    except FileNotFoundError:
-        print(f"❌ Excel file not found: {EXCEL_FILE_PATH}")
-        return []
-    except Exception as e:
-        print(f"❌ Error extracting data from Excel: {e}")
-        import traceback
-        traceback.print_exc()
-        return []
-
-def load_teachers_data():
-    """Load teacher data from JSON file or create from Excel if not exists"""
-    try:
-        # Try to read existing JSON file
-        with open(TEACHERS_DATA_PATH, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            teachers = data.get('teachers', [])
-            print(f"✅ Found {len(teachers)} teachers in data file")
-            return teachers
-    except FileNotFoundError:
-        # If not found, extract from Excel
-        print(f"⚠️ {TEACHERS_DATA_PATH} not found, extracting from Excel...")
-        return extract_data_from_excel()
-    except Exception as e:
-        print(f"❌ Error reading teacher data: {e}")
-        # Try to extract from Excel as fallback
-        return extract_data_from_excel()
-
-# Register a route to extract data on demand
-@app.route('/api/extract-data', methods=['POST'])
-def api_extract_data():
-    """Extract data from Excel file on demand"""
-    try:
-        # Force extraction from Excel
-        teachers = extract_data_from_excel()
-        return jsonify({
-            'success': True,
-            'message': f'Successfully extracted {len(teachers)} teachers from Excel',
-            'count': len(teachers)
-        })
+        # Try to connect to the database
+        connection = database.get_connection()
+        if connection and connection.is_connected():
+            database.close_connection(connection)
+            return jsonify({
+                'success': True,
+                'message': f'Successfully connected to MySQL database {DB_NAME} on {DB_HOST}'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Failed to connect to MySQL database'
+            }), 500
     except Exception as e:
         return jsonify({
             'success': False,
             'error': str(e)
         }), 500
 
-# Load teachers data on startup
-print("🚀 Initializing teacher data...")
-teachers = load_teachers_data()
-print(f"✅ Loaded {len(teachers)} teachers successfully!")
+# Load professors data on startup
+print("🚀 Initializing professor data from database...")
+try:
+    professors = database.load_professors_data()
+    print(f"✅ Loaded {len(professors)} professors successfully from database!")
+except Exception as e:
+    print(f"❌ Error loading professors data: {e}")
+    print("Database connection may not be properly configured. Please check your environment variables.")
+    professors = []
 
 if __name__ == '__main__':
     try:

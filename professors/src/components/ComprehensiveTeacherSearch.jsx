@@ -37,17 +37,17 @@ const ComprehensiveTeacherSearch = () => {
         setLoading(true);
         setError(null);
         
-        const response = await fetch('http://localhost:5000/api/teachers');
+        const response = await fetch('http://localhost:5000/api/professors');
         if (response.ok) {
           const data = await response.json();
-          console.log('✅ Teachers data loaded:', data.teachers?.length || 0, 'teachers');
-          if (data && data.teachers) {
-            setTeachers(data.teachers);
-            setFilteredTeachers(data.teachers);
+          console.log('✅ Professors data loaded:', data.professors?.length || 0, 'professors');
+          if (data && data.professors) {
+            setTeachers(data.professors);
+            setFilteredTeachers(data.professors);
             
             // Extract unique colleges for filter dropdown (normalize case to avoid duplicates)
             const collegeSet = new Set();
-            data.teachers.forEach(teacher => {
+            data.professors.forEach(teacher => {
               if (teacher.college && teacher.college.trim()) {
                 // Normalize college name: trim whitespace and convert to title case
                 const normalizedCollege = teacher.college.trim()
@@ -61,16 +61,16 @@ const ComprehensiveTeacherSearch = () => {
             const colleges = Array.from(collegeSet).sort();
             setAvailableColleges(colleges);
             
-            console.log('✅ All 206 teachers displayed in dashboard:', data.teachers.length);
+            console.log('✅ All professors displayed in dashboard:', data.professors.length);
             console.log('✅ Extracted unique colleges:', colleges.length);
           } else {
-            setError('No teachers data available');
-            console.error('❌ No teachers data in response');
+            setError('No professors data available');
+            console.error('❌ No professors data in response');
           }
         } else {
           const errorText = await response.text();
-          setError(`Failed to fetch teachers data: ${response.status} ${errorText}`);
-          console.error('❌ Failed to fetch teachers, status:', response.status, errorText);
+          setError(`Failed to fetch professors data: ${response.status} ${errorText}`);
+          console.error('❌ Failed to fetch professors, status:', response.status, errorText);
         }
       } catch (err) {
         console.error('Error loading teachers:', err);
@@ -105,7 +105,7 @@ const ComprehensiveTeacherSearch = () => {
         });
         if (resp.ok) {
           const data = await resp.json();
-          setAiServerResults(Array.isArray(data.teachers) ? data.teachers : []);
+          setAiServerResults(Array.isArray(data.professors) ? data.professors : []);
         } else {
           setAiServerResults(null);
         }
@@ -221,7 +221,7 @@ const ComprehensiveTeacherSearch = () => {
   const fetchTeacherDetails = async (teacherId) => {
     try {
       setLoadingDetails(true);
-      const response = await fetch(`http://localhost:5000/api/teachers/${teacherId}`);
+      const response = await fetch(`http://localhost:5000/api/professors/${teacherId}`);
       if (response.ok) {
         const data = await response.json();
         setTeacherDetails(data);
@@ -376,7 +376,7 @@ const ComprehensiveTeacherSearch = () => {
                           >
                             {domain}
                           </span>
-                        )) || details.domain_expertise?.split(',').map((domain, index) => (
+                        )) || details.domain_expertise?.split(' | ').map((domain, index) => (
                           <span
                             key={index}
                             className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm"
@@ -513,7 +513,7 @@ const ComprehensiveTeacherSearch = () => {
                           Research Areas
                         </h3>
                         <div className="space-y-2">
-                          {details.domain_expertise.split(',').map((area, index) => (
+                          {details.domain_expertise.split(' | ').map((area, index) => (
                             <div key={index} className="flex items-center gap-2">
                               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">{area.trim()}</span>
@@ -654,7 +654,7 @@ const ComprehensiveTeacherSearch = () => {
                   onChange={(e) => setFilterBy(e.target.value)}
                   className="w-full sm:w-auto appearance-none bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 pr-8 text-sm font-medium text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
                 >
-                  <option value="all">All Colleges ({teachers.length} teachers)</option>
+                  <option value="all">All Colleges ({teachers.length} professors)</option>
                   {availableColleges.length > 0 && (
                     <>
                       {availableColleges.map((college, index) => {
@@ -671,7 +671,7 @@ const ComprehensiveTeacherSearch = () => {
                         
                         return (
                           <option key={index} value={college}>
-                            {college} ({teacherCount} teachers)
+                            {college} ({teacherCount} professors)
                           </option>
                         );
                       })}
@@ -717,7 +717,7 @@ const ComprehensiveTeacherSearch = () => {
               <span className="text-sm text-gray-600 dark:text-gray-400 font-medium order-2 sm:order-1">
                 {loading ? 'Loading...' : (
                   <>
-                    {`${filteredTeachers.length} teacher${filteredTeachers.length !== 1 ? 's' : ''}`}
+                    {`${filteredTeachers.length} professor${filteredTeachers.length !== 1 ? 's' : ''}`}
                     {filterBy && filterBy !== 'all' && (
                       <span className="text-blue-600 dark:text-blue-400"> from {filterBy}</span>
                     )}
@@ -869,7 +869,7 @@ const ComprehensiveTeacherSearch = () => {
                               <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Research Areas</span>
                             </div>
                             <div className="flex flex-wrap gap-2">
-                              {teacher.domain_expertise?.split(',').slice(0, 3).map((domain, index) => (
+                              {teacher.domain_expertise?.split(' | ').slice(0, 3).map((domain, index) => (
                                 <span 
                                   key={index} 
                                   className="px-3 py-1.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs font-medium rounded-full shadow-sm hover:shadow-md transition-shadow duration-300"
@@ -877,9 +877,9 @@ const ComprehensiveTeacherSearch = () => {
                                   {domain.trim()}
                                 </span>
                               ))}
-                              {teacher.domain_expertise?.split(',').length > 3 && (
+                              {teacher.domain_expertise?.split(' | ').length > 3 && (
                                 <span className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs font-medium rounded-full border border-gray-200 dark:border-gray-600">
-                                  +{teacher.domain_expertise.split(',').length - 3} more
+                                  +{teacher.domain_expertise.split(' | ').length - 3} more
                                 </span>
                               )}
                             </div>
@@ -954,10 +954,10 @@ const ComprehensiveTeacherSearch = () => {
                     <div className="col-span-full text-center py-12">
                       <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                       <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                        No teachers found
+                        No professors found
                       </h3>
                       <p className="text-gray-600 dark:text-gray-400 mb-4">
-                        {searchTerm ? `No teachers found matching "${searchTerm}". Try a different search term.` : 'No teachers match the selected filters.'}
+                        {searchTerm ? `No professors found matching "${searchTerm}". Try a different search term.` : 'No professors match the selected filters.'}
                       </p>
                       {searchTerm && (
                         <button
@@ -1021,7 +1021,7 @@ const ComprehensiveTeacherSearch = () => {
                                 
                                 {/* Research Areas */}
                                 <div className="flex flex-wrap gap-2 mb-3">
-                                  {teacher.domain_expertise?.split(',').slice(0, 4).map((domain, index) => (
+                                  {teacher.domain_expertise?.split(' | ').slice(0, 4).map((domain, index) => (
                                     <span 
                                       key={index} 
                                       className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs rounded-full"
@@ -1029,9 +1029,9 @@ const ComprehensiveTeacherSearch = () => {
                                       {domain.trim()}
                                     </span>
                                   ))}
-                                  {teacher.domain_expertise?.split(',').length > 4 && (
+                                  {teacher.domain_expertise?.split(' | ').length > 4 && (
                                     <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs rounded-full">
-                                      +{teacher.domain_expertise.split(',').length - 4} more
+                                      +{teacher.domain_expertise.split(' | ').length - 4} more
                                     </span>
                                   )}
                                 </div>
@@ -1133,7 +1133,7 @@ const ComprehensiveTeacherSearch = () => {
                             Welcome to Faculty Research Directory
                           </h3>
                           <p className="text-gray-600 dark:text-gray-400 mb-4">
-                            Search our comprehensive database of 206+ faculty members to discover their research profiles, PhD thesis topics, academic affiliations, and publication data.
+                            Search our comprehensive database of professors to discover their research profiles, PhD thesis topics, academic affiliations, and publication data.
                           </p>
                           <div className="flex flex-wrap justify-center gap-2 text-sm text-gray-500">
                             <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full">Try: "Machine Learning"</span>
@@ -1146,10 +1146,10 @@ const ComprehensiveTeacherSearch = () => {
                         <div>
                           <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                            No teachers found
+                            No professors found
                           </h3>
                           <p className="text-gray-600 dark:text-gray-400 mb-4">
-                            {searchTerm ? `No teachers found matching "${searchTerm}". Try a different search term.` : 'No teachers match the selected filters.'}
+                            {searchTerm ? `No professors found matching "${searchTerm}". Try a different search term.` : 'No professors match the selected filters.'}
                           </p>
                           {searchTerm && (
                             <button

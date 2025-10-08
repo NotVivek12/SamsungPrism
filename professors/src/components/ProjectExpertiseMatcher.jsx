@@ -121,7 +121,7 @@ const ProjectExpertiseMatcher = () => {
                 ) : (
                   <>
                     <Rocket className="w-5 h-5" />
-                    Analyze
+                    Analyze Project
                   </>
                 )}
               </button>
@@ -312,7 +312,7 @@ const ProjectExpertiseMatcher = () => {
                               <div>
                                 <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Research Domains</h4>
                                 <div className="flex flex-wrap gap-2">
-                                  {teacher.domain_expertise && teacher.domain_expertise.split(',').map((domain, index) => (
+                                  {teacher.domain_expertise && teacher.domain_expertise.split(' | ').map((domain, index) => (
                                     <span 
                                       key={index}
                                       className={`px-2 py-1 text-xs rounded ${

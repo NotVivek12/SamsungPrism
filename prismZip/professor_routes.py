@@ -1,6 +1,6 @@
 """
 Professor API routes for Flask application.
-This module contains all Flask routes related to professor management using Excel data.
+This module contains all Flask routes related to professor management using MySQL database.
 """
 
 from flask import Blueprint, request, jsonify
@@ -9,10 +9,11 @@ import logging
 import time
 import os
 import sys
-import pandas as pd
 import re
 import json
 from gemma_service import parse_search_query_with_gemma, analyze_project_description
+# Import the database module for MySQL access
+import database
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -168,101 +169,34 @@ except ImportError as e:
     print(f"Scholar extraction modules not available: {e}")
     SCHOLAR_ENABLED = False
 
-# Excel data cache to avoid reading the file repeatedly
-excel_data_cache = None
-excel_last_read_time = 0
+# Database cache to avoid querying repeatedly
+professors_data_cache = None
+data_last_read_time = 0
 CACHE_TIMEOUT = 300  # 5 minutes
 
-def find_excel_file():
-    """Find the Excel file in the current or parent directories"""
-    # Look in the current directory
-    paths_to_try = [
-        os.path.join(os.getcwd(), 'prof.xlsx'),
-        os.path.join(os.getcwd(), 'sirs.xlsx'),
-        os.path.join(os.path.dirname(os.getcwd()), 'prof.xlsx'),
-        os.path.join(os.path.dirname(os.getcwd()), 'sirs.xlsx')
-    ]
-    
-    for path in paths_to_try:
-        if os.path.exists(path):
-            return path
-            
-    # If not found, return the default path
-    return os.path.join(os.getcwd(), 'prof.xlsx')
-
 def load_teachers_data():
-    """Load teachers data from Excel file"""
-    global excel_data_cache, excel_last_read_time
+    """Load professors data from MySQL database"""
+    global professors_data_cache, data_last_read_time
     
     current_time = time.time()
     
     # Return cached data if it exists and is fresh
-    if excel_data_cache is not None and current_time - excel_last_read_time < CACHE_TIMEOUT:
-        # Add a sample Google Scholar URL for testing if not already added
-        if excel_data_cache and len(excel_data_cache) > 1 and not excel_data_cache[1].get('google_scholar_url'):
-            excel_data_cache[1]['google_scholar_url'] = 'https://scholar.google.com/citations?user=m8dFEawAAAAJ'
-            excel_data_cache[1]['has_google_scholar'] = True
-        return excel_data_cache
+    if professors_data_cache is not None and current_time - data_last_read_time < CACHE_TIMEOUT:
+        return professors_data_cache
     
     try:
-        # Find Excel file
-        excel_path = find_excel_file()
-        logger.info(f"Loading Excel data from: {excel_path}")
-            
-        # Read the Excel file
-        df = pd.read_excel(excel_path)
-        
-        # Convert DataFrame to list of dictionaries
-        teachers = []
-        for i, row in df.iterrows():
-            try:
-                # Skip empty rows
-                if (('Teacher Name' in df.columns and pd.isna(row['Teacher Name'])) and 
-                    ('College' in df.columns and pd.isna(row['College']))):
-                    continue
-                
-                # Create teacher dictionary with flexible column mappings
-                teacher = {'id': i + 1}  # 1-based index for IDs
-                
-                # Map columns with different possible names
-                name_cols = ['Teacher Name', 'Name', 'Professor Name', 'Faculty Name']
-                college_cols = ['College', 'Institution', 'University']
-                email_cols = ['College Email Id', 'Email', 'Email Id']
-                domain_cols = ['Domain Expertise', 'Expertise', 'Research Areas', 'Specialization']
-                thesis_cols = ['Ph D Thesis', 'PhD Thesis', 'Thesis']
-                g_scholar_cols = ['Google Scholar URL', 'Google Scholar', 'Scholar URL']
-                s_scholar_cols = ['Semantic Scholar Link', 'Semantic Scholar URL']
-                
-                # Try different column names
-                for col_list, key in [
-                    (name_cols, 'name'),
-                    (college_cols, 'college'),
-                    (email_cols, 'email'),
-                    (domain_cols, 'domain_expertise'),
-                    (thesis_cols, 'phd_thesis'),
-                    (g_scholar_cols, 'google_scholar_url'),
-                    (s_scholar_cols, 'semantic_scholar_url')
-                ]:
-                    for col in col_list:
-                        if col in df.columns and not pd.isna(row[col]):
-                            teacher[key] = str(row[col])
-                            break
-                    if key not in teacher:
-                        teacher[key] = ''
-                
-                teachers.append(teacher)
-            except Exception as row_error:
-                logger.error(f"Error processing row {i}: {row_error}")
-                continue
+        # Load data from database
+        logger.info("Loading professors data from database")
+        professors = database.load_professors_data()
         
         # Update cache
-        excel_data_cache = teachers
-        excel_last_read_time = current_time
+        professors_data_cache = professors
+        data_last_read_time = current_time
         
-        logger.info(f"✅ Successfully loaded {len(teachers)} teachers from Excel")
-        return teachers
+        logger.info(f"✅ Successfully loaded {len(professors)} professors from database")
+        return professors
     except Exception as e:
-        logger.error(f"❌ Error loading teachers data from Excel: {e}")
+        logger.error(f"❌ Error loading professors data from database: {e}")
         import traceback
         logger.error(traceback.format_exc())
         return []
@@ -288,15 +222,8 @@ def api_get_domain_experts():
         }), 400
     
     try:
-        teachers = load_teachers_data()
-        
-        # Filter teachers by domain expertise
-        experts = []
-        for teacher in teachers:
-            if teacher.get('domain_expertise'):
-                domains = [d.strip().lower() for d in teacher['domain_expertise'].split(',')]
-                if domain.lower() in domains:
-                    experts.append(teacher)
+        # Get professors with the specified domain directly from database
+        experts = database.get_professors_by_domain(domain)
         
         return jsonify({
             'domain': domain,
@@ -319,37 +246,34 @@ def api_ai_search_teachers():
         if not query or len(query) < 2:
             return jsonify({'teachers': [], 'query_analysis': None})
         
-        teachers = load_teachers_data()
+        # Use database search for professors
+        filtered_teachers = database.search_professors(query)
         
-        # Simple keyword search as fallback
+        # Calculate relevance score
         keywords = query.lower().split()
-        filtered_teachers = []
         
-        for teacher in teachers:
-            text_to_search = f"{teacher.get('name', '')} {teacher.get('domain_expertise', '')} {teacher.get('bio', '')} {teacher.get('phd_thesis', '')}".lower()
+        for professor in filtered_teachers:
+            text_to_search = f"{professor.get('name', '')} {professor.get('domain_expertise', '')} {professor.get('phd_thesis', '')}".lower()
             
             score = 0
             for keyword in keywords:
                 if keyword in text_to_search:
                     score += 1
             
-            if score > 0:
-                teacher_copy = teacher.copy()
-                teacher_copy['relevance_score'] = score
-                filtered_teachers.append(teacher_copy)
+            professor['relevance_score'] = score
         
         # Sort by relevance score
         filtered_teachers.sort(key=lambda x: x.get('relevance_score', 0), reverse=True)
         
         return jsonify({
-            'teachers': filtered_teachers[:50],  # Limit to top 50 results
+            'professors': filtered_teachers[:50],  # Limit to top 50 results
             'total_results': len(filtered_teachers),
             'query': query
         })
         
     except Exception as e:
         logging.error(f"Error in AI search: {str(e)}")
-        return jsonify({'teachers': [], 'error': str(e)}), 500
+        return jsonify({'professors': [], 'error': str(e)}), 500
 
 @professor_bp.route('/api/project/analyze', methods=['POST'])
 def api_analyze_project():
@@ -373,16 +297,16 @@ def api_analyze_project():
             }
         
         # Find matching professors
-        teachers = load_teachers_data()
-        matching_teachers = []
+        professors = database.load_professors_data()
+        matching_professors = []
         
         required_expertise = analysis.get('required_expertise', [])
         
-        for teacher in teachers:
-            if not teacher.get('domain_expertise'):
+        for professor in professors:
+            if not professor.get('domain_expertise'):
                 continue
                 
-            teacher_domains = [d.strip().lower() for d in teacher['domain_expertise'].split(',')]
+            professor_domains = [d.strip().lower() for d in professor['domain_expertise'].split(',')]
             
             # Calculate match percentage
             matches = 0
@@ -390,7 +314,7 @@ def api_analyze_project():
             
             for expertise in required_expertise:
                 expertise_lower = expertise.lower()
-                for domain in teacher_domains:
+                for domain in professor_domains:
                     if expertise_lower in domain or domain in expertise_lower:
                         matches += 1
                         matching_domains.append(expertise)
@@ -399,95 +323,84 @@ def api_analyze_project():
             if matches > 0:
                 match_percentage = int((matches / len(required_expertise)) * 100)
                 
-                teacher_match = teacher.copy()
-                teacher_match['match_percentage'] = match_percentage
-                teacher_match['matching_domains'] = matching_domains
+                professor_match = professor.copy()
+                professor_match['match_percentage'] = match_percentage
+                professor_match['matching_domains'] = matching_domains
                 
-                matching_teachers.append(teacher_match)
+                matching_professors.append(professor_match)
         
         # Sort by match percentage
-        matching_teachers.sort(key=lambda x: x['match_percentage'], reverse=True)
+        matching_professors.sort(key=lambda x: x['match_percentage'], reverse=True)
         
         return jsonify({
             'analysis': analysis,
-            'teachers': matching_teachers[:20],  # Top 20 matches
-            'total_matches': len(matching_teachers)
+            'professors': matching_professors[:20],  # Top 20 matches
+            'total_matches': len(matching_professors)
         })
         
     except Exception as e:
         logging.error(f"Error in project analysis: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-@professor_bp.route('/api/teachers', methods=['GET'])
-def api_get_all_teachers():
-    """API endpoint to get all teachers from Excel data with optional filtering"""
+@professor_bp.route('/api/professors', methods=['GET'])
+def api_get_all_professors():
+    """API endpoint to get all professors from MySQL database with optional filtering"""
     try:
         # Get query parameters
         limit = request.args.get('limit', type=int)
         college = request.args.get('college', '').strip()
         
-        # Load teacher data
-        teachers = load_teachers_data()
+        # Load professor data
+        professors = database.load_professors_data()
         
-        if not teachers:
-            return jsonify({'teachers': [], 'total_count': 0, 'message': 'No teachers found'})
+        if not professors:
+            return jsonify({'professors': [], 'total_count': 0, 'message': 'No professors found'})
         
         # Filter by college if specified
         if college:
-            teachers = [t for t in teachers if t.get('college', '').strip().lower() == college.lower()]
+            professors = [p for p in professors if p.get('college', '').strip().lower() == college.lower()]
             
         # Calculate total before applying limit
-        total_count = len(teachers)
+        total_count = len(professors)
             
         # Apply limit if specified
         if limit and limit > 0:
-            teachers = teachers[:limit]
+            professors = professors[:limit]
         
-        # Add row numbers and ensure required fields
-        for i, teacher in enumerate(teachers, 1):
-            teacher['row_number'] = i
-            
-            # Ensure required fields exist
-            teacher.setdefault('id', i)
-            teacher.setdefault('has_google_scholar', bool(teacher.get('google_scholar_url')))
-            teacher.setdefault('has_semantic_scholar', bool(teacher.get('semantic_scholar_url')))
+        # Add row numbers
+        for i, professor in enumerate(professors, 1):
+            professor['row_number'] = i
         
         return jsonify({
-            'teachers': teachers,
+            'professors': professors,
             'total_count': total_count,
-            'filtered_count': len(teachers),
-            'message': f'Successfully loaded {len(teachers)} teachers' + (f' from college {college}' if college else '')
+            'filtered_count': len(professors),
+            'message': f'Successfully loaded {len(professors)} professors' + (f' from college {college}' if college else '')
         })
         
     except Exception as e:
-        logging.error(f"Error fetching teachers: {str(e)}")
-        return jsonify({'teachers': [], 'total_count': 0, 'error': 'Internal error'}), 500
+        logging.error(f"Error fetching professors: {str(e)}")
+        return jsonify({'professors': [], 'total_count': 0, 'error': 'Internal error'}), 500
 
-@professor_bp.route('/api/teachers/<int:teacher_id>', methods=['GET'])
-def api_get_teacher_details(teacher_id):
-    """Get detailed information about a specific teacher"""
+@professor_bp.route('/api/professors/<int:professor_id>', methods=['GET'])
+def api_get_professor_details(professor_id):
+    """Get detailed information about a specific professor"""
     try:
-        teachers = load_teachers_data()
+        # Get professor by ID directly from database
+        professor = database.get_professor_by_id(professor_id)
         
-        # Find teacher by ID or index
-        teacher = None
-        for t in teachers:
-            if t.get('id') == teacher_id or teachers.index(t) + 1 == teacher_id:
-                teacher = t
-                break
-        
-        if not teacher:
-            return jsonify({'error': 'Teacher not found'}), 404
+        if not professor:
+            return jsonify({'error': 'Professor not found'}), 404
         
         # Enhance with scholar data if available and enabled
         if SCHOLAR_ENABLED:
             try:
                 scholar_data = None
-                if teacher.get('google_scholar_url'):
-                    scholar_data = extract_scholar_data_with_spacy(teacher['google_scholar_url'])
+                if professor.get('google_scholar_url'):
+                    scholar_data = extract_scholar_data_with_spacy(professor['google_scholar_url'])
                 
                 if scholar_data:
-                    teacher['scholar_data'] = scholar_data
+                    professor['scholar_data'] = scholar_data
                     
                     # Extract metrics from scholar data
                     google_scholar_data = scholar_data.get('Google Scholar Data', {})
@@ -503,89 +416,34 @@ def api_get_teacher_details(teacher_id):
                         'research_interests': google_scholar_data.get('Research Interests', "").split(", ") if isinstance(google_scholar_data.get('Research Interests'), str) else [],
                         'data_sources': ['Google Scholar']
                     }
-                    teacher['academic_data'] = academic_data
+                    professor['academic_data'] = academic_data
                     
             except Exception as e:
                 logging.error(f"Error extracting scholar data: {str(e)}")
         
-        return jsonify(teacher)
+        return jsonify(professor)
         
     except Exception as e:
-        logging.error(f"Error fetching teacher details: {str(e)}")
+        logging.error(f"Error fetching professor details: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
 
-@professor_bp.route('/api/teachers/stats', methods=['GET'])
-def api_get_teachers_stats():
-    """Get statistics about the teachers database"""
+@professor_bp.route('/api/professors/stats', methods=['GET'])
+def api_get_professors_stats():
+    """Get statistics about the professors database"""
     try:
-        teachers = load_teachers_data()
-        
-        stats = {
-            'total_teachers': len(teachers),
-            'with_google_scholar': sum(1 for t in teachers if t.get('google_scholar_url')),
-            'with_semantic_scholar': sum(1 for t in teachers if t.get('semantic_scholar_url')),
-            'with_profile_picture': sum(1 for t in teachers if t.get('profile_picture_url') or t.get('scholar_profile_picture')),
-            'colleges': len(set(t.get('college') for t in teachers if t.get('college'))),
-            'domains': len(set(domain.strip() for t in teachers if t.get('domain_expertise') for domain in t['domain_expertise'].split(','))),
-        }
-        
+        stats = database.get_professors_stats()
         return jsonify(stats)
         
     except Exception as e:
         logging.error(f"Error getting stats: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
         
-def normalize_college_name(name):
-    """Normalize college name to avoid duplicates"""
-    if not name:
-        return ""
-    
-    # Convert to lowercase for comparison
-    name = name.lower().strip()
-    
-    # Remove trailing punctuation
-    if name and name[-1] in '`.,;:':
-        name = name[:-1]
-    
-    # Common abbreviations and variations
-    if name in ['vit', 'vit vellore', 'vit-vellore', 'vit,vellore']:
-        return "Vellore Institute of Technology"
-    
-    if name in ['vit chennai', 'vit university chennai']:
-        return "Vellore Institute of Technology, Chennai"
-        
-    if name in ['srmist', 'srm university']:
-        return "SRM Institute of Science and Technology"
-        
-    if name in ['rvce', 'rv college of engineerin', 'rv college of engineering']:
-        return "RV College of Engineering"
-        
-    if name in ['psg tech', 'psg college of technology, coimbatore']:
-        return "PSG College of Technology"
-    
-    # Return the original name if no normalization needed
-    return name
-
 @professor_bp.route('/api/colleges', methods=['GET'])
 def api_get_colleges():
-    """Get list of unique colleges with teacher counts for filtering"""
+    """Get list of unique colleges with professor counts for filtering"""
     try:
-        teachers = load_teachers_data()
-        
-        # Count teachers per college
-        college_counts = {}
-        for teacher in teachers:
-            college = teacher.get('college', '').strip()
-            if college:
-                # Normalize college name
-                normalized = normalize_college_name(college)
-                college_counts[normalized] = college_counts.get(normalized, 0) + 1
-        
-        # Format as list of objects
-        colleges = [
-            {'name': college, 'count': count}
-            for college, count in college_counts.items()
-        ]
+        # Get college list directly from database
+        colleges = database.get_all_colleges()
         
         # Sort alphabetically
         colleges.sort(key=lambda x: x['name'])
@@ -597,4 +455,23 @@ def api_get_colleges():
         
     except Exception as e:
         logging.error(f"Error getting college list: {str(e)}")
+        return jsonify({'error': 'Internal server error'}), 500
+        
+@professor_bp.route('/api/domains', methods=['GET'])
+def api_get_domains():
+    """Get list of all domains with professor counts"""
+    try:
+        # Get domain list directly from database
+        domains = database.get_all_domains()
+        
+        # Sort alphabetically
+        domains.sort(key=lambda x: x['name'])
+        
+        return jsonify({
+            'domains': domains,
+            'total': len(domains)
+        })
+        
+    except Exception as e:
+        logging.error(f"Error getting domain list: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
