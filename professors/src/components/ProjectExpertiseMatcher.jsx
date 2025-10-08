@@ -32,7 +32,7 @@ const ProjectExpertiseMatcher = () => {
       const data = await aiSearchService.analyzeProject(projectDescription);
       
       setAnalysisResult(data.analysis);
-      setMatchingTeachers(data.teachers || []);
+      setMatchingTeachers(data.professors || []);
     } catch (err) {
       console.error('Error analyzing project:', err);
       setError(err.message || 'An error occurred while analyzing your project');

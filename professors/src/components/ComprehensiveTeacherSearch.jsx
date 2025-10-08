@@ -2,6 +2,40 @@ import React, { useState, useEffect } from 'react';
 import { Search, Users, GraduationCap, Mail, ExternalLink, ArrowLeft, Eye, BookOpen, Award, Calendar, MapPin, Star, TrendingUp, User, Briefcase, FileText, Filter, Grid3X3, List, SortAsc, SortDesc, Heart } from 'lucide-react';
 
 const ComprehensiveTeacherSearch = () => {
+  // Add global styles for scrollable content
+  useEffect(() => {
+    const styleEl = document.createElement('style');
+    styleEl.textContent = `
+      /* Set max-height for card content */
+      .card-content-scrollable {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      
+      /* Custom scrollbar styling */
+      .card-content-scrollable::-webkit-scrollbar {
+        width: 4px;
+      }
+      .card-content-scrollable::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+      .card-content-scrollable::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 20px;
+      }
+      .dark .card-content-scrollable::-webkit-scrollbar-track {
+        background: #1e293b;
+      }
+      .dark .card-content-scrollable::-webkit-scrollbar-thumb {
+        background-color: #475569;
+      }
+    `;
+    document.head.appendChild(styleEl);
+    
+    return () => {
+      document.head.removeChild(styleEl);
+    };
+  }, []);
   const [searchTerm, setSearchTerm] = useState('');
   const [, setIsAISearching] = useState(false);
   const [aiServerResults, setAiServerResults] = useState(null);
@@ -15,8 +49,8 @@ const ComprehensiveTeacherSearch = () => {
   
   // New UI state
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
-  const [sortBy, setSortBy] = useState('name'); // 'name', 'college', 'expertise'
-  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
+  const [sortBy, setSortBy] = useState('citations'); // 'name', 'college', 'expertise', 'citations'
+  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc' - for citations, 'asc' means highest first
   const [filterBy, setFilterBy] = useState('all'); // 'all', 'scholar', 'semantic', 'both', 'none', or college name
   const [showProfilePicturesOnly] = useState(false); // New filter for profile pictures
   const [favoriteTeachers, setFavoriteTeachers] = useState(new Set());
@@ -37,13 +71,20 @@ const ComprehensiveTeacherSearch = () => {
         setLoading(true);
         setError(null);
         
-        const response = await fetch('http://localhost:5000/api/professors');
+        // Include citation data in the API request
+        const response = await fetch('http://localhost:5000/api/professors?include_citations=true');
         if (response.ok) {
           const data = await response.json();
           console.log('✅ Professors data loaded:', data.professors?.length || 0, 'professors');
           if (data && data.professors) {
             setTeachers(data.professors);
             setFilteredTeachers(data.professors);
+            
+            // Check for citation data
+            const professorsWithCitations = data.professors.filter(p => 
+              p.citations_count > 0 || p.h_index > 0 || p.i10_index > 0
+            );
+            console.log(`✅ Professors with citation data: ${professorsWithCitations.length}/${data.professors.length}`);
             
             // Extract unique colleges for filter dropdown (normalize case to avoid duplicates)
             const collegeSet = new Set();
@@ -175,22 +216,27 @@ const ComprehensiveTeacherSearch = () => {
         case 'name':
           aValue = a.name || '';
           bValue = b.name || '';
-          break;
+          return sortOrder === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
         case 'college':
           aValue = a.college || '';
           bValue = b.college || '';
-          break;
+          return sortOrder === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
         case 'expertise':
           aValue = a.domain_expertise || '';
           bValue = b.domain_expertise || '';
-          break;
+          return sortOrder === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+        case 'citations':
+          // Use numerical sorting for citations, treating undefined/null as 0
+          aValue = a.citations_count || 0;
+          bValue = b.citations_count || 0;
+          // For citations, default to showing highest citations first when 'asc' is selected
+          // (contrary to usual sorting behavior, but more intuitive for citations)
+          return sortOrder === 'asc' ? bValue - aValue : aValue - bValue;
         default:
           aValue = a.name || '';
           bValue = b.name || '';
+          return sortOrder === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
       }
-      
-      const comparison = aValue.localeCompare(bValue);
-      return sortOrder === 'asc' ? comparison : -comparison;
     });
     
     setFilteredTeachers(filtered);
@@ -221,7 +267,7 @@ const ComprehensiveTeacherSearch = () => {
   const fetchTeacherDetails = async (teacherId) => {
     try {
       setLoadingDetails(true);
-      const response = await fetch(`http://localhost:5000/api/professors/${teacherId}`);
+      const response = await fetch(`http://localhost:5000/api/professors/${teacherId}?include_citations=true`);
       if (response.ok) {
         const data = await response.json();
         setTeacherDetails(data);
@@ -684,7 +730,7 @@ const ComprehensiveTeacherSearch = () => {
               {/* Sort Options */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Sort by:</span>
-                <div className="flex gap-2 w-full sm:w-auto">
+                <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                   <button
                     onClick={() => handleSort('name')}
                     className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex-1 sm:flex-none justify-center ${
@@ -706,6 +752,19 @@ const ComprehensiveTeacherSearch = () => {
                   >
                     College
                     {sortBy === 'college' && (sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />)}
+                  </button>
+                  <button
+                    onClick={() => handleSort('citations')}
+                    title={`Sort by citations (${sortOrder === 'asc' ? 'highest first' : 'lowest first'})`}
+                    className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex-1 sm:flex-none justify-center ${
+                      sortBy === 'citations' 
+                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
+                        : 'bg-white text-gray-600 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    <Award className="w-3 h-3 mr-1" />
+                    Citations
+                    {sortBy === 'citations' && (sortOrder === 'asc' ? <SortDesc className="w-4 h-4" /> : <SortAsc className="w-4 h-4" />)}
                   </button>
                 </div>
               </div>
@@ -781,7 +840,7 @@ const ComprehensiveTeacherSearch = () => {
                 <div className="w-full max-w-none mx-auto grid gap-6 grid-cols-3">
                   {filteredTeachers.length > 0 ? (
                     filteredTeachers.map(teacher => (
-                      <div key={teacher.id} className="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border border-gray-100 overflow-hidden dark:bg-gray-800 dark:border-gray-700 h-[480px] flex flex-col">
+                      <div key={teacher.id} className="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border border-gray-100 overflow-hidden dark:bg-gray-800 dark:border-gray-700 h-[540px] flex flex-col">
                         {/* Card Header with Gradient Background */}
                         <div className="relative p-4 md:p-6 pb-4 bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900 flex-shrink-0">
                           <div className="absolute top-4 right-4 flex gap-2">
@@ -860,8 +919,67 @@ const ComprehensiveTeacherSearch = () => {
                           </div>
                         </div>
 
-                        {/* Card Body */}
+                          {/* Card Body */}
                         <div className="p-6 pt-4 flex-grow flex flex-col overflow-hidden">
+                          {/* Scrollable Content Area */}
+                          <div className="flex-grow overflow-y-auto pr-1 card-content-scrollable">
+                          {/* Citation Metrics */}
+                          {(teacher.citations_count > 0 || teacher.h_index > 0 || teacher.i10_index > 0) && (
+                            <div className="mb-4 flex-shrink-0">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Award className="w-4 h-4 text-yellow-500" />
+                                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Academic Impact</span>
+                              </div>
+                              <div className="grid grid-cols-3 gap-2">
+                                {teacher.citations_count > 0 && (
+                                  <div className={`p-2 ${
+                                    teacher.citations_count > 1000 
+                                      ? 'bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/40 dark:to-blue-800/40' 
+                                      : 'bg-blue-50 dark:bg-blue-900/20'
+                                  } rounded-lg text-center relative`}>
+                                    {teacher.citations_count > 1000 && (
+                                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
+                                        <div className="text-xs text-yellow-800">★</div>
+                                      </div>
+                                    )}
+                                    <div className="text-blue-700 dark:text-blue-300 font-bold">{teacher.citations_count}</div>
+                                    <div className="text-xs text-blue-600 dark:text-blue-400">Citations</div>
+                                  </div>
+                                )}
+                                {teacher.h_index > 0 && (
+                                  <div className={`p-2 ${
+                                    teacher.h_index > 20 
+                                      ? 'bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/40 dark:to-green-800/40' 
+                                      : 'bg-green-50 dark:bg-green-900/20'
+                                  } rounded-lg text-center relative`}>
+                                    {teacher.h_index > 20 && (
+                                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
+                                        <div className="text-xs text-yellow-800">★</div>
+                                      </div>
+                                    )}
+                                    <div className="text-green-700 dark:text-green-300 font-bold">{teacher.h_index}</div>
+                                    <div className="text-xs text-green-600 dark:text-green-400">h-index</div>
+                                  </div>
+                                )}
+                                {teacher.i10_index > 0 && (
+                                  <div className={`p-2 ${
+                                    teacher.i10_index > 20 
+                                      ? 'bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/40 dark:to-purple-800/40' 
+                                      : 'bg-purple-50 dark:bg-purple-900/20'
+                                  } rounded-lg text-center relative`}>
+                                    {teacher.i10_index > 20 && (
+                                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
+                                        <div className="text-xs text-yellow-800">★</div>
+                                      </div>
+                                    )}
+                                    <div className="text-purple-700 dark:text-purple-300 font-bold">{teacher.i10_index}</div>
+                                    <div className="text-xs text-purple-600 dark:text-purple-400">i10-index</div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
                           {/* Research Areas */}
                           <div className="mb-4 flex-shrink-0">
                             <div className="flex items-center gap-2 mb-2">
@@ -883,9 +1001,7 @@ const ComprehensiveTeacherSearch = () => {
                                 </span>
                               )}
                             </div>
-                          </div>
-
-                          {/* Academic Profiles Links */}
+                          </div>                          {/* Academic Profiles Links */}
                           <div className="mb-4">
                             <div className="flex items-center gap-2 mb-2">
                               <Award className="w-4 h-4 text-yellow-500" />
@@ -933,8 +1049,10 @@ const ComprehensiveTeacherSearch = () => {
                             </div>
                           </div>
 
-                          {/* Action Button */}
-                          <div className="mt-auto pt-4">
+                          </div> {/* End of scrollable content area */}
+
+                          {/* Action Button - Fixed at the bottom */}
+                          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 flex-shrink-0">
                             <button
                               onClick={() => handleTeacherClick(teacher)}
                               className="w-full py-3 px-4 text-white font-semibold rounded-2xl shadow-lg bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-3 group-hover:shadow-xl text-sm"
@@ -1049,10 +1167,37 @@ const ComprehensiveTeacherSearch = () => {
                                   </div>
                                 )}
 
+                                {/* Citation Metrics */}
+                                {(teacher.citations_count > 0 || teacher.h_index > 0 || teacher.i10_index > 0) && (
+                                  <div className="flex items-center gap-3 mb-3">
+                                    <div className="flex items-center gap-2">
+                                      <Award className="w-4 h-4 text-yellow-500" />
+                                      <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Impact:</span>
+                                    </div>
+                                    <div className="flex gap-2">
+                                      {teacher.citations_count > 0 && (
+                                        <span className="px-2 py-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 text-xs rounded flex items-center gap-1">
+                                          <span className="font-bold">{teacher.citations_count}</span> Citations
+                                        </span>
+                                      )}
+                                      {teacher.h_index > 0 && (
+                                        <span className="px-2 py-1 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 text-xs rounded flex items-center gap-1">
+                                          h-index: <span className="font-bold">{teacher.h_index}</span>
+                                        </span>
+                                      )}
+                                      {teacher.i10_index > 0 && (
+                                        <span className="px-2 py-1 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 text-xs rounded flex items-center gap-1">
+                                          i10-index: <span className="font-bold">{teacher.i10_index}</span>
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+
                                 {/* Academic Links */}
                                 <div className="flex items-center gap-3">
                                   <div className="flex items-center gap-2">
-                                    <Award className="w-4 h-4 text-yellow-500" />
+                                    <GraduationCap className="w-4 h-4 text-blue-500" />
                                     <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Profiles:</span>
                                   </div>
                                   <div className="flex gap-2">
