@@ -6,19 +6,16 @@ from datetime import datetime
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from professor_routes import professor_bp
-# Import the database module for MySQL access
+
 import database
-# Import citation extraction functionality
+
 from extract_citations import start_background_extraction
 
-# Load configuration from .env as early as possible (search parent dirs)
 try:
     from dotenv import load_dotenv, find_dotenv
     load_dotenv(find_dotenv())
 except Exception:
     print("python-dotenv not available; relying on environment variables")
-
-# Try to import spaCy and related modules, but make them optional
 try:
     import spacy
     from helpers import extract_scholar_data
@@ -26,7 +23,7 @@ try:
     from google_scholar_extractor import extract_google_scholar_data
     SCHOLAR_ENABLED = True
     
-    # Load spaCy model with error handling
+    
     try:
         nlp = spacy.load('en_core_web_sm')
     except (OSError, KeyboardInterrupt) as e:
@@ -42,7 +39,6 @@ except ImportError as e:
 from utils import handle_exceptions
 from professor_routes import professor_bp
 
-# Configure logging with more detail
 logging.basicConfig(
     filename='error_log.txt',
     level=logging.INFO,
@@ -52,30 +48,24 @@ logging.basicConfig(
 app = Flask(__name__)
 CORS(app)
 
-# Register professor blueprint
 app.register_blueprint(professor_bp)
 
-# Setup database access
 print("📊 MySQL database connection ready")
 print("🔍 Professor data will be read directly from database on API requests")
 print("✅ Database access configured!")
 
-# Google Scholar request delay (in seconds)
 REQUEST_DELAY = int(os.getenv('REQUEST_DELAY', 5))
 
-# Load database configuration from environment variables
 DB_HOST = os.getenv('DB_HOST', 'localhost')
 DB_NAME = os.getenv('DB_NAME', 'prism_professors')
 DB_USER = os.getenv('DB_USER', 'root')
 DB_PASSWORD = os.getenv('DB_PASSWORD', '')
 DB_PORT = int(os.getenv('DB_PORT', 3306))
 
-# Register a route to test database connection
 @app.route('/api/test-database', methods=['GET'])
 def api_test_database():
     """Test database connection"""
     try:
-        # Try to connect to the database
         connection = database.get_connection()
         if connection and connection.is_connected():
             database.close_connection(connection)
@@ -94,7 +84,6 @@ def api_test_database():
             'error': str(e)
         }), 500
 
-# Load professors data on startup
 print("🚀 Initializing professor data from database...")
 try:
     professors = database.load_professors_data()

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Users, GraduationCap, Mail, ExternalLink, ArrowLeft, Eye, BookOpen, Award, Calendar, MapPin, Star, TrendingUp, User, Briefcase, FileText, Filter, Grid3X3, List, SortAsc, SortDesc, Heart } from 'lucide-react';
+import { Search, Users, GraduationCap, Mail, ExternalLink, ArrowLeft, Eye, BookOpen, Award, Calendar, MapPin, Star, TrendingUp, User, Briefcase, FileText, Filter, Grid3X3, List, SortAsc, SortDesc, Heart, Download } from 'lucide-react';
 
 const ComprehensiveTeacherSearch = () => {
   // Add global styles for scrollable content
@@ -49,7 +49,7 @@ const ComprehensiveTeacherSearch = () => {
   
   // New UI state
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
-  const [sortBy, setSortBy] = useState('citations'); // 'name', 'college', 'expertise', 'citations'
+  const [sortBy, setSortBy] = useState('name'); // 'name', 'college', 'expertise', 'citations'
   const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc' - for citations, 'asc' means highest first
   const [filterBy, setFilterBy] = useState('all'); // 'all', 'scholar', 'semantic', 'both', 'none', or college name
   const [showProfilePicturesOnly] = useState(false); // New filter for profile pictures
@@ -765,6 +765,19 @@ const ComprehensiveTeacherSearch = () => {
                     <Award className="w-3 h-3 mr-1" />
                     Citations
                     {sortBy === 'citations' && (sortOrder === 'asc' ? <SortDesc className="w-4 h-4" /> : <SortAsc className="w-4 h-4" />)}
+                  </button>
+                  
+                  {/* Export Button */}
+                  <button
+                    onClick={() => {
+                      // Export functionality will be added later
+                      console.log('Export functionality to be implemented');
+                    }}
+                    className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex-1 sm:flex-none justify-center bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-300 dark:hover:bg-green-900/40 border border-green-200 dark:border-green-800"
+                    title="Export filtered results"
+                  >
+                    <Download className="w-4 h-4" />
+                    Export
                   </button>
                 </div>
               </div>
