@@ -263,6 +263,71 @@ const ComprehensiveTeacherSearch = () => {
     }
   };
 
+  // Export functionality
+  const handleExport = () => {
+    try {
+      // Prepare CSV data
+      const csvHeaders = [
+        'Name',
+        'College',
+        'Email',
+        'Domain Expertise',
+        'Citations Count',
+        'H-Index',
+        'I10-Index',
+        'PhD Thesis',
+        'Google Scholar URL',
+        'Semantic Scholar URL',
+        'Profile Link'
+      ];
+
+      // Convert filtered teachers data to CSV rows
+      const csvRows = filteredTeachers.map(teacher => [
+        `"${(teacher.name || '').replace(/"/g, '""')}"`,
+        `"${(teacher.college || '').replace(/"/g, '""')}"`,
+        `"${(teacher.email || '').replace(/"/g, '""')}"`,
+        `"${(teacher.domain_expertise || '').replace(/"/g, '""')}"`,
+        teacher.citations_count || 0,
+        teacher.h_index || 0,
+        teacher.i10_index || 0,
+        `"${(teacher.phd_thesis || '').replace(/"/g, '""')}"`,
+        `"${(teacher.google_scholar_url || '').replace(/"/g, '""')}"`,
+        `"${(teacher.semantic_scholar_url || '').replace(/"/g, '""')}"`,
+        `"${(teacher.profile_link || '').replace(/"/g, '""')}"`
+      ]);
+
+      // Combine headers and rows
+      const csvContent = [csvHeaders.join(','), ...csvRows.map(row => row.join(','))].join('\n');
+
+      // Create and download the file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        
+        // Generate filename with current date and filter info
+        const currentDate = new Date().toISOString().split('T')[0];
+        const filterInfo = filterBy !== 'all' ? `_${filterBy.replace(/\s+/g, '_')}` : '';
+        const searchInfo = searchTerm ? `_search_${searchTerm.replace(/[^a-zA-Z0-9]/g, '_')}` : '';
+        const filename = `professors_export_${currentDate}${filterInfo}${searchInfo}.csv`;
+        
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Show success message (you can replace this with a toast notification)
+        console.log(`✅ Exported ${filteredTeachers.length} professors to ${filename}`);
+      }
+    } catch (error) {
+      console.error('❌ Export failed:', error);
+      // You can add a toast notification here for user feedback
+    }
+  };
+
   // Fetch detailed teacher information including Google Scholar data
   const fetchTeacherDetails = async (teacherId) => {
     try {
@@ -769,12 +834,9 @@ const ComprehensiveTeacherSearch = () => {
                   
                   {/* Export Button */}
                   <button
-                    onClick={() => {
-                      // Export functionality will be added later
-                      console.log('Export functionality to be implemented');
-                    }}
+                    onClick={handleExport}
                     className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex-1 sm:flex-none justify-center bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-300 dark:hover:bg-green-900/40 border border-green-200 dark:border-green-800"
-                    title="Export filtered results"
+                    title="Export filtered results to CSV"
                   >
                     <Download className="w-4 h-4" />
                     Export
@@ -786,18 +848,9 @@ const ComprehensiveTeacherSearch = () => {
             {/* Right side - View Mode and Results Count */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between sm:justify-end gap-4 w-full lg:w-auto order-1 lg:order-2">
               {/* Results Count */}
-              <span className="text-sm text-gray-600 dark:text-gray-400 font-medium order-2 sm:order-1">
+              <span className="text-sm text-gray-600 dark:text-gray-400 font-medium order-2 sm:order-1 whitespace-nowrap">
                 {loading ? 'Loading...' : (
-                  <>
-                    {`${filteredTeachers.length} professor${filteredTeachers.length !== 1 ? 's' : ''}`}
-                    {filterBy && filterBy !== 'all' && (
-                      <span className="text-blue-600 dark:text-blue-400"> from {filterBy}</span>
-                    )}
-                    {searchTerm ? ' found' : 
-                     (filterBy && filterBy !== 'all') ? '' : 
-                     ' in database'
-                    }
-                  </>
+                  `${filteredTeachers.length} results${filterBy && filterBy !== 'all' ? ` from ${filterBy}` : ''}${searchTerm ? '' : (filterBy && filterBy !== 'all') ? '' : ' '}`
                 )}
               </span>
 
