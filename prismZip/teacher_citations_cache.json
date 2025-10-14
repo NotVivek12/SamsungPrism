@@ -1,1124 +1,302 @@
 {
-  "330b2ec8": {
-    "citations": 195,
-    "h_index": 6,
-    "i10_index": 6,
-    "timestamp": 1760283268.6836777
-  },
   "27a5af22": {
     "citations": 0,
     "h_index": 0,
     "i10_index": 0,
-    "timestamp": 1760283269.8190708
+    "timestamp": 1760414093.813829
   },
-  "604acafb": {
-    "citations": 127,
-    "h_index": 6,
-    "i10_index": 4,
-    "timestamp": 1760283270.2439291
+  "f82927e5": {
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414094.0136027
+  },
+  "330b2ec8": {
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414094.1673028
   },
   "269d1df4": {
     "citations": 1010,
     "h_index": 17,
     "i10_index": 26,
-    "timestamp": 1760283270.2669287
+    "timestamp": 1760414094.519786
   },
-  "f82927e5": {
-    "citations": 406,
-    "h_index": 7,
-    "i10_index": 6,
-    "timestamp": 1760283270.300933
+  "604acafb": {
+    "citations": 127,
+    "h_index": 6,
+    "i10_index": 4,
+    "timestamp": 1760414100.770113
   },
   "178c7c38": {
-    "citations": 793,
-    "h_index": 15,
-    "i10_index": 24,
-    "timestamp": 1760283272.9032118
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414106.2875285
   },
   "93f1f247": {
-    "citations": 1386,
-    "h_index": 17,
-    "i10_index": 23,
-    "timestamp": 1760283273.2099204
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414106.4481325
+  },
+  "356479b6": {
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414106.50802
   },
   "d1eaa67b": {
     "citations": 136,
     "h_index": 6,
     "i10_index": 6,
-    "timestamp": 1760283273.8564377
+    "timestamp": 1760414109.223037
   },
   "fbac84dc": {
-    "citations": 5,
-    "h_index": 1,
+    "citations": 0,
+    "h_index": 0,
     "i10_index": 0,
-    "timestamp": 1760283273.8594573
-  },
-  "356479b6": {
-    "citations": 252,
-    "h_index": 10,
-    "i10_index": 10,
-    "timestamp": 1760283273.9072995
+    "timestamp": 1760414112.848861
   },
   "2ae48827": {
     "citations": 0,
     "h_index": 0,
     "i10_index": 0,
-    "timestamp": 1760283276.3233027
+    "timestamp": 1760414119.0089433
   },
   "cf49f1ec": {
-    "citations": 79,
-    "h_index": 5,
-    "i10_index": 3,
-    "timestamp": 1760283276.955174
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414119.9672182
+  },
+  "531abde5": {
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414120.5210164
   },
   "42352203": {
     "citations": 0,
     "h_index": 0,
     "i10_index": 0,
-    "timestamp": 1760283276.9611828
+    "timestamp": 1760414122.6117797
   },
   "6e29ae55": {
-    "citations": 1138,
-    "h_index": 19,
-    "i10_index": 32,
-    "timestamp": 1760283277.6177194
-  },
-  "531abde5": {
-    "citations": 368,
-    "h_index": 9,
-    "i10_index": 8,
-    "timestamp": 1760283277.7174835
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414125.8950155
   },
   "61b86351": {
-    "citations": 464,
-    "h_index": 12,
-    "i10_index": 15,
-    "timestamp": 1760283279.7138135
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414131.543357
   },
   "0742e275": {
-    "citations": 350,
-    "h_index": 10,
-    "i10_index": 10,
-    "timestamp": 1760283281.1889474
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414132.1027734
   },
   "5b69dd05": {
-    "citations": 405,
-    "h_index": 12,
-    "i10_index": 15,
-    "timestamp": 1760283281.19495
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414132.4239242
   },
   "ee2462c8": {
-    "citations": 658,
-    "h_index": 14,
-    "i10_index": 21,
-    "timestamp": 1760283282.2123666
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414134.809567
   },
   "40228e0a": {
-    "citations": 54,
-    "h_index": 4,
-    "i10_index": 1,
-    "timestamp": 1760283282.3002872
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414138.390965
   },
   "bc094bd0": {
-    "citations": 1593,
-    "h_index": 18,
-    "i10_index": 43,
-    "timestamp": 1760283284.0053751
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414142.4839451
   },
   "22caa4c9": {
     "citations": 725,
     "h_index": 12,
     "i10_index": 12,
-    "timestamp": 1760283285.8201203
+    "timestamp": 1760414142.8701243
   },
   "f9d3a7fa": {
-    "citations": 395,
-    "h_index": 8,
-    "i10_index": 7,
-    "timestamp": 1760283285.920684
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414143.9659975
   },
   "90e6e90e": {
-    "citations": 171,
-    "h_index": 7,
-    "i10_index": 4,
-    "timestamp": 1760283286.9888506
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414146.3134933
   },
   "add3ab6d": {
-    "citations": 217,
-    "h_index": 7,
-    "i10_index": 5,
-    "timestamp": 1760283287.1071997
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414149.3818758
   },
   "ca6b7fa2": {
-    "citations": 320,
-    "h_index": 10,
-    "i10_index": 10,
-    "timestamp": 1760283288.4089334
-  },
-  "5b999cef": {
-    "citations": 274,
-    "h_index": 10,
-    "i10_index": 10,
-    "timestamp": 1760283290.311762
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414154.400943
   },
   "4cf60b85": {
-    "citations": 24,
-    "h_index": 3,
+    "citations": 0,
+    "h_index": 0,
     "i10_index": 0,
-    "timestamp": 1760283290.3983216
+    "timestamp": 1760414154.4324093
+  },
+  "5b999cef": {
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414155.581635
   },
   "0afcc15a": {
-    "citations": 336,
-    "h_index": 10,
-    "i10_index": 10,
-    "timestamp": 1760283291.6051657
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414157.7304957
   },
   "22da2bc5": {
-    "citations": 201,
+    "citations": 202,
     "h_index": 8,
     "i10_index": 6,
-    "timestamp": 1760283291.7123742
+    "timestamp": 1760414162.6170104
+  },
+  "bf8f1654": {
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414166.653529
+  },
+  "ae3fd05b": {
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414167.1058304
   },
   "8c57837a": {
     "citations": 49,
     "h_index": 4,
     "i10_index": 1,
-    "timestamp": 1760283292.6987636
-  },
-  "bf8f1654": {
-    "citations": 538,
-    "h_index": 14,
-    "i10_index": 16,
-    "timestamp": 1760283294.4754345
-  },
-  "ae3fd05b": {
-    "citations": 1239,
-    "h_index": 19,
-    "i10_index": 28,
-    "timestamp": 1760283294.6027308
+    "timestamp": 1760414168.309348
   },
   "0c4c9965": {
-    "citations": 2851,
+    "citations": 2853,
     "h_index": 30,
     "i10_index": 71,
-    "timestamp": 1760283296.1631112
+    "timestamp": 1760414172.343703
   },
   "a570f76f": {
-    "citations": 1467,
-    "h_index": 16,
-    "i10_index": 36,
-    "timestamp": 1760283296.3566546
-  },
-  "d8c863bb": {
-    "citations": 106,
-    "h_index": 6,
-    "i10_index": 2,
-    "timestamp": 1760283297.10188
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414173.7934473
   },
   "2d766a82": {
     "citations": 155,
     "h_index": 4,
     "i10_index": 2,
-    "timestamp": 1760283298.4199376
+    "timestamp": 1760414176.2303913
+  },
+  "d8c863bb": {
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414177.6550002
   },
   "77a51e69": {
-    "citations": 543,
+    "citations": 545,
     "h_index": 13,
     "i10_index": 19,
-    "timestamp": 1760283299.9256818
-  },
-  "3b13e4a3": {
-    "citations": 169,
-    "h_index": 7,
-    "i10_index": 4,
-    "timestamp": 1760283300.1005907
+    "timestamp": 1760414181.1501951
   },
   "ec7dc7c9": {
     "citations": 876,
     "h_index": 17,
     "i10_index": 25,
-    "timestamp": 1760283300.9015603
+    "timestamp": 1760414181.779728
+  },
+  "3b13e4a3": {
+    "citations": 169,
+    "h_index": 7,
+    "i10_index": 4,
+    "timestamp": 1760414184.4719603
   },
   "df0182b6": {
-    "citations": 427,
-    "h_index": 10,
-    "i10_index": 10,
-    "timestamp": 1760283301.0078194
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414185.6368484
   },
   "4a7c35c2": {
     "citations": 0,
     "h_index": 0,
     "i10_index": 0,
-    "timestamp": 1760283302.0887818
+    "timestamp": 1760414189.4045053
   },
   "6b9d99ac": {
     "citations": 62,
     "h_index": 4,
     "i10_index": 2,
-    "timestamp": 1760283304.2081647
+    "timestamp": 1760414192.4848273
   },
   "37c82811": {
     "citations": 116,
     "h_index": 6,
     "i10_index": 5,
-    "timestamp": 1760283304.5104654
-  },
-  "d5bfcd25": {
-    "citations": 123,
-    "h_index": 6,
-    "i10_index": 3,
-    "timestamp": 1760283305.3803265
-  },
-  "3dcaef53": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283305.3813262
+    "timestamp": 1760414193.1262121
   },
   "b3020849": {
     "citations": 155,
     "h_index": 7,
     "i10_index": 5,
-    "timestamp": 1760283305.484627
+    "timestamp": 1760414197.3421166
+  },
+  "3dcaef53": {
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414197.3432486
+  },
+  "d5bfcd25": {
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414198.2179184
+  },
+  "e87038cb": {
+    "citations": 72,
+    "h_index": 4,
+    "i10_index": 2,
+    "timestamp": 1760414200.3389802
+  },
+  "8c81eecf": {
+    "citations": 0,
+    "h_index": 0,
+    "i10_index": 0,
+    "timestamp": 1760414204.4578493
   },
   "75229028": {
     "citations": 165,
     "h_index": 5,
     "i10_index": 3,
-    "timestamp": 1760283306.4045033
-  },
-  "e87038cb": {
-    "citations": 70,
-    "h_index": 4,
-    "i10_index": 2,
-    "timestamp": 1760283308.3303595
-  },
-  "8c81eecf": {
-    "citations": 205,
-    "h_index": 7,
-    "i10_index": 6,
-    "timestamp": 1760283308.7900982
-  },
-  "e95fca89": {
-    "citations": 45,
-    "h_index": 2,
-    "i10_index": 1,
-    "timestamp": 1760283309.871798
-  },
-  "1c600a74": {
-    "citations": 1155,
-    "h_index": 15,
-    "i10_index": 28,
-    "timestamp": 1760283310.0343838
-  },
-  "340b79c3": {
-    "citations": 388,
-    "h_index": 10,
-    "i10_index": 10,
-    "timestamp": 1760283310.86084
-  },
-  "3b9ea944": {
-    "citations": 13,
-    "h_index": 2,
-    "i10_index": 0,
-    "timestamp": 1760283312.3327844
-  },
-  "4ee705e0": {
-    "citations": 192,
-    "h_index": 8,
-    "i10_index": 7,
-    "timestamp": 1760283312.8284068
-  },
-  "adbd1626": {
-    "citations": 1809,
-    "h_index": 18,
-    "i10_index": 32,
-    "timestamp": 1760283313.162731
-  },
-  "d339d4ee": {
-    "citations": 244,
-    "h_index": 9,
-    "i10_index": 9,
-    "timestamp": 1760283314.349716
-  },
-  "96b96249": {
-    "citations": 676,
-    "h_index": 15,
-    "i10_index": 16,
-    "timestamp": 1760283315.5525641
-  },
-  "84f0f655": {
-    "citations": 510,
-    "h_index": 12,
-    "i10_index": 13,
-    "timestamp": 1760283316.7723155
-  },
-  "a07fdc29": {
-    "citations": 376,
-    "h_index": 10,
-    "i10_index": 12,
-    "timestamp": 1760283317.09778
-  },
-  "bad083bf": {
-    "citations": 681,
-    "h_index": 15,
-    "i10_index": 21,
-    "timestamp": 1760283317.6660187
-  },
-  "3d3b8d08": {
-    "citations": 2482,
-    "h_index": 18,
-    "i10_index": 55,
-    "timestamp": 1760283318.48887
-  },
-  "16c18f89": {
-    "citations": 93,
-    "h_index": 6,
-    "i10_index": 3,
-    "timestamp": 1760283318.6355357
-  },
-  "66fefbab": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283320.7289655
-  },
-  "e948ff38": {
-    "citations": 357,
-    "h_index": 9,
-    "i10_index": 7,
-    "timestamp": 1760283321.0102375
-  },
-  "78e9202e": {
-    "citations": 407,
-    "h_index": 12,
-    "i10_index": 16,
-    "timestamp": 1760283322.0684094
-  },
-  "b577bea5": {
-    "citations": 1385,
-    "h_index": 19,
-    "i10_index": 42,
-    "timestamp": 1760283322.834789
-  },
-  "97d45c98": {
-    "citations": 341,
-    "h_index": 10,
-    "i10_index": 10,
-    "timestamp": 1760283323.0148945
-  },
-  "d8929d2d": {
-    "citations": 2908,
-    "h_index": 27,
-    "i10_index": 58,
-    "timestamp": 1760283325.2271655
-  },
-  "6194fc48": {
-    "citations": 299,
-    "h_index": 9,
-    "i10_index": 8,
-    "timestamp": 1760283325.4433544
-  },
-  "0f8a98a6": {
-    "citations": 348,
-    "h_index": 11,
-    "i10_index": 12,
-    "timestamp": 1760283326.4582906
-  },
-  "02edb62d": {
-    "citations": 109,
-    "h_index": 4,
-    "i10_index": 4,
-    "timestamp": 1760283327.502497
-  },
-  "80481b35": {
-    "citations": 144,
-    "h_index": 5,
-    "i10_index": 4,
-    "timestamp": 1760283327.5800939
-  },
-  "9961ed33": {
-    "citations": 767,
-    "h_index": 15,
-    "i10_index": 20,
-    "timestamp": 1760283329.8766515
-  },
-  "1c2eb5d4": {
-    "citations": 401,
-    "h_index": 9,
-    "i10_index": 8,
-    "timestamp": 1760283329.9513826
-  },
-  "97d44c78": {
-    "citations": 238,
-    "h_index": 9,
-    "i10_index": 8,
-    "timestamp": 1760283330.9597878
-  },
-  "5674261a": {
-    "citations": 1229,
-    "h_index": 18,
-    "i10_index": 28,
-    "timestamp": 1760283332.1226237
-  },
-  "5d71abbd": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283332.4842594
-  },
-  "27346626": {
-    "citations": 302,
-    "h_index": 5,
-    "i10_index": 4,
-    "timestamp": 1760283334.006639
-  },
-  "aad7b42f": {
-    "citations": 317,
-    "h_index": 8,
-    "i10_index": 6,
-    "timestamp": 1760283334.4255793
-  },
-  "25e3e04c": {
-    "citations": 638,
-    "h_index": 8,
-    "i10_index": 7,
-    "timestamp": 1760283334.507305
-  },
-  "f7a589d1": {
-    "citations": 523,
-    "h_index": 13,
-    "i10_index": 16,
-    "timestamp": 1760283335.4431803
-  },
-  "f1d6ae1c": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283335.9978592
-  },
-  "1d6f1bc0": {
-    "citations": 1528,
-    "h_index": 13,
-    "i10_index": 22,
-    "timestamp": 1760283336.9987538
-  },
-  "8bf55465": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283337.128198
-  },
-  "e1b795bd": {
-    "citations": 232,
-    "h_index": 6,
-    "i10_index": 2,
-    "timestamp": 1760283338.5713475
-  },
-  "53b27e05": {
-    "citations": 1406,
-    "h_index": 18,
-    "i10_index": 39,
-    "timestamp": 1760283339.0320148
-  },
-  "bf72053f": {
-    "citations": 19,
-    "h_index": 2,
-    "i10_index": 0,
-    "timestamp": 1760283340.536587
-  },
-  "f3ac5745": {
-    "citations": 303,
-    "h_index": 7,
-    "i10_index": 6,
-    "timestamp": 1760283341.6727755
-  },
-  "c23e3c54": {
-    "citations": 120,
-    "h_index": 5,
-    "i10_index": 4,
-    "timestamp": 1760283342.64008
-  },
-  "17d5d44d": {
-    "citations": 318,
-    "h_index": 9,
-    "i10_index": 9,
-    "timestamp": 1760283342.7282848
-  },
-  "d5afb097": {
-    "citations": 220,
-    "h_index": 5,
-    "i10_index": 5,
-    "timestamp": 1760283343.0231235
-  },
-  "3712af3e": {
-    "citations": 1165,
-    "h_index": 20,
-    "i10_index": 34,
-    "timestamp": 1760283344.7822006
-  },
-  "3f075262": {
-    "citations": 384,
-    "h_index": 9,
-    "i10_index": 9,
-    "timestamp": 1760283346.1185753
-  },
-  "6910c2ba": {
-    "citations": 545,
-    "h_index": 12,
-    "i10_index": 13,
-    "timestamp": 1760283347.4211118
-  },
-  "616399cb": {
-    "citations": 2032,
-    "h_index": 20,
-    "i10_index": 51,
-    "timestamp": 1760283347.6266277
-  },
-  "2ccae569": {
-    "citations": 758,
-    "h_index": 13,
-    "i10_index": 18,
-    "timestamp": 1760283347.6707969
-  },
-  "f407b230": {
-    "citations": 518,
-    "h_index": 12,
-    "i10_index": 13,
-    "timestamp": 1760283347.9419403
-  },
-  "741aa7b2": {
-    "citations": 127,
-    "h_index": 4,
-    "i10_index": 1,
-    "timestamp": 1760283350.936499
-  },
-  "84789531": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283351.0523264
-  },
-  "0a1bcf15": {
-    "citations": 40,
-    "h_index": 4,
-    "i10_index": 1,
-    "timestamp": 1760283352.6686554
-  },
-  "f533407a": {
-    "citations": 62,
-    "h_index": 4,
-    "i10_index": 1,
-    "timestamp": 1760283352.7552469
-  },
-  "9795085f": {
-    "citations": 227,
-    "h_index": 9,
-    "i10_index": 9,
-    "timestamp": 1760283352.845713
-  },
-  "d301dc18": {
-    "citations": 81,
-    "h_index": 4,
-    "i10_index": 3,
-    "timestamp": 1760283355.145241
-  },
-  "fabe1f64": {
-    "citations": 1533,
-    "h_index": 19,
-    "i10_index": 34,
-    "timestamp": 1760283355.2981062
-  },
-  "a6ffb886": {
-    "citations": 1919,
-    "h_index": 25,
-    "i10_index": 59,
-    "timestamp": 1760283357.0885482
-  },
-  "0e31ae47": {
-    "citations": 9,
-    "h_index": 2,
-    "i10_index": 0,
-    "timestamp": 1760283357.168773
-  },
-  "fd0e7daa": {
-    "citations": 1533,
-    "h_index": 19,
-    "i10_index": 34,
-    "timestamp": 1760283357.3307507
-  },
-  "53ab4f12": {
-    "citations": 1816,
-    "h_index": 8,
-    "i10_index": 1,
-    "timestamp": 1760283359.2356565
-  },
-  "bdb5f316": {
-    "citations": 666,
-    "h_index": 14,
-    "i10_index": 20,
-    "timestamp": 1760283359.350449
-  },
-  "36a056c5": {
-    "citations": 929,
-    "h_index": 17,
-    "i10_index": 33,
-    "timestamp": 1760283360.243619
-  },
-  "b2f670e0": {
-    "citations": 248,
-    "h_index": 6,
-    "i10_index": 6,
-    "timestamp": 1760283361.6733046
-  },
-  "86666828": {
-    "citations": 1743,
-    "h_index": 22,
-    "i10_index": 50,
-    "timestamp": 1760283361.8653853
-  },
-  "662435a0": {
-    "citations": 178,
-    "h_index": 4,
-    "i10_index": 1,
-    "timestamp": 1760283362.2529905
-  },
-  "a0d8813e": {
-    "citations": 413,
-    "h_index": 12,
-    "i10_index": 16,
-    "timestamp": 1760283363.4069026
-  },
-  "d55d56e8": {
-    "citations": 491,
-    "h_index": 12,
-    "i10_index": 17,
-    "timestamp": 1760283364.781728
-  },
-  "003393bd": {
-    "citations": 86,
-    "h_index": 7,
-    "i10_index": 2,
-    "timestamp": 1760283364.8700762
-  },
-  "9a08e3ba": {
-    "citations": 772,
-    "h_index": 14,
-    "i10_index": 19,
-    "timestamp": 1760283365.7409747
-  },
-  "98d4edb1": {
-    "citations": 290,
-    "h_index": 8,
-    "i10_index": 8,
-    "timestamp": 1760283365.9987621
-  },
-  "bbe272b9": {
-    "citations": 191,
-    "h_index": 7,
-    "i10_index": 7,
-    "timestamp": 1760283366.790636
-  },
-  "48ad13a1": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283367.4583354
-  },
-  "f9502370": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283367.4592612
-  },
-  "230cf72d": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283367.7653852
-  },
-  "057e7a37": {
-    "citations": 163,
-    "h_index": 8,
-    "i10_index": 4,
-    "timestamp": 1760283368.6064076
-  },
-  "6b4017f9": {
-    "citations": 287,
-    "h_index": 9,
-    "i10_index": 8,
-    "timestamp": 1760283368.7484453
-  },
-  "59c83240": {
-    "citations": 103,
-    "h_index": 6,
-    "i10_index": 3,
-    "timestamp": 1760283368.9687436
-  },
-  "d2c13a66": {
-    "citations": 448,
-    "h_index": 11,
-    "i10_index": 17,
-    "timestamp": 1760283369.6170585
-  },
-  "38898a82": {
-    "citations": 291,
-    "h_index": 11,
-    "i10_index": 11,
-    "timestamp": 1760283369.9108326
-  },
-  "87c8f7b5": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283370.784914
-  },
-  "37aa5047": {
-    "citations": 771,
-    "h_index": 13,
-    "i10_index": 14,
-    "timestamp": 1760283371.7425637
-  },
-  "9f3fb71a": {
-    "citations": 677,
-    "h_index": 15,
-    "i10_index": 19,
-    "timestamp": 1760283371.9183395
-  },
-  "9a0ca738": {
-    "citations": 55,
-    "h_index": 5,
-    "i10_index": 1,
-    "timestamp": 1760283372.0150385
-  },
-  "f15708c2": {
-    "citations": 771,
-    "h_index": 13,
-    "i10_index": 14,
-    "timestamp": 1760283373.214664
-  },
-  "ae022b98": {
-    "citations": 2325,
-    "h_index": 21,
-    "i10_index": 50,
-    "timestamp": 1760283373.8101501
-  },
-  "60f0b0cd": {
-    "citations": 246,
-    "h_index": 9,
-    "i10_index": 7,
-    "timestamp": 1760283375.3265162
-  },
-  "d2806c1b": {
-    "citations": 161,
-    "h_index": 7,
-    "i10_index": 7,
-    "timestamp": 1760283375.3622162
-  },
-  "745daaf1": {
-    "citations": 1172,
-    "h_index": 16,
-    "i10_index": 27,
-    "timestamp": 1760283375.540846
-  },
-  "78a2248d": {
-    "citations": 287,
-    "h_index": 8,
-    "i10_index": 7,
-    "timestamp": 1760283375.7007098
-  },
-  "9c596abf": {
-    "citations": 1230,
-    "h_index": 18,
-    "i10_index": 41,
-    "timestamp": 1760283376.432756
-  },
-  "6765af95": {
-    "citations": 363,
-    "h_index": 10,
-    "i10_index": 10,
-    "timestamp": 1760283377.6745205
-  },
-  "076fc9dc": {
-    "citations": 132,
-    "h_index": 5,
-    "i10_index": 3,
-    "timestamp": 1760283378.5393524
-  },
-  "b6cc2602": {
-    "citations": 150,
-    "h_index": 6,
-    "i10_index": 6,
-    "timestamp": 1760283378.6150062
-  },
-  "5a8e37ce": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283378.761512
-  },
-  "c6f1d12e": {
-    "citations": 192,
-    "h_index": 8,
-    "i10_index": 6,
-    "timestamp": 1760283378.9241424
-  },
-  "d79c2c15": {
-    "citations": 118,
-    "h_index": 5,
-    "i10_index": 4,
-    "timestamp": 1760283380.4802575
-  },
-  "60141a9b": {
-    "citations": 1173,
-    "h_index": 21,
-    "i10_index": 29,
-    "timestamp": 1760283380.6699002
-  },
-  "1da52796": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283381.507888
-  },
-  "b88372cc": {
-    "citations": 2885,
-    "h_index": 17,
-    "i10_index": 31,
-    "timestamp": 1760283381.6894248
-  },
-  "ed5b6326": {
-    "citations": 130,
-    "h_index": 6,
-    "i10_index": 5,
-    "timestamp": 1760283382.1530924
-  },
-  "b7bbc1d9": {
-    "citations": 347,
-    "h_index": 9,
-    "i10_index": 9,
-    "timestamp": 1760283382.1944904
-  },
-  "23d0b70b": {
-    "citations": 134,
-    "h_index": 6,
-    "i10_index": 4,
-    "timestamp": 1760283383.2568374
-  },
-  "f1daf02c": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283383.5907223
-  },
-  "1d5fdaa4": {
-    "citations": 126,
-    "h_index": 7,
-    "i10_index": 4,
-    "timestamp": 1760283384.850837
-  },
-  "63c1f775": {
-    "citations": 359,
-    "h_index": 11,
-    "i10_index": 17,
-    "timestamp": 1760283384.948368
-  },
-  "65acd85b": {
-    "citations": 1074,
-    "h_index": 14,
-    "i10_index": 18,
-    "timestamp": 1760283385.337343
-  },
-  "64cb63cf": {
-    "citations": 553,
-    "h_index": 11,
-    "i10_index": 13,
-    "timestamp": 1760283385.511787
-  },
-  "6632ab2b": {
-    "citations": 119,
-    "h_index": 4,
-    "i10_index": 4,
-    "timestamp": 1760283387.826243
-  },
-  "19b0353f": {
-    "citations": 97,
-    "h_index": 6,
-    "i10_index": 3,
-    "timestamp": 1760283388.063165
-  },
-  "eb18ec01": {
-    "citations": 754,
-    "h_index": 13,
-    "i10_index": 16,
-    "timestamp": 1760283388.5210733
-  },
-  "fba293ed": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283388.523075
-  },
-  "24299115": {
-    "citations": 309,
-    "h_index": 8,
-    "i10_index": 8,
-    "timestamp": 1760283388.6685905
-  },
-  "bea23e67": {
-    "citations": 53,
-    "h_index": 3,
-    "i10_index": 2,
-    "timestamp": 1760283388.920592
-  },
-  "360eca1f": {
-    "citations": 402,
-    "h_index": 10,
-    "i10_index": 12,
-    "timestamp": 1760283390.387477
-  },
-  "c345087f": {
-    "citations": 111,
-    "h_index": 6,
-    "i10_index": 3,
-    "timestamp": 1760283390.644711
-  },
-  "3562cb7a": {
-    "citations": 274,
-    "h_index": 10,
-    "i10_index": 10,
-    "timestamp": 1760283390.9006515
-  },
-  "119bd6d9": {
-    "citations": 391,
-    "h_index": 6,
-    "i10_index": 5,
-    "timestamp": 1760283391.1525383
-  },
-  "841a653c": {
-    "citations": 602,
-    "h_index": 11,
-    "i10_index": 13,
-    "timestamp": 1760283391.8891659
-  },
-  "134e89fd": {
-    "citations": 662,
-    "h_index": 12,
-    "i10_index": 14,
-    "timestamp": 1760283392.6186569
-  },
-  "9505eb8b": {
-    "citations": 465,
-    "h_index": 7,
-    "i10_index": 5,
-    "timestamp": 1760283393.4221156
-  },
-  "01531294": {
-    "citations": 294,
-    "h_index": 9,
-    "i10_index": 7,
-    "timestamp": 1760283393.7818208
-  },
-  "c484fb71": {
-    "citations": 326,
-    "h_index": 8,
-    "i10_index": 7,
-    "timestamp": 1760283394.2535276
-  },
-  "473a1a50": {
-    "citations": 221,
-    "h_index": 7,
-    "i10_index": 7,
-    "timestamp": 1760283395.0964677
-  },
-  "28191f09": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283395.7565923
-  },
-  "c0387404": {
-    "citations": 134,
-    "h_index": 6,
-    "i10_index": 5,
-    "timestamp": 1760283395.7977383
-  },
-  "e6cabf1b": {
-    "citations": 185,
-    "h_index": 8,
-    "i10_index": 6,
-    "timestamp": 1760283395.8774176
-  },
-  "01b334a2": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283395.8784156
-  },
-  "763b5af2": {
-    "citations": 124,
-    "h_index": 6,
-    "i10_index": 3,
-    "timestamp": 1760283397.4739153
-  },
-  "c134e72b": {
-    "citations": 63,
-    "h_index": 5,
-    "i10_index": 1,
-    "timestamp": 1760283398.0072315
-  },
-  "81cd745f": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283398.672747
-  },
-  "492a63f7": {
-    "citations": 267,
-    "h_index": 8,
-    "i10_index": 6,
-    "timestamp": 1760283399.050242
-  },
-  "f6baff3c": {
-    "citations": 197,
-    "h_index": 6,
-    "i10_index": 4,
-    "timestamp": 1760283399.1455536
-  },
-  "e852bff1": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283399.9853952
-  },
-  "a7cee113": {
-    "citations": 238,
-    "h_index": 9,
-    "i10_index": 9,
-    "timestamp": 1760283400.304959
-  },
-  "e54d8c12": {
-    "citations": 548,
-    "h_index": 8,
-    "i10_index": 6,
-    "timestamp": 1760283401.006849
-  },
-  "6f91cf3c": {
-    "citations": 156,
-    "h_index": 5,
-    "i10_index": 4,
-    "timestamp": 1760283401.672015
-  },
-  "576e3f1d": {
-    "citations": 210,
-    "h_index": 8,
-    "i10_index": 6,
-    "timestamp": 1760283402.1344004
-  },
-  "73d77e53": {
-    "citations": 0,
-    "h_index": 0,
-    "i10_index": 0,
-    "timestamp": 1760283402.8381941
+    "timestamp": 1760414206.64353
   }
 }

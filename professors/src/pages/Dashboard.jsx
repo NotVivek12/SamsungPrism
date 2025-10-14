@@ -123,6 +123,13 @@ export default function App() {
         {/* Header */}
         <div className="flex justify-between items-start">
           <div>
+            <button
+              onClick={() => window.location.reload()}
+              className="flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 mb-4 font-medium transition-colors"
+            >
+              <Home className="w-5 h-5 mr-2" />
+              Back to Home
+            </button>
             <h1 className="text-4xl font-bold mb-4 text-blue-900 dark:text-white">
               Faculty Research Directory
             </h1>
