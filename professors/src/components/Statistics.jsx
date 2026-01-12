@@ -1,4 +1,4 @@
-jjkhhlkimport React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowLeft, BarChart3, Users, Award, TrendingUp, Building, BookOpen, Network, X, Mail, ExternalLink, Maximize2, Minimize2, ZoomIn, ZoomOut, RotateCcw, ChevronRight, Search } from 'lucide-react';
 
 // Color palette for expertise domains
