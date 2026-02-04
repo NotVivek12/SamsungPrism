@@ -76,7 +76,7 @@ def get_default_knowledge_graph():
 def build_hierarchical_graph_from_professors(professors_data):
     """
     Build a knowledge graph from professor domain expertise data.
-    This creates a hierarchy: Field -> Subfield/Skills -> Professors
+    This creates a hierarchy: Field -> Professors as children
     """
     import database
     
@@ -90,51 +90,69 @@ def build_hierarchical_graph_from_professors(professors_data):
     
     # Build domain hierarchy from professor expertise
     domain_map = {}
-    professor_nodes = []
+    professor_nodes_map = {}  # Track professor nodes by ID to avoid duplicates
     
     for prof in professors_data:
         if not prof.get('domain_expertise'):
             continue
-            
-        # Create professor node
-        prof_node = {
-            "id": f"person-{prof.get('id', '')}",
-            "type": "Person",
-            "label": prof.get('name', 'Unknown'),
-            "description": prof.get('research_interests', ''),
-            "email": prof.get('email', ''),
-            "college": prof.get('college', ''),
-            "citations": prof.get('citations_count', 0),
-            "hIndex": prof.get('h_index', 0),
-            "scholarUrl": prof.get('google_scholar_url', ''),
-            "profilePicture": prof.get('profile_picture_url', '')
-        }
-        professor_nodes.append(prof_node)
+        
+        prof_id = prof.get('id', '')
+        
+        # Create professor node (only once per professor)
+        if prof_id not in professor_nodes_map:
+            professor_nodes_map[prof_id] = {
+                "id": f"person-{prof_id}",
+                "type": "Person",
+                "label": prof.get('name', 'Unknown'),
+                "description": prof.get('research_interests', ''),
+                "email": prof.get('email', ''),
+                "college": prof.get('college', ''),
+                "citations": prof.get('citations_count', 0),
+                "hIndex": prof.get('h_index', 0),
+                "i10Index": prof.get('i10_index', 0),
+                "scholarUrl": prof.get('google_scholar_url', ''),
+                "profilePicture": prof.get('profile_picture_url', '') or prof.get('scholar_profile_picture', ''),
+                "profileLink": prof.get('profile_link', ''),
+                "domainExpertise": prof.get('domain_expertise', ''),
+                "phdThesis": prof.get('phd_thesis', ''),
+                # Store the full professor data for the profile modal
+                "professorData": prof
+            }
         
         # Parse domain expertise and create hierarchy
         domains = [d.strip() for d in prof.get('domain_expertise', '').split(',') if d.strip()]
         
         for domain in domains:
-            domain_key = domain.lower().replace(' ', '-')
+            domain_key = domain.lower().replace(' ', '-').replace('/', '-').replace('&', 'and')
             
             if domain_key not in domain_map:
                 domain_map[domain_key] = {
                     "id": f"field-{domain_key}",
                     "type": "Field",
                     "label": domain,
-                    "professors": [],
+                    "children": [],  # Will hold professor nodes
+                    "professorIds": set(),  # Track which professors are added
                     "professorCount": 0,
                     "totalCitations": 0
                 }
             
-            domain_map[domain_key]["professors"].append(prof_node["id"])
-            domain_map[domain_key]["professorCount"] += 1
-            domain_map[domain_key]["totalCitations"] += prof.get('citations_count', 0)
+            # Add professor as child of this field (avoid duplicates)
+            if prof_id not in domain_map[domain_key]["professorIds"]:
+                domain_map[domain_key]["professorIds"].add(prof_id)
+                domain_map[domain_key]["children"].append(professor_nodes_map[prof_id].copy())
+                domain_map[domain_key]["professorCount"] += 1
+                domain_map[domain_key]["totalCitations"] += prof.get('citations_count', 0)
     
-    # Convert to graph format
-    field_nodes = list(domain_map.values())
+    # Convert to graph format and clean up
+    field_nodes = []
+    for field in domain_map.values():
+        # Remove the set (not JSON serializable)
+        del field["professorIds"]
+        # Sort children by citations
+        field["children"].sort(key=lambda x: x.get("citations", 0), reverse=True)
+        field_nodes.append(field)
     
-    # Sort by professor count
+    # Sort fields by professor count
     field_nodes.sort(key=lambda x: x["professorCount"], reverse=True)
     
     return {
@@ -143,12 +161,11 @@ def build_hierarchical_graph_from_professors(professors_data):
             "kg": "https://example.org/knowledge-graph/"
         },
         "@graph": field_nodes,
-        "professors": professor_nodes,
         "metadata": {
             "version": "1.0.0",
             "generated": datetime.now().isoformat(),
             "totalFields": len(field_nodes),
-            "totalProfessors": len(professor_nodes)
+            "totalProfessors": len(professor_nodes_map)
         }
     }
 

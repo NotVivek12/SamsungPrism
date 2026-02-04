@@ -191,16 +191,26 @@ export function mapToCytoscapeElements(graphJson, collapsedNodes = new Set()) {
         // Additional data for persons
         citations: node.citations,
         hIndex: node.hIndex,
+        i10Index: node.i10Index,
         email: node.email,
         college: node.college,
         scholarUrl: node.scholarUrl,
         profilePicture: node.profilePicture,
+        profileLink: node.profileLink,
+        domainExpertise: node.domainExpertise,
+        phdThesis: node.phdThesis,
+        // Store original professor data for opening profile modal
+        professorData: node.professorData,
+        // For field nodes
+        professorCount: node.professorCount,
+        totalCitations: node.totalCitations,
       },
       classes: isCollapsed ? 'collapsed' : '',
     });
 
     if (parentId) {
-      const relation = node.type === 'Skill' ? 'HAS_SKILL' : 'HAS_SUBFIELD';
+      const relation = node.type === 'Person' ? 'ASSOCIATED_WITH' : 
+                       node.type === 'Skill' ? 'HAS_SKILL' : 'HAS_SUBFIELD';
       edges.push({
         data: {
           id: `${parentId}->${nodeId}`,
@@ -244,7 +254,7 @@ export function mapToCytoscapeElements(graphJson, collapsedNodes = new Set()) {
 /**
  * Node Detail Side Panel
  */
-const NodeDetailPanel = ({ node, onClose }) => {
+const NodeDetailPanel = ({ node, onClose, onViewProfile }) => {
   if (!node) return null;
 
   const data = node.data();
@@ -257,12 +267,20 @@ const NodeDetailPanel = ({ node, onClose }) => {
       {/* Header */}
       <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div 
-            className="w-10 h-10 rounded-lg flex items-center justify-center text-white"
-            style={{ backgroundColor: data.color || getNodeColor(data.type) }}
-          >
-            <TypeIcon className="w-5 h-5" />
-          </div>
+          {data.type === 'Person' && data.profilePicture ? (
+            <img 
+              src={data.profilePicture} 
+              alt={data.label}
+              className="w-12 h-12 rounded-full object-cover border-2 border-amber-500"
+            />
+          ) : (
+            <div 
+              className="w-10 h-10 rounded-lg flex items-center justify-center text-white"
+              style={{ backgroundColor: data.color || getNodeColor(data.type) }}
+            >
+              <TypeIcon className="w-5 h-5" />
+            </div>
+          )}
           <div>
             <h3 className="font-bold text-gray-900 dark:text-white text-lg">{data.label}</h3>
             <span 
@@ -283,17 +301,18 @@ const NodeDetailPanel = ({ node, onClose }) => {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4">
-        {/* Description */}
-        {data.description && (
-          <div className="mb-4">
-            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Description</h4>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{data.description}</p>
-          </div>
-        )}
-
         {/* Person-specific info */}
         {data.type === 'Person' && (
           <>
+            {/* View Profile Button */}
+            <button
+              onClick={() => onViewProfile && onViewProfile(data)}
+              className="w-full mb-4 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+            >
+              <User className="w-5 h-5" />
+              View Full Profile
+            </button>
+
             {data.college && (
               <div className="mb-3 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                 <Building className="w-4 h-4" />
@@ -310,41 +329,116 @@ const NodeDetailPanel = ({ node, onClose }) => {
               </a>
             )}
 
+            {/* Domain Expertise */}
+            {data.domainExpertise && (
+              <div className="mb-4">
+                <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Expertise</h4>
+                <div className="flex flex-wrap gap-1">
+                  {data.domainExpertise.split(',').slice(0, 5).map((domain, i) => (
+                    <span 
+                      key={i}
+                      className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs"
+                    >
+                      {domain.trim()}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Citation metrics */}
-            {(data.citations > 0 || data.hIndex > 0) && (
-              <div className="mb-4 grid grid-cols-2 gap-3">
+            {(data.citations > 0 || data.hIndex > 0 || data.i10Index > 0) && (
+              <div className="mb-4 grid grid-cols-3 gap-2">
                 {data.citations > 0 && (
-                  <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl text-center">
-                    <p className="text-xl font-bold text-blue-600 dark:text-blue-400">{data.citations}</p>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 p-2 rounded-xl text-center">
+                    <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{data.citations}</p>
                     <p className="text-xs text-gray-600 dark:text-gray-400">Citations</p>
                   </div>
                 )}
                 {data.hIndex > 0 && (
-                  <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-xl text-center">
-                    <p className="text-xl font-bold text-purple-600 dark:text-purple-400">{data.hIndex}</p>
+                  <div className="bg-purple-50 dark:bg-purple-900/20 p-2 rounded-xl text-center">
+                    <p className="text-lg font-bold text-purple-600 dark:text-purple-400">{data.hIndex}</p>
                     <p className="text-xs text-gray-600 dark:text-gray-400">h-index</p>
+                  </div>
+                )}
+                {data.i10Index > 0 && (
+                  <div className="bg-green-50 dark:bg-green-900/20 p-2 rounded-xl text-center">
+                    <p className="text-lg font-bold text-green-600 dark:text-green-400">{data.i10Index}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">i10-index</p>
                   </div>
                 )}
               </div>
             )}
 
+            {/* Research Description */}
+            {data.description && (
+              <div className="mb-4">
+                <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Research Interests</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">{data.description}</p>
+              </div>
+            )}
+
             {/* Links */}
-            {data.scholarUrl && (
-              <a
-                href={data.scholarUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors text-sm"
-              >
-                <ExternalLink className="w-4 h-4" />
-                Google Scholar Profile
-              </a>
+            <div className="flex flex-col gap-2">
+              {data.scholarUrl && (
+                <a
+                  href={data.scholarUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors text-sm"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Google Scholar
+                </a>
+              )}
+              {data.profileLink && (
+                <a
+                  href={data.profileLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors text-sm"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  University Profile
+                </a>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* Field-specific info */}
+        {data.type === 'Field' && (
+          <>
+            <div className="mb-4 grid grid-cols-2 gap-3">
+              <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-xl text-center">
+                <p className="text-xl font-bold text-purple-600 dark:text-purple-400">{data.professorCount || data.childCount || 0}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Professors</p>
+              </div>
+              {data.totalCitations > 0 && (
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl text-center">
+                  <p className="text-xl font-bold text-blue-600 dark:text-blue-400">{data.totalCitations}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Total Citations</p>
+                </div>
+              )}
+            </div>
+            {data.isCollapsed && (
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+                Double-click to expand and see professors
+              </p>
             )}
           </>
         )}
 
+        {/* Description for non-person nodes */}
+        {data.type !== 'Person' && data.description && (
+          <div className="mb-4">
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Description</h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{data.description}</p>
+          </div>
+        )}
+
         {/* Children info */}
-        {data.hasChildren && (
+        {data.hasChildren && data.type !== 'Field' && (
           <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600 dark:text-gray-400">Child nodes:</span>
@@ -415,12 +509,13 @@ const StatisticsKnowledgeGraph = ({
   const [layoutType, setLayoutType] = useState('dagre'); // 'dagre', 'breadthfirst', 'cose'
   const [showLayoutMenu, setShowLayoutMenu] = useState(false);
 
-  // Fetch knowledge graph data
+  // Fetch knowledge graph data - use dynamic source with actual professor data
   useEffect(() => {
     const fetchGraphData = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/api/knowledge-graph');
+        // Fetch dynamic graph built from actual professor data
+        const response = await fetch('http://localhost:5000/api/knowledge-graph?source=dynamic');
         
         if (!response.ok) {
           throw new Error('Failed to fetch knowledge graph');
@@ -545,18 +640,26 @@ const StatisticsKnowledgeGraph = ({
   const handleNodeClick = useCallback((node) => {
     setSelectedNode(node);
     
-    // If it's a person node and we have a callback
+    // If it's a person node and we have a callback, open their profile
     const data = node.data();
     if (data.type === 'Person' && onSelectProfessor) {
-      onSelectProfessor({
-        id: data.id,
+      // Use the stored professorData if available, otherwise construct from node data
+      const professorData = data.professorData || {
+        id: data.id.replace('person-', ''),
         name: data.label,
         email: data.email,
         college: data.college,
         citations_count: data.citations,
         h_index: data.hIndex,
+        i10_index: data.i10Index,
         google_scholar_url: data.scholarUrl,
-      });
+        profile_picture_url: data.profilePicture,
+        profile_link: data.profileLink,
+        domain_expertise: data.domainExpertise,
+        research_interests: data.description,
+        phd_thesis: data.phdThesis,
+      };
+      onSelectProfessor(professorData);
     }
   }, [onSelectProfessor]);
 
@@ -840,7 +943,29 @@ const StatisticsKnowledgeGraph = ({
       {selectedNode && (
         <NodeDetailPanel 
           node={selectedNode} 
-          onClose={() => setSelectedNode(null)} 
+          onClose={() => setSelectedNode(null)}
+          onViewProfile={(data) => {
+            // Construct professor data and trigger the profile modal
+            const professorData = data.professorData || {
+              id: data.id?.replace('person-', ''),
+              name: data.label,
+              email: data.email,
+              college: data.college,
+              citations_count: data.citations,
+              h_index: data.hIndex,
+              i10_index: data.i10Index,
+              google_scholar_url: data.scholarUrl,
+              profile_picture_url: data.profilePicture,
+              scholar_profile_picture: data.profilePicture,
+              profile_link: data.profileLink,
+              domain_expertise: data.domainExpertise,
+              research_interests: data.description,
+              phd_thesis: data.phdThesis,
+            };
+            if (onSelectProfessor) {
+              onSelectProfessor(professorData);
+            }
+          }}
         />
       )}
 
