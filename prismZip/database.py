@@ -22,8 +22,7 @@ DB_CONFIG = {
     'database': os.getenv('DB_NAME', 'prism_professors'),
     'user': os.getenv('DB_USER', 'root'),
     'password': os.getenv('DB_PASSWORD', ''),
-    'port': int(os.getenv('DB_PORT', 3306)),
-    'allow_local_infile': True
+    'port': int(os.getenv('DB_PORT', 3306))
 }
 
 def get_connection():

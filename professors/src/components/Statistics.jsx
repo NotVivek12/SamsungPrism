@@ -399,90 +399,46 @@ const KnowledgeGraph = ({ professors, onSelectProfessor, isFullscreen, onToggleF
       setNodes([expertiseNode, ...professorNodes]);
       setLinks(graphLinks);
     } else {
-      // Default view: Show all expertise nodes with professors clustered around them
-      const expertiseMap = new Map();
-      const professorNodes = [];
-      const graphLinks = [];
+  // DEFAULT VIEW: ONLY DOMAIN NODES (NO PROFESSORS)
 
-      // Create professor nodes and collect expertise
-      professors.forEach((prof, index) => {
-        const profNodeId = `prof-${prof.id || index}`;
-        const nodeSize = getNodeSize(prof.citations_count);
-        professorNodes.push({
-          id: profNodeId,
-          type: 'professor',
-          data: prof,
-          label: prof.name || 'Unknown',
-          citations: prof.citations_count || 0,
-          nodeSize,
-          x: 0,
-          y: 0
-        });
+  const expertiseMap = new Map();
 
-        // Parse expertise domains
-        if (prof.domain_expertise) {
-          const domains = prof.domain_expertise.split(',').map(d => d.trim()).filter(d => d);
-          domains.forEach(domain => {
-            const normalizedDomain = domain.toLowerCase();
-            if (!expertiseMap.has(normalizedDomain)) {
-              expertiseMap.set(normalizedDomain, {
-                id: `exp-${normalizedDomain.replace(/\s+/g, '-')}`,
-                type: 'expertise',
-                label: domain,
-                professors: [],
-                x: 0,
-                y: 0
-              });
-            }
-            expertiseMap.get(normalizedDomain).professors.push(profNodeId);
-            graphLinks.push({
-              source: profNodeId,
-              target: `exp-${normalizedDomain.replace(/\s+/g, '-')}`,
-              type: 'has_expertise'
-            });
+  professors.forEach((prof) => {
+    if (prof.domain_expertise) {
+      prof.domain_expertise.split(',').forEach((domain) => {
+        const trimmed = domain.trim();
+        if (!trimmed) return;
+
+        const key = trimmed.toLowerCase();
+        if (!expertiseMap.has(key)) {
+          expertiseMap.set(key, {
+            id: `exp-${key.replace(/\s+/g, '-')}`,
+            type: 'expertise',
+            label: trimmed,
+            professors: [],
+            x: 0,
+            y: 0
           });
         }
+        expertiseMap.get(key).professors.push(prof.id);
       });
-
-      const expertiseNodes = Array.from(expertiseMap.values());
-      
-      // Position expertise nodes in a circle around the center
-      const expertiseRadius = Math.min(dimensions.width, dimensions.height) * 0.35;
-      expertiseNodes.forEach((node, i) => {
-        const angle = (2 * Math.PI * i) / expertiseNodes.length;
-        node.x = centerX + expertiseRadius * Math.cos(angle);
-        node.y = centerY + expertiseRadius * Math.sin(angle);
-      });
-
-      // Position professor nodes near their primary expertise
-      professorNodes.forEach((profNode, i) => {
-        const prof = profNode.data;
-        if (prof.domain_expertise) {
-          const primaryDomain = prof.domain_expertise.split(',')[0].trim().toLowerCase();
-          const expertiseNode = expertiseMap.get(primaryDomain);
-          if (expertiseNode) {
-            // Position professor near their expertise with offset based on citations
-            const angle = Math.random() * 2 * Math.PI;
-            const distance = 50 + Math.random() * 60 + (30 - profNode.nodeSize); // Higher cited closer
-            profNode.x = expertiseNode.x + distance * Math.cos(angle);
-            profNode.y = expertiseNode.y + distance * Math.sin(angle);
-          } else {
-            const angle = (2 * Math.PI * i) / professorNodes.length;
-            const radius = expertiseRadius * 0.6 + Math.random() * 50;
-            profNode.x = centerX + radius * Math.cos(angle);
-            profNode.y = centerY + radius * Math.sin(angle);
-          }
-        } else {
-          const angle = Math.random() * 2 * Math.PI;
-          const radius = 100 + Math.random() * 150;
-          profNode.x = centerX + radius * Math.cos(angle);
-          profNode.y = centerY + radius * Math.sin(angle);
-        }
-      });
-
-      setNodes([...professorNodes, ...expertiseNodes]);
-      setLinks(graphLinks);
     }
+  });
+
+  const expertiseNodes = Array.from(expertiseMap.values());
+
+  // Arrange domains in a circle
+  const radius = Math.min(dimensions.width, dimensions.height) * 0.35;
+  expertiseNodes.forEach((node, i) => {
+    const angle = (2 * Math.PI * i) / expertiseNodes.length;
+    node.x = centerX + radius * Math.cos(angle);
+    node.y = centerY + radius * Math.sin(angle);
+  });
+
+  setNodes(expertiseNodes);
+  setLinks([]); // 🚫 no links in default view
+}
+
   }, [professors, dimensions, selectedExpertise, maxCitations]);
 
   // Handle container resize
