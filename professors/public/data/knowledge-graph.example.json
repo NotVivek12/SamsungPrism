@@ -1,0 +1,592 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "kg": "https://example.org/knowledge-graph/",
+    "Field": "kg:Field",
+    "Subfield": "kg:Subfield",
+    "Skill": "kg:Skill",
+    "Person": "kg:Person",
+    "HAS_SUBFIELD": "kg:hasSubfield",
+    "HAS_SKILL": "kg:hasSkill",
+    "ASSOCIATED_WITH": "kg:associatedWith",
+    "RELATED_TO": "kg:relatedTo"
+  },
+  "@graph": [
+    {
+      "id": "field-cloud-computing",
+      "type": "Field",
+      "label": "Cloud Computing",
+      "description": "Distributed computing paradigm enabling on-demand access to shared computing resources",
+      "color": "#A855F7",
+      "children": [
+        {
+          "id": "subfield-saas",
+          "type": "Subfield",
+          "label": "SaaS",
+          "description": "Software as a Service - cloud-based software delivery model",
+          "children": [
+            {
+              "id": "skill-multitenant-arch",
+              "type": "Skill",
+              "label": "Multi-tenant Architecture",
+              "description": "Design patterns for serving multiple tenants from shared infrastructure"
+            },
+            {
+              "id": "skill-saas-billing",
+              "type": "Skill",
+              "label": "SaaS Billing",
+              "description": "Subscription and usage-based billing systems for cloud services"
+            },
+            {
+              "id": "skill-saas-security",
+              "type": "Skill",
+              "label": "SaaS Security",
+              "description": "Security practices for multi-tenant cloud applications"
+            }
+          ]
+        },
+        {
+          "id": "subfield-paas",
+          "type": "Subfield",
+          "label": "PaaS",
+          "description": "Platform as a Service - cloud platform for application development",
+          "children": [
+            {
+              "id": "skill-container-orchestration",
+              "type": "Skill",
+              "label": "Container Orchestration",
+              "description": "Management and deployment of containerized applications"
+            },
+            {
+              "id": "skill-serverless",
+              "type": "Skill",
+              "label": "Serverless Computing",
+              "description": "Event-driven compute services without server management"
+            }
+          ]
+        },
+        {
+          "id": "subfield-iaas",
+          "type": "Subfield",
+          "label": "IaaS",
+          "description": "Infrastructure as a Service - virtualized computing resources",
+          "children": [
+            {
+              "id": "skill-virtualization",
+              "type": "Skill",
+              "label": "Virtualization",
+              "description": "Hardware virtualization and hypervisor technologies"
+            },
+            {
+              "id": "skill-network-virtualization",
+              "type": "Skill",
+              "label": "Network Virtualization",
+              "description": "Software-defined networking and virtual network infrastructure"
+            }
+          ]
+        },
+        {
+          "id": "subfield-edge-computing",
+          "type": "Subfield",
+          "label": "Edge Computing",
+          "description": "Distributed computing at the network edge for low-latency applications",
+          "children": [
+            {
+              "id": "skill-fog-computing",
+              "type": "Skill",
+              "label": "Fog Computing",
+              "description": "Extending cloud capabilities to the edge of the network"
+            }
+          ]
+        }
+      ],
+      "relatedFields": ["field-distributed-systems", "field-networking"]
+    },
+    {
+      "id": "field-machine-learning",
+      "type": "Field",
+      "label": "Machine Learning",
+      "description": "Study of algorithms that improve through experience and data",
+      "color": "#3B82F6",
+      "children": [
+        {
+          "id": "subfield-nlp",
+          "type": "Subfield",
+          "label": "Natural Language Processing",
+          "description": "Processing and understanding human language with computers",
+          "children": [
+            {
+              "id": "skill-text-classification",
+              "type": "Skill",
+              "label": "Text Classification",
+              "description": "Categorizing text into predefined classes"
+            },
+            {
+              "id": "skill-sentiment-analysis",
+              "type": "Skill",
+              "label": "Sentiment Analysis",
+              "description": "Determining emotional tone in text"
+            },
+            {
+              "id": "skill-named-entity-recognition",
+              "type": "Skill",
+              "label": "Named Entity Recognition",
+              "description": "Identifying and classifying named entities in text"
+            },
+            {
+              "id": "skill-machine-translation",
+              "type": "Skill",
+              "label": "Machine Translation",
+              "description": "Automatic translation between languages"
+            },
+            {
+              "id": "skill-llm",
+              "type": "Skill",
+              "label": "Large Language Models",
+              "description": "Transformer-based models for text generation and understanding"
+            }
+          ]
+        },
+        {
+          "id": "subfield-computer-vision",
+          "type": "Subfield",
+          "label": "Computer Vision",
+          "description": "Enabling machines to interpret visual information",
+          "children": [
+            {
+              "id": "skill-image-classification",
+              "type": "Skill",
+              "label": "Image Classification",
+              "description": "Categorizing images into predefined classes"
+            },
+            {
+              "id": "skill-object-detection",
+              "type": "Skill",
+              "label": "Object Detection",
+              "description": "Identifying and locating objects in images"
+            },
+            {
+              "id": "skill-image-segmentation",
+              "type": "Skill",
+              "label": "Image Segmentation",
+              "description": "Partitioning images into meaningful segments"
+            },
+            {
+              "id": "skill-facial-recognition",
+              "type": "Skill",
+              "label": "Facial Recognition",
+              "description": "Identifying individuals from facial features"
+            }
+          ]
+        },
+        {
+          "id": "subfield-deep-learning",
+          "type": "Subfield",
+          "label": "Deep Learning",
+          "description": "Neural networks with multiple layers for complex pattern recognition",
+          "children": [
+            {
+              "id": "skill-cnn",
+              "type": "Skill",
+              "label": "Convolutional Neural Networks",
+              "description": "Neural networks specialized for grid-like data (images)"
+            },
+            {
+              "id": "skill-rnn",
+              "type": "Skill",
+              "label": "Recurrent Neural Networks",
+              "description": "Neural networks for sequential data processing"
+            },
+            {
+              "id": "skill-transformers",
+              "type": "Skill",
+              "label": "Transformers",
+              "description": "Attention-based architectures for sequence modeling"
+            },
+            {
+              "id": "skill-gan",
+              "type": "Skill",
+              "label": "Generative Adversarial Networks",
+              "description": "Networks for generating realistic synthetic data"
+            }
+          ]
+        },
+        {
+          "id": "subfield-reinforcement-learning",
+          "type": "Subfield",
+          "label": "Reinforcement Learning",
+          "description": "Learning optimal actions through trial and reward",
+          "children": [
+            {
+              "id": "skill-q-learning",
+              "type": "Skill",
+              "label": "Q-Learning",
+              "description": "Value-based reinforcement learning algorithm"
+            },
+            {
+              "id": "skill-policy-gradient",
+              "type": "Skill",
+              "label": "Policy Gradient Methods",
+              "description": "Direct policy optimization in RL"
+            }
+          ]
+        }
+      ],
+      "relatedFields": ["field-artificial-intelligence", "field-data-science"]
+    },
+    {
+      "id": "field-artificial-intelligence",
+      "type": "Field",
+      "label": "Artificial Intelligence",
+      "description": "Development of systems that simulate human intelligence",
+      "color": "#8B5CF6",
+      "children": [
+        {
+          "id": "subfield-expert-systems",
+          "type": "Subfield",
+          "label": "Expert Systems",
+          "description": "Rule-based systems that emulate expert decision-making"
+        },
+        {
+          "id": "subfield-knowledge-representation",
+          "type": "Subfield",
+          "label": "Knowledge Representation",
+          "description": "Formal methods for representing information in AI systems",
+          "children": [
+            {
+              "id": "skill-ontology",
+              "type": "Skill",
+              "label": "Ontology Engineering",
+              "description": "Design and implementation of formal domain models"
+            },
+            {
+              "id": "skill-semantic-web",
+              "type": "Skill",
+              "label": "Semantic Web",
+              "description": "Standards for machine-readable web data"
+            }
+          ]
+        },
+        {
+          "id": "subfield-robotics-ai",
+          "type": "Subfield",
+          "label": "Robotics AI",
+          "description": "AI systems for autonomous robot control"
+        },
+        {
+          "id": "subfield-ai-ethics",
+          "type": "Subfield",
+          "label": "AI Ethics",
+          "description": "Ethical considerations in AI development and deployment"
+        }
+      ],
+      "relatedFields": ["field-machine-learning"]
+    },
+    {
+      "id": "field-data-science",
+      "type": "Field",
+      "label": "Data Science",
+      "description": "Extracting insights from structured and unstructured data",
+      "color": "#10B981",
+      "children": [
+        {
+          "id": "subfield-data-mining",
+          "type": "Subfield",
+          "label": "Data Mining",
+          "description": "Discovering patterns in large datasets",
+          "children": [
+            {
+              "id": "skill-clustering",
+              "type": "Skill",
+              "label": "Clustering",
+              "description": "Grouping similar data points together"
+            },
+            {
+              "id": "skill-association-rules",
+              "type": "Skill",
+              "label": "Association Rule Learning",
+              "description": "Discovering relationships between variables"
+            }
+          ]
+        },
+        {
+          "id": "subfield-big-data",
+          "type": "Subfield",
+          "label": "Big Data Analytics",
+          "description": "Processing and analyzing massive datasets",
+          "children": [
+            {
+              "id": "skill-hadoop",
+              "type": "Skill",
+              "label": "Hadoop Ecosystem",
+              "description": "Distributed storage and processing framework"
+            },
+            {
+              "id": "skill-spark",
+              "type": "Skill",
+              "label": "Apache Spark",
+              "description": "Fast, general-purpose cluster computing system"
+            }
+          ]
+        },
+        {
+          "id": "subfield-data-visualization",
+          "type": "Subfield",
+          "label": "Data Visualization",
+          "description": "Visual representation of data and insights"
+        }
+      ],
+      "relatedFields": ["field-machine-learning"]
+    },
+    {
+      "id": "field-cybersecurity",
+      "type": "Field",
+      "label": "Cybersecurity",
+      "description": "Protection of computer systems and networks from threats",
+      "color": "#6366F1",
+      "children": [
+        {
+          "id": "subfield-network-security",
+          "type": "Subfield",
+          "label": "Network Security",
+          "description": "Securing computer networks from intrusion",
+          "children": [
+            {
+              "id": "skill-intrusion-detection",
+              "type": "Skill",
+              "label": "Intrusion Detection Systems",
+              "description": "Monitoring networks for malicious activity"
+            },
+            {
+              "id": "skill-firewall",
+              "type": "Skill",
+              "label": "Firewall Technologies",
+              "description": "Network traffic filtering and control"
+            }
+          ]
+        },
+        {
+          "id": "subfield-cryptography",
+          "type": "Subfield",
+          "label": "Cryptography",
+          "description": "Secure communication techniques",
+          "children": [
+            {
+              "id": "skill-encryption",
+              "type": "Skill",
+              "label": "Encryption Algorithms",
+              "description": "Methods for encoding information securely"
+            },
+            {
+              "id": "skill-blockchain-security",
+              "type": "Skill",
+              "label": "Blockchain Security",
+              "description": "Security aspects of distributed ledger technologies"
+            }
+          ]
+        },
+        {
+          "id": "subfield-malware-analysis",
+          "type": "Subfield",
+          "label": "Malware Analysis",
+          "description": "Studying and understanding malicious software"
+        }
+      ]
+    },
+    {
+      "id": "field-iot",
+      "type": "Field",
+      "label": "Internet of Things",
+      "description": "Network of interconnected physical devices",
+      "color": "#22C55E",
+      "children": [
+        {
+          "id": "subfield-sensor-networks",
+          "type": "Subfield",
+          "label": "Wireless Sensor Networks",
+          "description": "Networks of distributed autonomous sensors"
+        },
+        {
+          "id": "subfield-embedded-systems",
+          "type": "Subfield",
+          "label": "Embedded Systems",
+          "description": "Specialized computing systems within larger systems"
+        },
+        {
+          "id": "subfield-smart-home",
+          "type": "Subfield",
+          "label": "Smart Home Technologies",
+          "description": "Connected home automation devices"
+        }
+      ],
+      "relatedFields": ["field-cloud-computing"]
+    },
+    {
+      "id": "field-networking",
+      "type": "Field",
+      "label": "Computer Networks",
+      "description": "Infrastructure for computer communication",
+      "color": "#84CC16",
+      "children": [
+        {
+          "id": "subfield-sdn",
+          "type": "Subfield",
+          "label": "Software-Defined Networking",
+          "description": "Centralized network control through software"
+        },
+        {
+          "id": "subfield-5g",
+          "type": "Subfield",
+          "label": "5G Networks",
+          "description": "Fifth generation mobile network technology"
+        },
+        {
+          "id": "subfield-network-protocols",
+          "type": "Subfield",
+          "label": "Network Protocols",
+          "description": "Standards for network communication"
+        }
+      ]
+    },
+    {
+      "id": "field-distributed-systems",
+      "type": "Field",
+      "label": "Distributed Systems",
+      "description": "Systems with components on networked computers",
+      "color": "#F97316",
+      "children": [
+        {
+          "id": "subfield-microservices",
+          "type": "Subfield",
+          "label": "Microservices Architecture",
+          "description": "Loosely coupled service-oriented architecture"
+        },
+        {
+          "id": "subfield-distributed-databases",
+          "type": "Subfield",
+          "label": "Distributed Databases",
+          "description": "Databases spanning multiple locations"
+        },
+        {
+          "id": "subfield-consensus",
+          "type": "Subfield",
+          "label": "Consensus Algorithms",
+          "description": "Protocols for agreement in distributed systems"
+        }
+      ],
+      "relatedFields": ["field-cloud-computing"]
+    },
+    {
+      "id": "field-blockchain",
+      "type": "Field",
+      "label": "Blockchain",
+      "description": "Distributed ledger technology for secure transactions",
+      "color": "#EAB308",
+      "children": [
+        {
+          "id": "subfield-smart-contracts",
+          "type": "Subfield",
+          "label": "Smart Contracts",
+          "description": "Self-executing contracts with terms in code"
+        },
+        {
+          "id": "subfield-defi",
+          "type": "Subfield",
+          "label": "Decentralized Finance",
+          "description": "Financial services on blockchain platforms"
+        },
+        {
+          "id": "subfield-nft",
+          "type": "Subfield",
+          "label": "NFTs & Digital Assets",
+          "description": "Non-fungible tokens and digital ownership"
+        }
+      ]
+    },
+    {
+      "id": "field-software-engineering",
+      "type": "Field",
+      "label": "Software Engineering",
+      "description": "Systematic approach to software development",
+      "color": "#14B8A6",
+      "children": [
+        {
+          "id": "subfield-devops",
+          "type": "Subfield",
+          "label": "DevOps",
+          "description": "Development and operations integration"
+        },
+        {
+          "id": "subfield-testing",
+          "type": "Subfield",
+          "label": "Software Testing",
+          "description": "Verification and validation of software"
+        },
+        {
+          "id": "subfield-agile",
+          "type": "Subfield",
+          "label": "Agile Methodologies",
+          "description": "Iterative software development approaches"
+        }
+      ],
+      "relatedFields": ["field-cloud-computing"]
+    }
+  ],
+  "relationships": [
+    {
+      "source": "field-machine-learning",
+      "target": "field-artificial-intelligence",
+      "type": "RELATED_TO",
+      "label": "subset of"
+    },
+    {
+      "source": "field-data-science",
+      "target": "field-machine-learning",
+      "type": "RELATED_TO",
+      "label": "applies"
+    },
+    {
+      "source": "field-cloud-computing",
+      "target": "field-distributed-systems",
+      "type": "RELATED_TO",
+      "label": "built on"
+    },
+    {
+      "source": "field-iot",
+      "target": "field-cloud-computing",
+      "type": "RELATED_TO",
+      "label": "integrates with"
+    },
+    {
+      "source": "subfield-deep-learning",
+      "target": "subfield-computer-vision",
+      "type": "RELATED_TO",
+      "label": "enables"
+    },
+    {
+      "source": "subfield-deep-learning",
+      "target": "subfield-nlp",
+      "type": "RELATED_TO",
+      "label": "enables"
+    },
+    {
+      "source": "subfield-edge-computing",
+      "target": "field-iot",
+      "type": "RELATED_TO",
+      "label": "supports"
+    },
+    {
+      "source": "subfield-microservices",
+      "target": "subfield-paas",
+      "type": "RELATED_TO",
+      "label": "deployed on"
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2026-02-04",
+    "description": "Hierarchical knowledge graph of academic research domains and skills",
+    "nodeTypes": ["Field", "Subfield", "Skill", "Person"],
+    "relationTypes": ["HAS_SUBFIELD", "HAS_SKILL", "ASSOCIATED_WITH", "RELATED_TO"]
+  }
+}

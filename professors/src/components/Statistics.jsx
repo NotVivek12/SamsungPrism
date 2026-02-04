@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowLeft, BarChart3, Users, Award, TrendingUp, Building, BookOpen, Network, X, Mail, ExternalLink, Maximize2, Minimize2, ZoomIn, ZoomOut, RotateCcw, ChevronRight, Search } from 'lucide-react';
+import { ArrowLeft, BarChart3, Users, Award, TrendingUp, Building, BookOpen, Network, X, Mail, ExternalLink, Maximize2, Minimize2, ZoomIn, ZoomOut, RotateCcw, ChevronRight, Search, GitBranch } from 'lucide-react';
+import StatisticsKnowledgeGraph from './StatisticsKnowledgeGraph';
 
 // Color palette for expertise domains
 const domainColors = {
@@ -867,7 +868,7 @@ const Statistics = ({ onNavigateBack }) => {
   const [selectedProfessor, setSelectedProfessor] = useState(null);
   const [selectedExpertiseArea, setSelectedExpertiseArea] = useState(null);
   const [isGraphFullscreen, setIsGraphFullscreen] = useState(false);
-  const [activeView, setActiveView] = useState('graph'); // 'graph' or 'stats'
+  const [activeView, setActiveView] = useState('hierarchical'); // 'hierarchical', 'graph' or 'stats'
 
   // Stats computed from real data
   const [stats, setStats] = useState({
@@ -1007,6 +1008,17 @@ const Statistics = ({ onNavigateBack }) => {
             {/* View Toggle */}
             <div className="flex bg-gray-200 dark:bg-gray-700 rounded-xl p-1">
               <button
+                onClick={() => setActiveView('hierarchical')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                  activeView === 'hierarchical' 
+                    ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-md' 
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                <GitBranch className="w-5 h-5" />
+                Hierarchy
+              </button>
+              <button
                 onClick={() => setActiveView('graph')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
                   activeView === 'graph' 
@@ -1015,7 +1027,7 @@ const Statistics = ({ onNavigateBack }) => {
                 }`}
               >
                 <Network className="w-5 h-5" />
-                Knowledge Graph
+                Expertise
               </button>
               <button
                 onClick={() => setActiveView('stats')}
@@ -1108,6 +1120,28 @@ const Statistics = ({ onNavigateBack }) => {
                 </div>
               </div>
             </div>
+
+            {/* Hierarchical Knowledge Graph View */}
+            {activeView === 'hierarchical' && (
+              <div className="mb-8">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                  <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center">
+                      <GitBranch className="w-6 h-6 text-purple-600 dark:text-purple-400 mr-3" />
+                      <div>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Hierarchical Knowledge Graph</h2>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Explore research domains with parent-child relationships (Fields → Subfields → Skills)</p>
+                      </div>
+                    </div>
+                  </div>
+                  <StatisticsKnowledgeGraph
+                    onSelectProfessor={setSelectedProfessor}
+                    isFullscreen={isGraphFullscreen}
+                    onToggleFullscreen={() => setIsGraphFullscreen(!isGraphFullscreen)}
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Knowledge Graph View */}
             {activeView === 'graph' && (

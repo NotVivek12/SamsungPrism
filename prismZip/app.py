@@ -6,6 +6,7 @@ from datetime import datetime
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from professor_routes import professor_bp
+from knowledge_graph_routes import knowledge_graph_bp
 
 import database
 
@@ -49,9 +50,11 @@ app = Flask(__name__)
 CORS(app)
 
 app.register_blueprint(professor_bp)
+app.register_blueprint(knowledge_graph_bp)
 
 print("📊 MySQL database connection ready")
 print("🔍 Professor data will be read directly from database on API requests")
+print("🌐 Knowledge graph API endpoints registered")
 print("✅ Database access configured!")
 
 REQUEST_DELAY = int(os.getenv('REQUEST_DELAY', 5))
