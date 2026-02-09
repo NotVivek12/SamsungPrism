@@ -76,7 +76,8 @@ def get_default_knowledge_graph():
 def build_hierarchical_graph_from_professors(professors_data):
     """
     Build a knowledge graph from professor domain expertise data.
-    This creates a hierarchy: Field -> Professors as children
+    STRICTLY enforces hierarchy: Field -> Subfield -> Person
+    Every Field MUST have at least one Subfield (no orphans).
     """
     import database
     
@@ -88,9 +89,142 @@ def build_hierarchical_graph_from_professors(professors_data):
             logger.error(f"Error loading professors: {e}")
             professors_data = []
     
-    # Build domain hierarchy from professor expertise
-    domain_map = {}
-    professor_nodes_map = {}  # Track professor nodes by ID to avoid duplicates
+    # Define field-to-subfield mappings for common research areas
+    # This maps subfield keywords to their parent field
+    SUBFIELD_TO_FIELD_MAP = {
+        # Machine Learning & AI
+        'machine learning': 'Artificial Intelligence',
+        'deep learning': 'Artificial Intelligence',
+        'neural network': 'Artificial Intelligence',
+        'nlp': 'Artificial Intelligence',
+        'natural language processing': 'Artificial Intelligence',
+        'computer vision': 'Artificial Intelligence',
+        'reinforcement learning': 'Artificial Intelligence',
+        'artificial intelligence': 'Artificial Intelligence',
+        'pattern recognition': 'Artificial Intelligence',
+        'image processing': 'Artificial Intelligence',
+        'speech recognition': 'Artificial Intelligence',
+        'robotics': 'Artificial Intelligence',
+        
+        # Data Science
+        'data mining': 'Data Science',
+        'data analytics': 'Data Science',
+        'big data': 'Data Science',
+        'data science': 'Data Science',
+        'statistics': 'Data Science',
+        'predictive analytics': 'Data Science',
+        
+        # Cloud & Distributed Systems
+        'cloud computing': 'Cloud & Distributed Systems',
+        'distributed systems': 'Cloud & Distributed Systems',
+        'edge computing': 'Cloud & Distributed Systems',
+        'fog computing': 'Cloud & Distributed Systems',
+        'virtualization': 'Cloud & Distributed Systems',
+        'containerization': 'Cloud & Distributed Systems',
+        'microservices': 'Cloud & Distributed Systems',
+        
+        # Cybersecurity
+        'cybersecurity': 'Cybersecurity',
+        'network security': 'Cybersecurity',
+        'cryptography': 'Cybersecurity',
+        'information security': 'Cybersecurity',
+        'malware': 'Cybersecurity',
+        'intrusion detection': 'Cybersecurity',
+        'blockchain': 'Cybersecurity',
+        
+        # Networks & Communications
+        'computer networks': 'Networks & Communications',
+        'wireless networks': 'Networks & Communications',
+        'sensor networks': 'Networks & Communications',
+        'iot': 'Networks & Communications',
+        'internet of things': 'Networks & Communications',
+        '5g': 'Networks & Communications',
+        'mobile computing': 'Networks & Communications',
+        'adhoc networks': 'Networks & Communications',
+        'vanet': 'Networks & Communications',
+        'manet': 'Networks & Communications',
+        'wsn': 'Networks & Communications',
+        'wireless sensor': 'Networks & Communications',
+        
+        # Software Engineering
+        'software engineering': 'Software Engineering',
+        'software testing': 'Software Engineering',
+        'agile': 'Software Engineering',
+        'devops': 'Software Engineering',
+        'software quality': 'Software Engineering',
+        
+        # Signal & Image Processing
+        'signal processing': 'Signal & Image Processing',
+        'image analysis': 'Signal & Image Processing',
+        'digital signal': 'Signal & Image Processing',
+        'bio-signal': 'Signal & Image Processing',
+        'medical imaging': 'Signal & Image Processing',
+        
+        # Hardware & VLSI
+        'vlsi': 'Hardware & Electronics',
+        'embedded systems': 'Hardware & Electronics',
+        'fpga': 'Hardware & Electronics',
+        'circuit design': 'Hardware & Electronics',
+        'semiconductor': 'Hardware & Electronics',
+        'mems': 'Hardware & Electronics',
+        'antenna': 'Hardware & Electronics',
+        
+        # Databases
+        'database': 'Database Systems',
+        'sql': 'Database Systems',
+        'nosql': 'Database Systems',
+        'data warehouse': 'Database Systems',
+        
+        # HCI & Graphics
+        'human computer interaction': 'HCI & Visualization',
+        'hci': 'HCI & Visualization',
+        'computer graphics': 'HCI & Visualization',
+        'visualization': 'HCI & Visualization',
+        'virtual reality': 'HCI & Visualization',
+        'augmented reality': 'HCI & Visualization',
+        
+        # Bioinformatics
+        'bioinformatics': 'Computational Biology',
+        'computational biology': 'Computational Biology',
+        'genomics': 'Computational Biology',
+        'healthcare': 'Computational Biology',
+        
+        # Optimization & Algorithms
+        'optimization': 'Algorithms & Theory',
+        'algorithm': 'Algorithms & Theory',
+        'computational complexity': 'Algorithms & Theory',
+        'graph theory': 'Algorithms & Theory',
+    }
+    
+    # Field colors
+    FIELD_COLORS = {
+        'Artificial Intelligence': '#8B5CF6',
+        'Data Science': '#10B981',
+        'Cloud & Distributed Systems': '#A855F7',
+        'Cybersecurity': '#6366F1',
+        'Networks & Communications': '#84CC16',
+        'Software Engineering': '#14B8A6',
+        'Signal & Image Processing': '#F59E0B',
+        'Hardware & Electronics': '#EC4899',
+        'Database Systems': '#F97316',
+        'HCI & Visualization': '#06B6D4',
+        'Computational Biology': '#22C55E',
+        'Algorithms & Theory': '#EAB308',
+        'General Computing': '#6B7280',
+    }
+    
+    def get_parent_field(domain_str):
+        """Determine parent field for a domain/subfield"""
+        domain_lower = domain_str.lower()
+        for keyword, field in SUBFIELD_TO_FIELD_MAP.items():
+            if keyword in domain_lower:
+                return field
+        return 'General Computing'  # Default field for unclassified domains
+    
+    # Build hierarchy: Field -> Subfield -> Professors
+    # Structure: { field_name: { subfield_name: [professor_nodes] } }
+    hierarchy = {}
+    professor_nodes_map = {}
     
     for prof in professors_data:
         if not prof.get('domain_expertise'):
@@ -115,45 +249,82 @@ def build_hierarchical_graph_from_professors(professors_data):
                 "profileLink": prof.get('profile_link', ''),
                 "domainExpertise": prof.get('domain_expertise', ''),
                 "phdThesis": prof.get('phd_thesis', ''),
-                # Store the full professor data for the profile modal
                 "professorData": prof
             }
         
-        # Parse domain expertise and create hierarchy
+        # Parse domain expertise - each domain becomes a subfield
         domains = [d.strip() for d in prof.get('domain_expertise', '').split(',') if d.strip()]
         
         for domain in domains:
-            domain_key = domain.lower().replace(' ', '-').replace('/', '-').replace('&', 'and')
+            # Determine parent field
+            parent_field = get_parent_field(domain)
             
-            if domain_key not in domain_map:
-                domain_map[domain_key] = {
-                    "id": f"field-{domain_key}",
-                    "type": "Field",
-                    "label": domain,
-                    "children": [],  # Will hold professor nodes
-                    "professorIds": set(),  # Track which professors are added
-                    "professorCount": 0,
-                    "totalCitations": 0
+            # Initialize field if not exists
+            if parent_field not in hierarchy:
+                hierarchy[parent_field] = {}
+            
+            # Initialize subfield if not exists
+            if domain not in hierarchy[parent_field]:
+                hierarchy[parent_field][domain] = {
+                    "professor_ids": set(),
+                    "professors": []
                 }
             
-            # Add professor as child of this field (avoid duplicates)
-            if prof_id not in domain_map[domain_key]["professorIds"]:
-                domain_map[domain_key]["professorIds"].add(prof_id)
-                domain_map[domain_key]["children"].append(professor_nodes_map[prof_id].copy())
-                domain_map[domain_key]["professorCount"] += 1
-                domain_map[domain_key]["totalCitations"] += prof.get('citations_count', 0)
+            # Add professor to this subfield (avoid duplicates)
+            if prof_id not in hierarchy[parent_field][domain]["professor_ids"]:
+                hierarchy[parent_field][domain]["professor_ids"].add(prof_id)
+                hierarchy[parent_field][domain]["professors"].append(professor_nodes_map[prof_id].copy())
     
-    # Convert to graph format and clean up
+    # Convert hierarchy to graph format: Field -> Subfield -> Person
     field_nodes = []
-    for field in domain_map.values():
-        # Remove the set (not JSON serializable)
-        del field["professorIds"]
-        # Sort children by citations
-        field["children"].sort(key=lambda x: x.get("citations", 0), reverse=True)
-        field_nodes.append(field)
+    
+    for field_name, subfields in hierarchy.items():
+        subfield_nodes = []
+        total_professors = 0
+        total_citations = 0
+        
+        for subfield_name, subfield_data in subfields.items():
+            professors = subfield_data["professors"]
+            if not professors:
+                continue
+                
+            # Sort professors by citations
+            professors.sort(key=lambda x: x.get("citations", 0), reverse=True)
+            
+            subfield_node = {
+                "id": f"subfield-{subfield_name.lower().replace(' ', '-').replace('/', '-').replace('&', 'and')}",
+                "type": "Subfield",
+                "label": subfield_name,
+                "children": professors,
+                "professorCount": len(professors),
+                "totalCitations": sum(p.get("citations", 0) for p in professors)
+            }
+            subfield_nodes.append(subfield_node)
+            total_professors += len(professors)
+            total_citations += subfield_node["totalCitations"]
+        
+        # IMPORTANT: Only add field if it has at least one subfield with professors
+        if subfield_nodes:
+            # Sort subfields by professor count
+            subfield_nodes.sort(key=lambda x: x["professorCount"], reverse=True)
+            
+            field_node = {
+                "id": f"field-{field_name.lower().replace(' ', '-').replace('&', 'and')}",
+                "type": "Field",
+                "label": field_name,
+                "color": FIELD_COLORS.get(field_name, '#6B7280'),
+                "children": subfield_nodes,
+                "subfieldCount": len(subfield_nodes),
+                "professorCount": total_professors,
+                "totalCitations": total_citations
+            }
+            field_nodes.append(field_node)
     
     # Sort fields by professor count
     field_nodes.sort(key=lambda x: x["professorCount"], reverse=True)
+    
+    # Calculate totals
+    total_subfields = sum(f["subfieldCount"] for f in field_nodes)
     
     return {
         "@context": {
@@ -162,10 +333,12 @@ def build_hierarchical_graph_from_professors(professors_data):
         },
         "@graph": field_nodes,
         "metadata": {
-            "version": "1.0.0",
+            "version": "2.0.0",
             "generated": datetime.now().isoformat(),
             "totalFields": len(field_nodes),
-            "totalProfessors": len(professor_nodes_map)
+            "totalSubfields": total_subfields,
+            "totalProfessors": len(professor_nodes_map),
+            "hierarchy": "Field -> Subfield -> Person"
         }
     }
 

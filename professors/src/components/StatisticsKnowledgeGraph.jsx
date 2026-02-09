@@ -45,25 +45,28 @@ const cytoscapeStylesheet = [
   {
     selector: 'node[type="Field"]',
     style: {
-      'background-color': nodeColors.Field,
-      'width': 60,
-      'height': 60,
+      'background-color': 'data(color)',  // Use field-specific color from data
+      'width': 70,
+      'height': 70,
       'shape': 'round-rectangle',
-      'border-width': 3,
-      'border-color': '#7C3AED',
-      'font-size': '13px',
+      'border-width': 4,
+      'border-color': '#5B21B6',
+      'font-size': '14px',
       'font-weight': 700,
+      'text-margin-y': 10,
     }
   },
   {
     selector: 'node[type="Subfield"]',
     style: {
       'background-color': nodeColors.Subfield,
-      'width': 45,
-      'height': 45,
+      'width': 50,
+      'height': 50,
       'shape': 'round-rectangle',
-      'border-width': 2,
-      'border-color': '#2563EB',
+      'border-width': 3,
+      'border-color': '#1D4ED8',
+      'font-size': '11px',
+      'font-weight': 600,
     }
   },
   {
@@ -134,13 +137,22 @@ const cytoscapeStylesheet = [
     style: {
       'line-color': '#8B5CF6',
       'target-arrow-color': '#8B5CF6',
+      'width': 3,
+    }
+  },
+  {
+    selector: 'edge[relation="HAS_MEMBER"]',
+    style: {
+      'line-color': '#3B82F6',
+      'target-arrow-color': '#3B82F6',
+      'width': 2,
     }
   },
   {
     selector: 'edge[relation="HAS_SKILL"]',
     style: {
-      'line-color': '#3B82F6',
-      'target-arrow-color': '#3B82F6',
+      'line-color': '#10B981',
+      'target-arrow-color': '#10B981',
     }
   },
   {
@@ -209,8 +221,17 @@ export function mapToCytoscapeElements(graphJson, collapsedNodes = new Set()) {
     });
 
     if (parentId) {
-      const relation = node.type === 'Person' ? 'ASSOCIATED_WITH' : 
-                       node.type === 'Skill' ? 'HAS_SKILL' : 'HAS_SUBFIELD';
+      // Determine edge relationship based on parent-child types
+      let relation;
+      if (node.type === 'Person') {
+        relation = 'HAS_MEMBER';  // Subfield -> Person
+      } else if (node.type === 'Subfield') {
+        relation = 'HAS_SUBFIELD';  // Field -> Subfield
+      } else if (node.type === 'Skill') {
+        relation = 'HAS_SKILL';
+      } else {
+        relation = 'HAS_CHILD';
+      }
       edges.push({
         data: {
           id: `${parentId}->${nodeId}`,
@@ -560,33 +581,41 @@ const StatisticsKnowledgeGraph = ({
       case 'dagre':
         return {
           name: 'dagre',
-          rankDir: 'TB',
-          nodeSep: 60,
-          rankSep: 80,
-          edgeSep: 30,
-          padding: 50,
+          rankDir: 'TB',           // Top to Bottom hierarchy
+          nodeSep: 80,             // Increased horizontal separation
+          rankSep: 120,            // Increased vertical separation between levels
+          edgeSep: 40,
+          padding: 60,
+          ranker: 'tight-tree',    // Better hierarchy algorithm
           animate: true,
           animationDuration: 500,
+          fit: true,               // Fit graph to viewport
+          spacingFactor: 1.2,      // Extra spacing
         };
       case 'breadthfirst':
         return {
           name: 'breadthfirst',
           directed: true,
-          padding: 50,
-          spacingFactor: 1.5,
+          padding: 60,
+          spacingFactor: 2.0,       // Increased spacing
           animate: true,
           animationDuration: 500,
+          circle: false,           // Use tree layout, not circle
+          grid: false,
+          roots: 'node[type="Field"]', // Start from Field nodes
         };
       case 'cose':
         return {
           name: 'cose',
-          idealEdgeLength: 100,
-          nodeOverlap: 20,
+          idealEdgeLength: 150,
+          nodeOverlap: 40,
           refresh: 20,
           fit: true,
-          padding: 50,
+          padding: 60,
           animate: true,
           animationDuration: 500,
+          gravity: 0.4,
+          nodeRepulsion: 8000,
         };
       default:
         return { name: 'dagre', rankDir: 'TB' };
