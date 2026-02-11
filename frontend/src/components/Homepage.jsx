@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BarChart3, Users, GraduationCap, Search } from 'lucide-react';
 
-const Homepage = ({ onNavigate }) => {
+const Homepage = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="flex flex-col items-center justify-center min-h-screen px-4">
@@ -25,7 +27,7 @@ const Homepage = ({ onNavigate }) => {
         <div className="flex flex-col sm:flex-row gap-6 w-full max-w-2xl">
           {/* Statistics Button */}
           <button
-            onClick={() => onNavigate('statistics')}
+            onClick={() => navigate('/statistics')}
             className="group flex-1 bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 p-8 border border-gray-200 dark:border-gray-700"
           >
             <div className="flex flex-col items-center text-center">
@@ -43,7 +45,7 @@ const Homepage = ({ onNavigate }) => {
 
           {/* Faculty Search Button */}
           <button
-            onClick={() => onNavigate('faculty-search')}
+            onClick={() => navigate('/faculty-search')}
             className="group flex-1 bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 p-8 border border-gray-200 dark:border-gray-700"
           >
             <div className="flex flex-col items-center text-center">
@@ -69,7 +71,7 @@ const Homepage = ({ onNavigate }) => {
               Comprehensive profiles with research interests, publications, and academic metrics
             </p>
           </div>
-          
+
           <div className="text-center p-6 bg-white/50 dark:bg-gray-800/50 rounded-xl backdrop-blur-sm">
             <Search className="w-8 h-8 text-purple-600 dark:text-purple-400 mx-auto mb-3" />
             <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Smart Search</h3>
@@ -77,7 +79,7 @@ const Homepage = ({ onNavigate }) => {
               Natural language AI search to find experts by skills and research domains
             </p>
           </div>
-          
+
           <div className="text-center p-6 bg-white/50 dark:bg-gray-800/50 rounded-xl backdrop-blur-sm">
             <BarChart3 className="w-8 h-8 text-green-600 dark:text-green-400 mx-auto mb-3" />
             <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Analytics</h3>

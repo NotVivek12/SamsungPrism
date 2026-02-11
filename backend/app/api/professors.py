@@ -15,7 +15,7 @@ from gemma_service import parse_search_query_with_gemma, analyze_project_descrip
 # Import the database module for MySQL access
 import database
 # Import citations cache functionality
-from scripts.extract_citations import get_cached_citations, get_extraction_status, load_teachers_data
+from extract_citations import get_cached_citations, get_extraction_status, load_teachers_data
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -874,7 +874,7 @@ def api_refresh_citations():
         import traceback
         
         # Import directly from file
-        from scripts.extract_citations import start_background_extraction, extract_and_cache_citations
+        from extract_citations import start_background_extraction, extract_and_cache_citations
         
         # Log some information
         logging.info("Starting citation extraction from API endpoint")
