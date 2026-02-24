@@ -25,24 +25,6 @@ const Homepage = () => {
 
         {/* Navigation Buttons */}
         <div className="flex flex-col sm:flex-row gap-6 w-full max-w-2xl">
-          {/* Statistics Button */}
-          <button
-            onClick={() => navigate('/statistics')}
-            className="group flex-1 bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 p-8 border border-gray-200 dark:border-gray-700"
-          >
-            <div className="flex flex-col items-center text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                <BarChart3 className="w-10 h-10 text-white" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                Statistics
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                View comprehensive analytics, research metrics, and faculty insights across departments
-              </p>
-            </div>
-          </button>
-
           {/* Faculty Search Button */}
           <button
             onClick={() => navigate('/faculty-search')}
@@ -57,6 +39,24 @@ const Homepage = () => {
               </h2>
               <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                 AI-powered search to find faculty experts by research domain, skills, and expertise
+              </p>
+            </div>
+          </button>
+
+          {/* Statistics Button */}
+          <button
+            onClick={() => navigate('/statistics')}
+            className="group flex-1 bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 p-8 border border-gray-200 dark:border-gray-700"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                <BarChart3 className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                Statistics
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                View comprehensive analytics, research metrics, and faculty insights across departments
               </p>
             </div>
           </button>

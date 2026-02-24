@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, BarChart3, Users, Award, TrendingUp, Building, BookOpen, Network, X, Mail, ExternalLink, Maximize2, Minimize2, ZoomIn, ZoomOut, RotateCcw, ChevronRight, Search, GitBranch } from 'lucide-react';
 import StatisticsKnowledgeGraph from './StatisticsKnowledgeGraph';
+import COECollaborationMap from './COECollaborationMap';
 
 // Color palette for expertise domains
 const domainColors = {
@@ -1165,143 +1166,293 @@ const Statistics = () => {
               </div>
             )}
 
-            {/* Statistics View */}
-            {activeView === 'stats' && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                {/* Research Areas Distribution */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center mb-6">
-                    <BarChart3 className="w-6 h-6 text-blue-600 dark:text-blue-400 mr-3" />
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Research Areas Distribution</h2>
-                  </div>
-                  <div className="space-y-4">
-                    {stats.expertiseDistribution.map((item, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded-lg transition-colors group"
-                        onClick={() => setSelectedExpertiseArea(item.area)}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="w-3 h-3 rounded-full"
-                            style={{ backgroundColor: getDomainColor(item.area) }}
-                          ></div>
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{item.area}</span>
+            {/* COE Hierarchy View */}
+            {activeView === 'stats' && (() => {
+              // Samsung Centers of Excellence mapping
+              const coeDefinitions = [
+                {
+                  name: 'IoT',
+                  icon: '🌐',
+                  gradient: 'from-emerald-500 to-teal-600',
+                  lightBg: 'bg-emerald-50 dark:bg-emerald-900/20',
+                  borderColor: 'border-emerald-200 dark:border-emerald-800',
+                  textColor: 'text-emerald-700 dark:text-emerald-300',
+                  keywords: ['iot', 'internet of things', 'sensor network', 'embedded system', 'wsn', 'smart city', 'manet', 'ad hoc', 'ad-hoc', 'edge computing', 'edgeai', 'cyber physical', 'smart antenna', 'biomedical instrumentation', 'biosensor', 'virtual instrumentation']
+                },
+                {
+                  name: 'Multimedia',
+                  icon: '🎬',
+                  gradient: 'from-pink-500 to-rose-600',
+                  lightBg: 'bg-pink-50 dark:bg-pink-900/20',
+                  borderColor: 'border-pink-200 dark:border-pink-800',
+                  textColor: 'text-pink-700 dark:text-pink-300',
+                  keywords: ['multimedia', 'video coding', 'image processing', 'digital image', 'graphics', 'ar/vr', 'augmented reality', 'virtual reality', 'game development', '3d', 'steganography', 'remote sensing', 'medical image', 'image retrieval', 'image classification', 'object recognition', 'pattern recognition', 'medical imaging', 'biosignal processing', 'signal processing']
+                },
+                {
+                  name: 'On-device AI',
+                  icon: '🧠',
+                  gradient: 'from-violet-500 to-purple-600',
+                  lightBg: 'bg-violet-50 dark:bg-violet-900/20',
+                  borderColor: 'border-violet-200 dark:border-violet-800',
+                  textColor: 'text-violet-700 dark:text-violet-300',
+                  keywords: ['machine learning', 'deep learning', 'artificial intelligence', 'neural network', ' ai', 'ai ', 'ai/', '/ai', 'ai&', '&ai', ' ml', 'ml ', 'cnn', 'soft computing', 'fuzzy', 'genetic algorithm', 'optimization', 'data mining', 'data analytics', 'data science', 'federated learning', 'neuromorphic', 'continual learning', 'agentic ai', 'few-shot', 'predictive analysis', 'anomaly detection', 'medical ai']
+                },
+                {
+                  name: 'Vision',
+                  icon: '👁️',
+                  gradient: 'from-amber-500 to-orange-600',
+                  lightBg: 'bg-amber-50 dark:bg-amber-900/20',
+                  borderColor: 'border-amber-200 dark:border-amber-800',
+                  textColor: 'text-amber-700 dark:text-amber-300',
+                  keywords: ['computer vision', 'object recognition', 'image classification', 'biometric', 'face', 'pattern recognition', 'image processing', 'medical imaging', 'image retrieval']
+                },
+                {
+                  name: 'Voice',
+                  icon: '🎙️',
+                  gradient: 'from-cyan-500 to-blue-600',
+                  lightBg: 'bg-cyan-50 dark:bg-cyan-900/20',
+                  borderColor: 'border-cyan-200 dark:border-cyan-800',
+                  textColor: 'text-cyan-700 dark:text-cyan-300',
+                  keywords: ['speech', 'voice', 'nlp', 'natural language', 'text mining', 'speaker recognition', 'spoken language', 'speech signal', 'machine translation']
+                },
+                {
+                  name: 'Network',
+                  icon: '📡',
+                  gradient: 'from-blue-500 to-indigo-600',
+                  lightBg: 'bg-blue-50 dark:bg-blue-900/20',
+                  borderColor: 'border-blue-200 dark:border-blue-800',
+                  textColor: 'text-blue-700 dark:text-blue-300',
+                  keywords: ['network', '5g', '6g', 'wireless', 'communication', 'protocol', 'mimo', 'ofdm', 'gfdm', 'sdn', 'routing', 'fso', 'mmwave', 'vehicular', 'congestion', 'manets', 'vanets']
+                },
+                {
+                  name: 'Cloud',
+                  icon: '☁️',
+                  gradient: 'from-sky-500 to-blue-500',
+                  lightBg: 'bg-sky-50 dark:bg-sky-900/20',
+                  borderColor: 'border-sky-200 dark:border-sky-800',
+                  textColor: 'text-sky-700 dark:text-sky-300',
+                  keywords: ['cloud', 'distributed system', 'parallel computing', 'high performance computing', 'fog', 'web service', 'soa', 'microservice', 'distributed algorithm', 'grid computing', 'operating system']
+                },
+                {
+                  name: 'Advanced Research',
+                  icon: '🔬',
+                  gradient: 'from-slate-600 to-gray-700',
+                  lightBg: 'bg-slate-50 dark:bg-slate-900/20',
+                  borderColor: 'border-slate-200 dark:border-slate-800',
+                  textColor: 'text-slate-700 dark:text-slate-300',
+                  keywords: ['blockchain', 'cryptography', 'security', 'quantum', 'robotics', 'bioinformatics', 'computational biology', 'biomedical', 'bioelectronics', 'formal method', 'automata', 'compiler', 'vlsi', 'semiconductor', 'digital forensic']
+                }
+              ];
+
+              // Map professors into COEs
+              const coeData = coeDefinitions.map(coe => {
+                const matchedProfessors = professors.filter(prof => {
+                  const expertise = (prof.domain_expertise || '').toLowerCase();
+                  return coe.keywords.some(kw => expertise.includes(kw));
+                });
+                const totalCitations = matchedProfessors.reduce((sum, p) => sum + (p.citations_count || 0), 0);
+                const avgHIndex = matchedProfessors.filter(p => p.h_index > 0).length > 0
+                  ? Math.round(matchedProfessors.filter(p => p.h_index > 0).reduce((sum, p) => sum + p.h_index, 0) / matchedProfessors.filter(p => p.h_index > 0).length)
+                  : 0;
+                return { ...coe, professors: matchedProfessors, totalCitations, avgHIndex };
+              });
+
+              // Track cross-domain researchers
+              const crossDomain = professors.filter(prof => {
+                const expertise = (prof.domain_expertise || '').toLowerCase();
+                let matchCount = 0;
+                coeDefinitions.forEach(coe => {
+                  if (coe.keywords.some(kw => expertise.includes(kw))) matchCount++;
+                });
+                return matchCount > 1;
+              }).length;
+
+              return (
+                <div className="space-y-8 mb-8">
+                  {/* COE Header */}
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                      <div>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+                          Samsung Centers of Excellence
+                        </h2>
+                        <p className="text-gray-600 dark:text-gray-400">
+                          Faculty organized by {coeData.length} specialized research centers
+                        </p>
+                      </div>
+                      <div className="flex gap-4 text-sm">
+                        <div className="bg-blue-50 dark:bg-blue-900/30 px-4 py-2 rounded-lg">
+                          <span className="font-bold text-blue-700 dark:text-blue-300">{professors.length}</span>
+                          <span className="text-blue-600 dark:text-blue-400 ml-1">Faculty</span>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                            <div
-                              className="h-2 rounded-full transition-all duration-300"
-                              style={{
-                                width: `${Math.min(item.percentage * 2, 100)}%`,
-                                backgroundColor: getDomainColor(item.area)
-                              }}
-                            ></div>
+                        <div className="bg-purple-50 dark:bg-purple-900/30 px-4 py-2 rounded-lg">
+                          <span className="font-bold text-purple-700 dark:text-purple-300">{crossDomain}</span>
+                          <span className="text-purple-600 dark:text-purple-400 ml-1">Cross-domain</span>
+                        </div>
+                        <div className="bg-green-50 dark:bg-green-900/30 px-4 py-2 rounded-lg">
+                          <span className="font-bold text-green-700 dark:text-green-300">{coeData.length}</span>
+                          <span className="text-green-600 dark:text-green-400 ml-1">COEs</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* COE Cards Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {coeData.map((coe, index) => (
+                      <div
+                        key={coe.name}
+                        className={`group cursor-pointer rounded-2xl border ${coe.borderColor} shadow-lg hover:shadow-2xl transform hover:scale-[1.03] transition-all duration-300 overflow-hidden`}
+                        onClick={() => setSelectedExpertiseArea(selectedExpertiseArea === coe.name ? null : coe.name)}
+                        style={{ animationDelay: `${index * 80}ms` }}
+                      >
+                        {/* Card Header with Gradient */}
+                        <div className={`bg-gradient-to-br ${coe.gradient} p-5 text-white`}>
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-3xl">{coe.icon}</span>
+                            <span className="text-white/80 text-sm font-medium bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
+                              {coe.professors.length} faculty
+                            </span>
                           </div>
-                          <span className="text-sm text-gray-600 dark:text-gray-400 w-8">{item.count}</span>
-                          <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                          <h3 className="text-xl font-bold mb-1">{coe.name}</h3>
+                        </div>
+
+                        {/* Card Body */}
+                        <div className={`p-4 bg-white dark:bg-gray-800`}>
+                          <div className="grid grid-cols-2 gap-3 mb-3">
+                            <div className="text-center">
+                              <p className="text-xl font-bold text-gray-900 dark:text-white">{formatNumber(coe.totalCitations)}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">Citations</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-xl font-bold text-gray-900 dark:text-white">{coe.avgHIndex}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">Avg h-index</p>
+                            </div>
+                          </div>
+
+                          {/* Top 3 Professors Preview */}
+                          <div className="border-t border-gray-100 dark:border-gray-700 pt-3">
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mb-2 uppercase tracking-wide font-medium">Top Researchers</p>
+                            <div className="space-y-1.5">
+                              {coe.professors
+                                .sort((a, b) => (b.citations_count || 0) - (a.citations_count || 0))
+                                .slice(0, 3)
+                                .map((prof, i) => (
+                                  <div key={i} className="flex items-center justify-between text-sm">
+                                    <span className="text-gray-700 dark:text-gray-300 truncate mr-2">{prof.name}</span>
+                                    <span className="text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap">{formatNumber(prof.citations_count || 0)}</span>
+                                  </div>
+                                ))
+                              }
+                            </div>
+                          </div>
+
+                          {/* Expand Indicator */}
+                          <div className="mt-3 flex items-center justify-center">
+                            <span className={`text-xs font-medium transition-colors ${selectedExpertiseArea === coe.name ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-blue-500'}`}>
+                              {selectedExpertiseArea === coe.name ? '▲ Click to collapse' : '▼ Click to expand'}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
-                </div>
 
-                {/* Top Performers */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center mb-6">
-                    <TrendingUp className="w-6 h-6 text-green-600 dark:text-green-400 mr-3" />
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Top Cited Faculty</h2>
-                  </div>
-                  <div className="space-y-4">
-                    {stats.topCitedFaculty.length > 0 ? (
-                      stats.topCitedFaculty.map((faculty, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-xl cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
-                          onClick={() => setSelectedProfessor(faculty.data)}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold">
-                              {index + 1}
+                  {/* Expanded COE Detail Panel */}
+                  {selectedExpertiseArea && coeData.find(c => c.name === selectedExpertiseArea) && (() => {
+                    const activeCoe = coeData.find(c => c.name === selectedExpertiseArea);
+                    const sortedProfs = [...activeCoe.professors].sort((a, b) => (b.citations_count || 0) - (a.citations_count || 0));
+
+                    return (
+                      <div className={`rounded-2xl border ${activeCoe.borderColor} shadow-xl overflow-hidden`}
+                        style={{ animation: 'fadeIn 0.3s ease-out' }}
+                      >
+                        {/* Detail Header */}
+                        <div className={`bg-gradient-to-r ${activeCoe.gradient} p-6 text-white`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <span className="text-4xl">{activeCoe.icon}</span>
+                              <div>
+                                <h3 className="text-2xl font-bold">{activeCoe.name} Center of Excellence</h3>
+                                <p className="text-white/80 text-sm">{activeCoe.professors.length} faculty members • {formatNumber(activeCoe.totalCitations)} total citations</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="font-medium text-gray-900 dark:text-white">{faculty.name}</p>
-                              <p className="text-sm text-gray-600 dark:text-gray-400">h-index: {faculty.hIndex}</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-bold text-blue-600 dark:text-blue-400">{formatNumber(faculty.citations)}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">citations</p>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setSelectedExpertiseArea(null); }}
+                              className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-colors backdrop-blur-sm"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
                           </div>
                         </div>
-                      ))
-                    ) : (
-                      <p className="text-gray-500 dark:text-gray-400 text-center py-4">
-                        No citation data available
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
 
-            {/* Quick Access - Professors by Expertise */}
-            {activeView === 'stats' && (
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Browse by Expertise</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Click on any expertise area to see all professors</p>
-                <div className="flex flex-wrap gap-2">
-                  {stats.expertiseDistribution.map((item, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedExpertiseArea(item.area)}
-                      className="px-4 py-2 rounded-full text-sm font-medium text-white transition-transform hover:scale-105"
-                      style={{ backgroundColor: getDomainColor(item.area) }}
-                    >
-                      {item.area} ({item.count})
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+                        {/* Professor List Table */}
+                        <div className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
+                          <div className="grid grid-cols-12 px-6 py-3 bg-gray-50 dark:bg-gray-750 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                            <div className="col-span-1">#</div>
+                            <div className="col-span-4">Professor</div>
+                            <div className="col-span-4">Domain Expertise</div>
+                            <div className="col-span-1 text-center">Citations</div>
+                            <div className="col-span-1 text-center">h-index</div>
+                            <div className="col-span-1 text-center">Profile</div>
+                          </div>
 
-            {/* Additional Stats */}
-            {activeView === 'stats' && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg p-6 text-white">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-blue-100">Avg. h-index</p>
-                      <p className="text-3xl font-bold">{stats.avgHIndex}</p>
-                    </div>
-                    <Award className="w-10 h-10 text-blue-200" />
-                  </div>
-                  <p className="text-xs text-blue-200 mt-2">Among faculty with citations</p>
-                </div>
+                          {sortedProfs.map((prof, idx) => (
+                            <div
+                              key={prof.id || idx}
+                              className="grid grid-cols-12 px-6 py-4 items-center hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
+                              onClick={() => setSelectedProfessor(prof)}
+                            >
+                              <div className="col-span-1">
+                                <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${idx < 3 ? 'bg-gradient-to-br ' + activeCoe.gradient + ' text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                                  }`}>
+                                  {idx + 1}
+                                </span>
+                              </div>
+                              <div className="col-span-4">
+                                <p className="font-semibold text-gray-900 dark:text-white text-sm">{prof.name}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{prof.college || 'N/A'}</p>
+                              </div>
+                              <div className="col-span-4">
+                                <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">{prof.domain_expertise || 'N/A'}</p>
+                              </div>
+                              <div className="col-span-1 text-center">
+                                <span className="font-bold text-blue-600 dark:text-blue-400 text-sm">{formatNumber(prof.citations_count || 0)}</span>
+                              </div>
+                              <div className="col-span-1 text-center">
+                                <span className="font-medium text-gray-700 dark:text-gray-300 text-sm">{prof.h_index || '-'}</span>
+                              </div>
+                              <div className="col-span-1 text-center">
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); setSelectedProfessor(prof); }}
+                                  className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                                >
+                                  <ExternalLink className="w-4 h-4 inline" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
 
-                <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-lg p-6 text-white">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-purple-100">Scholar Profiles</p>
-                      <p className="text-3xl font-bold">{stats.professorsWithScholar}</p>
-                    </div>
-                    <BookOpen className="w-10 h-10 text-purple-200" />
-                  </div>
-                  <p className="text-xs text-purple-200 mt-2">{Math.round((stats.professorsWithScholar / stats.totalFaculty) * 100)}% of faculty</p>
+                          {sortedProfs.length === 0 && (
+                            <div className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                              No professors found in this Center of Excellence.
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
+              );
+            })()}
 
-                <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg p-6 text-white">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-green-100">Research Areas</p>
-                      <p className="text-3xl font-bold">{Object.keys(stats.expertiseDistribution).length}+</p>
-                    </div>
-                    <Network className="w-10 h-10 text-green-200" />
-                  </div>
-                  <p className="text-xs text-green-200 mt-2">Unique expertise domains</p>
-                </div>
-              </div>
-            )}
+            {/* ━━━ Cross-COE Collaboration Intelligence Map ━━━ */}
+            <div className="mt-10">
+              <COECollaborationMap
+                professors={professors}
+                onSelectProfessor={setSelectedProfessor}
+              />
+            </div>
           </>
         )}
 
@@ -1313,8 +1464,8 @@ const Statistics = () => {
           />
         )}
 
-        {/* Expertise List Modal */}
-        {selectedExpertiseArea && (
+        {/* Expertise List Modal - only show outside COE view */}
+        {selectedExpertiseArea && activeView !== 'stats' && (
           <ExpertiseListModal
             expertise={selectedExpertiseArea}
             professors={professors}

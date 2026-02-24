@@ -635,14 +635,19 @@ def api_get_all_professors():
         college = request.args.get('college', '').strip()
         include_citations = request.args.get('include_citations', 'true').lower() == 'true'
         
-        # Load professor data
+        # Load professor data (includes citations_count, h_index, i10_index from DB)
         professors = database.load_professors_data()
         
         if not professors:
             return jsonify({'professors': [], 'total_count': 0, 'message': 'No professors found'})
         
-        # Load citation data from cache if requested
-        citations_cache = get_cached_citations() if include_citations else {}
+        # Load citation data from JSON cache as fallback for professors without DB citations
+        citations_cache = {}
+        if include_citations:
+            try:
+                citations_cache = get_cached_citations()
+            except Exception as e:
+                logging.warning(f"Could not load citations cache: {e}")
         
         # Filter by college if specified
         if college:
@@ -655,12 +660,17 @@ def api_get_all_professors():
         if limit and limit > 0:
             professors = professors[:limit]
         
-        # Add row numbers and citation data
+        # Add row numbers and supplement citation data from cache if DB has no data
         for i, professor in enumerate(professors, 1):
             professor['row_number'] = i
             
-            # Add citation data from cache if available
-            if include_citations and citations_cache:
+            # Ensure citation fields exist (they come from DB, default to 0)
+            professor['citations_count'] = professor.get('citations_count') or 0
+            professor['h_index'] = professor.get('h_index') or 0
+            professor['i10_index'] = professor.get('i10_index') or 0
+            
+            # If DB citations are all 0, try to supplement from JSON cache
+            if include_citations and citations_cache and professor['citations_count'] == 0 and professor['h_index'] == 0:
                 # Get database ID to JSON ID mapping
                 id_mapping = get_id_mapping()
                 
@@ -671,11 +681,11 @@ def api_get_all_professors():
                 # If we have a matching JSON ID and it's in the citation cache
                 if json_id and json_id in citations_cache:
                     citation_data = citations_cache[json_id]
-                    professor['citations_count'] = citation_data.get('citations', 0)
-                    professor['h_index'] = citation_data.get('h_index', 0)
-                    professor['i10_index'] = citation_data.get('i10_index', 0)
-                    # Add the JSON ID for reference
-                    professor['json_id'] = json_id
+                    if citation_data.get('citations', 0) > 0 or citation_data.get('h_index', 0) > 0:
+                        professor['citations_count'] = citation_data.get('citations', 0)
+                        professor['h_index'] = citation_data.get('h_index', 0)
+                        professor['i10_index'] = citation_data.get('i10_index', 0)
+                        professor['json_id'] = json_id
         
         return jsonify({
             'professors': professors,
@@ -746,6 +756,24 @@ def api_get_professor_details(professor_id):
                     
             except Exception as e:
                 logging.error(f"Error extracting scholar data: {str(e)}")
+        
+        # Fallback: if academic_data was not set (live scrape failed), build from DB citations
+        if 'academic_data' not in professor:
+            citations = professor.get('citations_count') or 0
+            h_idx = professor.get('h_index') or 0
+            i10_idx = professor.get('i10_index') or 0
+            
+            if citations > 0 or h_idx > 0 or i10_idx > 0:
+                professor['academic_data'] = {
+                    'has_academic_data': True,
+                    'citations': citations,
+                    'h_index': h_idx,
+                    'i10_index': i10_idx,
+                    'total_publications': 0,
+                    'recent_publications': [],
+                    'research_interests': [area.strip() for area in professor.get('domain_expertise', '').split(' | ')] if professor.get('domain_expertise') else [],
+                    'data_sources': ['Database Cache']
+                }
         
         return jsonify(professor)
         

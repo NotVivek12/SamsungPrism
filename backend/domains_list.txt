@@ -1,0 +1,173 @@
+3d Video Coding
+5g Network | Data Science | Embedded IOT | Security | Wireless Sensor Network
+5g/6g Communications | Internet Of Things | Machine Learning | Signal Processing
+6g | Fso Communication | Mmwave | Vehicular Communication
+AI & ML Based Signal And Image Processing And Antennas For Rf Systems
+AI & ML | Bio-inspired Computing | Cryptography | Cyber Security | Data Analytics
+AI Ar Vr | Bigdataanalytics | Blockchain | Image Processing Remote Sensing | IOT
+AI | Machine Learning | Wireless Sensor Networks
+Accessibility | Social Computing | Usability Engineering
+Ad Hoc Networks | Grid Computing | Sensor Networks
+Ad-hoc Netwworks | IOT | Qos In Wireless Sensor Netwwork
+Adhoc And Sensor Networks | Blockchain | IOT | Network Communication
+Agentic AI | Artificial Intelligence | Continual Learning | Data Science And Analytics | Few-shot
+Agile Development | Devops | Project Management
+Agriculture Decision Support Systems | Machine Learning | Wireless Sensor Networks
+Ai/ml | Computer Networks | Wireless Networks
+Algorithms | Data Structures | Optimization
+Algorithms | Genetic Algorithms | Optimization
+Anomaly Detection | Image Classification | Machine Learning
+Ant Colony Optimization | Artificial Intelligence | Soft Computing
+Antennas And Rf Circuits | Digital Communication | Digital Image Processing
+Antennas | Rf Microelectronics
+Application Of Bio-inspired Computing Models Towards Security | Automata Theory | Formal Language
+Ar/vr. | Blockchain | Deep Learning | Image And Signal Processing | Machine Learning
+Artificial Intelligence And Machine Learning | Brain Computer Interface | Data Mining
+Artificial Intelligence And Wireless Communication
+Artificial Intelligence | Bharath Pedagogy Methods For Teaching | Internet Routing
+Artificial Intelligence | Biomedical Signal Processing | Biomedical Technology | Internet Of Things
+Artificial Intelligence | Block Chain Technology And Iiot | Deep Learning | IOT | Predictive Analysis
+Artificial Intelligence | Blockchain And Cyber Security | Cloud Computing
+Artificial Intelligence | Clean Energy Models | Fog And Edge Platforms | Microgrids | Sdn/nfv
+Artificial Intelligence | Computational Intelligence | Image Processing
+Artificial Intelligence | Computer Vision | Natural Language Processing
+Artificial Intelligence | Cyber System Security | Machine Learning
+Artificial Intelligence | Data Mining | Machine Learning | Social Media
+Artificial Intelligence | Database Systems | Software Engineering
+Artificial Intelligence | Deep Learning Optimization | Federated Learning | Medical AI | Soft Computing
+Artificial Intelligence | Deep Learning | IOT | Machine Learning | Mobile Cloud Security
+Artificial Intelligence | Deep Learning | Machine Learning
+Artificial Intelligence | Machine Learning | Networks And Security
+Artificial Intelligence | Machine Learning | Wireless Networks
+Artificial Intelligence | Model Checking | Verification
+Artificial Neural Network | Cnn | Deep Learning | Image Processing | Machine Learning
+Augmented Reality | Computer Graphics | Geographic Information Systems
+Augmented Reality | Game Development | Virtual Reality
+Backbone Event Detection | Health Care Using Social Networking Platforms | Ipv6 And Ipsec | Network Management
+Big Data Analytics | Cloud Computing | Data Mining | Information Retrieval
+Big Data Analytics | Data Mining | Data Science
+Big Data Analytics | Database Systems | Software Engineering
+Big Data Analytics | Interconnection Networks | IOT | Machine Learning
+Bio-signal Processing | Image Processing | Low Power VLSI | Medical Image Processing | Wireless Networks
+Bioelectronics | Biomechanics
+Bioinformatics | Computational Mathematics | Scientific Computing
+Bioinformatics | Digital Image Processing | Medical Informatics
+Biomedical Instrumentation | Biosensors | Electrochemical Techniques | IOT
+Biomedical Signal And Image Processing | Deep Learning | Machine Learning
+Biomedical Signal Processing | Brain Computer Interface | Machine Learning
+Biometrics Data Security And Authentication | Quantum Computing
+Biometrics | Cryptography And Network Security | Image Processing | Networks
+Biometrics | Data Mining And Data Analytics | Image Processing | Network Security
+Biometrics | Image Processing And Pattern Recognition
+Biosignal Processing | Medical Image Processing
+Blockchain Technology | Internet Of Things | Mobile Computing
+Blockchain Technology | Quantum Computing | Robotics
+Blockchain | Cryptology | Image Processing | Machine Learning
+Blockchain | Data Mining
+Business Intelligence | Cloud Security | Data Warehousing
+Business Intelligence | Decision Support Systems | Information Systems
+Cellular Automata | Compiler Design | Theory Of Computation
+Chennai Campus | Vellore Institute Of Technology
+Cloud Computing
+Cloud Computing | Computer Networks | Data Mining | Machine Learning
+Cloud Computing | Computer Networks | IOT
+Cloud Computing | Cyber Physical Systems | IOT And Data Analysis | Wireless Networks
+Cloud Computing | Cyber Security And AI
+Cloud Computing | Data Analytics | Data Mining | Educational Data Mining And Learning Analytics
+Cloud Computing | Data Mining | Soft Computing
+Cloud Computing | Distributed Algorithms | Machine Learning | Software Defined Network | Wireless Networks
+Cloud Computing | Distributed Systems | Operating Systems
+Cloud Computing | IOT | ML | NLP | Web Mining
+Cloud Computing | Internet Of Things | Machine Learning
+Cloud Security | Cryptography | IOT | Network Security
+Cloud | Edge Computing | Fog | Parallel And Distributed Computing | Quantum Computing
+Cognitive Computing | Data Analytics | Data Mining | Evolutionary Computing | Soft Computing
+Communication Networks | Communication Protocols | Protocol Testing And Computational Intelligence | Wireless Communication Systems
+Communication Systems | VLSI Design
+Compiler Design | High Performance Computing | Parallel Computing
+Computational Biology | Computational Chemistry | Computational Physics
+Computational Mathematics | Data Structures | Scientific Computing
+Computational Social Science | Digital Humanities | Educational Technology
+Computer Aided Learning | E-Learning | Intelligent Tutoring Systems
+Computer Architecture | Data Science | Human-Computer Interaction
+Computer Architecture | Human-Computer Interaction | Web Development
+Computer Graphics | Cyber Security | Digital Forensics | Digital Image Processing | Medical Imaging
+Computer Graphics | E-Commerce | Geographic Information Systems
+Computer Networking | Embedded Systems | Image Processing | IOT | VLSI Design
+Computer Networks | Cybersecurity | Information Security
+Computer Science And Engineering
+Computer Science And Engineering | Data Mining | Digital Image Processing | Distributed Algorithms | Remote Sensing
+Computer Vision & Image Processing | Machine Learning & Deep Learning
+Computer Vision | Data Science | Network Security And IOT
+Computer Vision | Deep Learning | Machine Learning
+Computer Vision | Human Computer Interaction | Social Network Analysis | Software Engineering
+Computer Vision | Internet Of Things | Semantic Web | Wsn
+Computer Vision | Machine & Deep Learning | Parallel Processing | Virtual Reality
+Congestion Control Management Internet Of Things Machine Learning
+Cryptography | Digital Forensics | Network Security
+Data Analytics And Machine Learning
+Data Analytics And Soa | IOT
+Data Analytics | Data Science
+Data Mining | Data Science | Natural Language Processing
+Data Mining | Distributed Systems | Image Processing | Machine Learning
+Data Mining | Health Care | Image Processing | Intelligent Transport System | Machine Learning
+Data Mining | Human Computer Interaction | Pattern Recognition | Speech Recognition | Speech Synthesis
+Data Mining | Image Processing | Pattern Recognition
+Data Mining | Machine & Deep Learning | Machine Translation | Medical Image Analysis | NLP
+Data Mining | Web Mining
+Data Science | Forensic Speaker Recognition | Speaker Recognition | Speech Recognition | Voice Biometric
+Data Stream Mining Machine Learning
+Data Structures | Privacy Preserving Data Mining | Software Engineering
+Decision Support Systems | E-Commerce | Information Systems
+Deep Learning In VLSI | IOT | Neuromorphic Computing | Resistive Ram | Virtual Instrumentation
+Deep Learning On Gpu | High Performance Computing | Multicore Prog | Quantum Computing
+Deep Learning | Digital Image Processing | Image Steganography | Medical Imaging | Object Recognition
+Deep Learning | Machine Learning | Natural Language Processing
+Deep Learning | Machine Learning | Signal And Image Processing
+Design Thinking | Entrepreneurship | Innovation | Marketing
+Digital Image Processing | Medical Informatics | Multimedia Systems
+Distributed Systems | Swarm Intelligence
+Edge Computing | Edgeai | IOT | Networking | Sdn
+Electron Devices | Semiconductor Devices | Solid State Physics And Technology | VLSI Design
+Electronic Materials | Rf Communiucation
+Embedded Microcontrollers | Embedded Systems | Networking And Protocols | Real Time Operating Systems | Wireless Sensor Networks
+Embedded Systems | Image Processing | Pattern Classification
+Embedded Systems | Image Processing | Signal Processing
+Embedded Systems | Quantum Computing | Robotics
+Evs | Motor Drives | Power Converters
+Expert Systems | Fuzzy Logic | Neural Networks
+Expert Systems | Information Retrieval | Knowledge Management
+Formal Methods | Mathematical Modeling | Simulation
+Fuzzy Logic | Genetic Algorithms | Neural Networks
+Game Development | Multimedia Systems | Virtual Reality
+Gfdm | Mimo | Ofdm | Wireless Communication
+Human Computer Interaction | Machine Learning And Cyber Security | Usability Engineering
+IOT Security | Manets
+Image Processing
+Image Processing | Machine Learning | Remote Sensing
+Image Processing | Natural Language Processing
+Image Processing | Networking
+Image Processing | Pattern Recognition | Signal Processing
+Image Retrieval | O Transparency In Machine Learning O Polysemy In Lexical Semantics O Spatio-spectral Analysi | Quantum Computing
+Information Retrieval | Knowledge Management | Pattern Recognition
+Interface Design | Quality Assurance | User Experience Design
+Internet Of Things
+Internet Of Things | Mobile Computing | Web Development
+Iovs | Postquantum Cryptography | Security | Smart City | Vanets
+Machine Learning
+Machine Learning Techniques | Pattern Recognition | Signal And Image Processing | Smart Antenna Design
+Machine Learning | Natural Language Processing
+Machine Learning | Social Network Analysis
+Medical Image Processing
+Micro Grid | Power System
+Natural Language Processing
+Programming Languages | Software Architecture | Software Testing
+Requirements Engineering | Software Metrics | System Analysis
+Signal Processing | Wireless Communication
+Software Defect Management | Software Engineering | Software Metrics | Software Reliability
+Software Engineering And Cloud Computing | Web Services
+Speech Recognition | Spoken Language Resources
+Speech Signal Processing
+Statistical Signal Processing In Target Detection And Tracking
+Wireless Network
+Wireless Sensor Network

@@ -56,11 +56,12 @@ def load_professors_data():
         connection = get_connection()
         cursor = connection.cursor(dictionary=True)
         
-        # Query to join tables and get all professor data
+        # Query to join tables and get all professor data (including citation columns)
         query = """
         SELECT p.PID as id, p.PName as name, p.CName as college, p.CMailId as email,
                p.Phd as phd_thesis, pl.GScholar as google_scholar_url, 
                pl.SScholar as semantic_scholar_url, pl.CProfile as profile_link,
+               p.citations_count, p.h_index, p.i10_index,
                GROUP_CONCAT(DISTINCT d.DomainName SEPARATOR ' | ') as domain_expertise
         FROM professors p
         LEFT JOIN plink pl ON p.PID = pl.ProfID
@@ -102,11 +103,12 @@ def get_professor_by_id(professor_id):
         connection = get_connection()
         cursor = connection.cursor(dictionary=True)
         
-        # Query for professor details
+        # Query for professor details (including citation columns)
         query = """
         SELECT p.PID as id, p.PName as name, p.CName as college, p.CMailId as email,
                p.Phd as phd_thesis, pl.GScholar as google_scholar_url, 
                pl.SScholar as semantic_scholar_url, pl.CProfile as profile_link,
+               p.citations_count, p.h_index, p.i10_index,
                GROUP_CONCAT(DISTINCT d.DomainName SEPARATOR ' | ') as domain_expertise
         FROM professors p
         LEFT JOIN plink pl ON p.PID = pl.ProfID
@@ -328,5 +330,35 @@ def get_professors_stats():
     except Error as e:
         logger.error(f"❌ Error getting professor stats: {e}")
         return {}
+    finally:
+        close_connection(connection, cursor)
+
+def update_professor_citations(professor_id, citations_count, h_index, i10_index):
+    """Update citation data for a professor in the database"""
+    connection = None
+    cursor = None
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        
+        query = """
+        UPDATE professors 
+        SET citations_count = %s, h_index = %s, i10_index = %s, citations_updated_at = NOW()
+        WHERE PID = %s
+        """
+        
+        cursor.execute(query, (citations_count, h_index, i10_index, professor_id))
+        connection.commit()
+        
+        if cursor.rowcount > 0:
+            logger.info(f"Updated citations for professor {professor_id}: citations={citations_count}, h={h_index}, i10={i10_index}")
+            return True
+        else:
+            logger.warning(f"No professor found with ID {professor_id} to update citations")
+            return False
+        
+    except Error as e:
+        logger.error(f"❌ Error updating professor citations: {e}")
+        return False
     finally:
         close_connection(connection, cursor)
