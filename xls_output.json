@@ -1,0 +1,40 @@
+{
+  "columns": [
+    "Faculty name",
+    "Branch",
+    "email.id",
+    "H index",
+    "H5 index",
+    "Technical Areas working on",
+    "Application Area",
+    "Research Labs",
+    " Main Technical Field (For setting a filter)",
+    "Patents filed",
+    "Papers published",
+    "Consulting work",
+    "Consortiums",
+    "Awards and contribution",
+    "personal page link",
+    "GoogleScholar"
+  ],
+  "sample_data": [
+    {
+      "Faculty name": "Harish K. Pillai",
+      "Branch": "Department\u00a0of\u00a0Electrical\u00a0Engineering",
+      "email.id": "hp@ee.iitb.ac.in",
+      "H index": "16.0",
+      "H5 index": "9.0",
+      "Technical Areas working on": "Control theory, Systems theory, Multidimensional systems, Coding theory, Optimization, Electromagnetics",
+      "Application Area": "Control systems, Optimization, Coding theory, Electromagnetics",
+      "Research Labs": "nan",
+      " Main Technical Field (For setting a filter)": "Control",
+      "Patents filed": "nan",
+      "Papers published": "68",
+      "Consulting work": "nan",
+      "Consortiums": "nan",
+      "Awards and contribution": "nan",
+      "personal page link": "https://www.ee.iitb.ac.in/wiki/faculty/hp",
+      "GoogleScholar": "https://scholar.google.com/citations?user=B-98qmEAAAAJ&hl=en&oi=sra"
+    }
+  ]
+}

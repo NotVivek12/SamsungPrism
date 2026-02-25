@@ -397,17 +397,18 @@ try:
                     }
                     publications.append(pub)
             
-            # Extract research interests using spaCy
+            # Extract research interests from individual <a> tags
             interests = []
             interests_div = soup.select_one('#gsc_prf_int')
             if interests_div:
-                interests_text = interests_div.get_text(strip=True)
-                # Use spaCy to process and extract meaningful phrases
-                doc = nlp(interests_text)
-                for phrase in interests_text.split(','):
-                    clean_phrase = phrase.strip()
-                    if clean_phrase:
-                        interests.append(clean_phrase)
+                # Each interest is in a separate <a> tag on Google Scholar
+                interest_links = interests_div.select('a')
+                if interest_links:
+                    interests = [a.get_text(strip=True) for a in interest_links if a.get_text(strip=True)]
+                else:
+                    # Fallback: split by comma if no <a> tags found
+                    interests_text = interests_div.get_text(strip=True)
+                    interests = [p.strip() for p in interests_text.split(',') if p.strip()]
             
             # Extract profile info
             name = ""
