@@ -56,7 +56,7 @@ Examples:
   // Fallback parsing for when AI service is unavailable
   fallbackParsing(query) {
     const lowercaseQuery = query.toLowerCase();
-    
+
     // Common AI/CS keywords mapping
     const keywordMap = {
       'artificial intelligence': ['ai', 'artificial intelligence', 'machine learning', 'neural networks'],
@@ -79,8 +79,8 @@ Examples:
     let experienceLevel = 'any';
 
     // Check for experience level indicators
-    if (lowercaseQuery.includes('expert') || lowercaseQuery.includes('good at') || 
-        lowercaseQuery.includes('skilled') || lowercaseQuery.includes('experienced')) {
+    if (lowercaseQuery.includes('expert') || lowercaseQuery.includes('good at') ||
+      lowercaseQuery.includes('skilled') || lowercaseQuery.includes('experienced')) {
       experienceLevel = 'high';
     }
 
@@ -112,14 +112,14 @@ Examples:
   // Smart search function that filters teachers based on AI-parsed query
   smartSearch(teachers, searchQuery, aiParsedQuery) {
     if (!aiParsedQuery || !aiParsedQuery.keywords) {
-      return teachers.filter(teacher => 
+      return teachers.filter(teacher =>
         teacher.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         teacher.domain_expertise?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     const { keywords, filters } = aiParsedQuery;
-    
+
     return teachers.filter(teacher => {
       let score = 0;
       const teacherText = `
@@ -135,12 +135,12 @@ Examples:
         const keywordLower = keyword.toLowerCase();
         if (teacherText.includes(keywordLower)) {
           score += 1;
-          
+
           // Higher score for domain expertise matches
           if (teacher.domain_expertise?.toLowerCase().includes(keywordLower)) {
             score += 2;
           }
-          
+
           // Higher score for research interests matches
           if (teacher.research_interests?.toLowerCase().includes(keywordLower)) {
             score += 1.5;
@@ -204,21 +204,21 @@ Examples:
 
     return score;
   }
-  
+
   // Analyze project description and find matching professors
   async analyzeProject(projectDescription) {
     try {
-      const response = await fetch(`${this.BACKEND_URL}/api/project/analyze`, {
+      const response = await fetch(`http://localhost:5000/api/project/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ description: projectDescription })
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || `Server responded with ${response.status}`);
       }
-      
+
       return await response.json();
     } catch (error) {
       console.error('Project analysis failed:', error);

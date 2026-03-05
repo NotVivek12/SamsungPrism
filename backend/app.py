@@ -10,7 +10,7 @@ from knowledge_graph_routes import knowledge_graph_bp
 
 import database
 
-from extract_citations import start_background_extraction
+from scripts.extract_citations import start_background_extraction
 
 try:
     from dotenv import load_dotenv, find_dotenv

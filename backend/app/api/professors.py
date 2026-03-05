@@ -15,7 +15,7 @@ from gemma_service import parse_search_query_with_gemma, analyze_project_descrip
 # Import the database module for MySQL access
 import database
 # Import citations cache functionality
-from scripts.extract_citations import get_cached_citations, get_extraction_status, load_teachers_data
+from extract_citations import get_cached_citations, get_extraction_status, load_teachers_data
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -397,18 +397,17 @@ try:
                     }
                     publications.append(pub)
             
-            # Extract research interests from individual <a> tags
+            # Extract research interests using spaCy
             interests = []
             interests_div = soup.select_one('#gsc_prf_int')
             if interests_div:
-                # Each interest is in a separate <a> tag on Google Scholar
-                interest_links = interests_div.select('a')
-                if interest_links:
-                    interests = [a.get_text(strip=True) for a in interest_links if a.get_text(strip=True)]
-                else:
-                    # Fallback: split by comma if no <a> tags found
-                    interests_text = interests_div.get_text(strip=True)
-                    interests = [p.strip() for p in interests_text.split(',') if p.strip()]
+                interests_text = interests_div.get_text(strip=True)
+                # Use spaCy to process and extract meaningful phrases
+                doc = nlp(interests_text)
+                for phrase in interests_text.split(','):
+                    clean_phrase = phrase.strip()
+                    if clean_phrase:
+                        interests.append(clean_phrase)
             
             # Extract profile info
             name = ""
@@ -586,38 +585,27 @@ def api_analyze_project():
         matching_professors = []
         
         required_expertise = analysis.get('required_expertise', [])
-        key_skills = analysis.get('key_skills', [])
-        # Combine required expertise and key skills for broader matching
-        all_search_terms = required_expertise + key_skills
         
         for professor in professors:
             if not professor.get('domain_expertise'):
                 continue
+                
+            professor_domains = [d.strip().lower() for d in professor['domain_expertise'].split(',')]
             
-            # Split domains by comma, pipe, and semicolon to handle all formats
-            import re as _re
-            professor_domains = [d.strip().lower() for d in _re.split(r'[,|;]', professor['domain_expertise']) if d.strip()]
-            
-            # Calculate match score using keyword overlap
+            # Calculate match percentage
             matches = 0
             matching_domains = []
             
-            for expertise in all_search_terms:
+            for expertise in required_expertise:
                 expertise_lower = expertise.lower()
-                expertise_words = set(expertise_lower.split())
-                
                 for domain in professor_domains:
-                    domain_words = set(domain.split())
-                    # Match if: substring match OR significant word overlap
-                    if (expertise_lower in domain or domain in expertise_lower or
-                        len(expertise_words & domain_words) >= 1):
+                    if expertise_lower in domain or domain in expertise_lower:
                         matches += 1
-                        if expertise in required_expertise and expertise not in matching_domains:
-                            matching_domains.append(expertise)
+                        matching_domains.append(expertise)
                         break
             
             if matches > 0:
-                match_percentage = min(100, int((matches / max(len(all_search_terms), 1)) * 100))
+                match_percentage = int((matches / len(required_expertise)) * 100)
                 
                 professor_match = professor.copy()
                 professor_match['match_percentage'] = match_percentage
@@ -647,19 +635,14 @@ def api_get_all_professors():
         college = request.args.get('college', '').strip()
         include_citations = request.args.get('include_citations', 'true').lower() == 'true'
         
-        # Load professor data (includes citations_count, h_index, i10_index from DB)
+        # Load professor data
         professors = database.load_professors_data()
         
         if not professors:
             return jsonify({'professors': [], 'total_count': 0, 'message': 'No professors found'})
         
-        # Load citation data from JSON cache as fallback for professors without DB citations
-        citations_cache = {}
-        if include_citations:
-            try:
-                citations_cache = get_cached_citations()
-            except Exception as e:
-                logging.warning(f"Could not load citations cache: {e}")
+        # Load citation data from cache if requested
+        citations_cache = get_cached_citations() if include_citations else {}
         
         # Filter by college if specified
         if college:
@@ -672,17 +655,12 @@ def api_get_all_professors():
         if limit and limit > 0:
             professors = professors[:limit]
         
-        # Add row numbers and supplement citation data from cache if DB has no data
+        # Add row numbers and citation data
         for i, professor in enumerate(professors, 1):
             professor['row_number'] = i
             
-            # Ensure citation fields exist (they come from DB, default to 0)
-            professor['citations_count'] = professor.get('citations_count') or 0
-            professor['h_index'] = professor.get('h_index') or 0
-            professor['i10_index'] = professor.get('i10_index') or 0
-            
-            # If DB citations are all 0, try to supplement from JSON cache
-            if include_citations and citations_cache and professor['citations_count'] == 0 and professor['h_index'] == 0:
+            # Add citation data from cache if available
+            if include_citations and citations_cache:
                 # Get database ID to JSON ID mapping
                 id_mapping = get_id_mapping()
                 
@@ -693,11 +671,11 @@ def api_get_all_professors():
                 # If we have a matching JSON ID and it's in the citation cache
                 if json_id and json_id in citations_cache:
                     citation_data = citations_cache[json_id]
-                    if citation_data.get('citations', 0) > 0 or citation_data.get('h_index', 0) > 0:
-                        professor['citations_count'] = citation_data.get('citations', 0)
-                        professor['h_index'] = citation_data.get('h_index', 0)
-                        professor['i10_index'] = citation_data.get('i10_index', 0)
-                        professor['json_id'] = json_id
+                    professor['citations_count'] = citation_data.get('citations', 0)
+                    professor['h_index'] = citation_data.get('h_index', 0)
+                    professor['i10_index'] = citation_data.get('i10_index', 0)
+                    # Add the JSON ID for reference
+                    professor['json_id'] = json_id
         
         return jsonify({
             'professors': professors,
@@ -768,24 +746,6 @@ def api_get_professor_details(professor_id):
                     
             except Exception as e:
                 logging.error(f"Error extracting scholar data: {str(e)}")
-        
-        # Fallback: if academic_data was not set (live scrape failed), build from DB citations
-        if 'academic_data' not in professor:
-            citations = professor.get('citations_count') or 0
-            h_idx = professor.get('h_index') or 0
-            i10_idx = professor.get('i10_index') or 0
-            
-            if citations > 0 or h_idx > 0 or i10_idx > 0:
-                professor['academic_data'] = {
-                    'has_academic_data': True,
-                    'citations': citations,
-                    'h_index': h_idx,
-                    'i10_index': i10_idx,
-                    'total_publications': 0,
-                    'recent_publications': [],
-                    'research_interests': [area.strip() for area in professor.get('domain_expertise', '').split(' | ')] if professor.get('domain_expertise') else [],
-                    'data_sources': ['Database Cache']
-                }
         
         return jsonify(professor)
         
@@ -914,7 +874,7 @@ def api_refresh_citations():
         import traceback
         
         # Import directly from file
-        from scripts.extract_citations import start_background_extraction, extract_and_cache_citations
+        from extract_citations import start_background_extraction, extract_and_cache_citations
         
         # Log some information
         logging.info("Starting citation extraction from API endpoint")

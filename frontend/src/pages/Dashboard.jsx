@@ -105,10 +105,10 @@ export default function App() {
   };
 
   return (
-    
+
     <div className="flex h-screen w-full bg-slate-50 text-gray-800 overflow-hidden dark:bg-slate-900 dark:text-slate-200">
       {/* Left Sidebar */}
-      <aside className="w-20 lg:w-30 bg-gradient-to-t from-purple-300 via-indigo-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black flex flex-col py-2 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      {/* <aside className="w-20 lg:w-30 bg-gradient-to-t from-purple-300 via-indigo-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black flex flex-col py-2 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <nav className="flex flex-col gap-6 items-center">
           <SidebarItem icon={<Home className="w-5 h-5" />} label="Home" onClick={() => window.location.reload()} />
           <SidebarItem icon={<BarChart className="w-5 h-5" />} label="Knowledge Graph" onClick={() => setIsKnowledgeGraphModalOpen(true)} />
@@ -116,7 +116,7 @@ export default function App() {
           <SidebarItem icon={<Bell className="w-5 h-5" />} label="Updates" onClick={() => setIsUpdatesModalOpen(true)} />
           <SidebarItem icon={<MessageCircle className="w-5 h-5" />} label="Feedbacks" onClick={() => setIsFeedbackOpen(true)} />
         </nav>
-      </aside>
+      </aside> */}
 
       {/* Main Content */}
       <main className="flex-1 px-8 py-6 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -124,7 +124,7 @@ export default function App() {
         <div className="flex justify-between items-start">
           <div>
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => navigate('/')}
               className="flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 mb-4 font-medium transition-colors"
             >
               <Home className="w-5 h-5 mr-2" />
@@ -146,31 +146,29 @@ export default function App() {
             />
           </div>
         </div>
-        
+
         {/* Navigation Tabs */}
         <div className="flex space-x-4 my-4">
           <button
             onClick={() => setActiveTab('search')}
-            className={`px-6 py-2 font-semibold rounded-lg transition-all ${
-              activeTab === 'search'
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
-            }`}
+            className={`px-6 py-2 font-semibold rounded-lg transition-all ${activeTab === 'search'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+              }`}
           >
             Faculty Search
           </button>
           <button
             onClick={() => setActiveTab('project')}
-            className={`px-6 py-2 font-semibold rounded-lg transition-all ${
-              activeTab === 'project'
-                ? 'bg-purple-600 text-white shadow-md'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
-            }`}
+            className={`px-6 py-2 font-semibold rounded-lg transition-all ${activeTab === 'project'
+              ? 'bg-purple-600 text-white shadow-md'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+              }`}
           >
             Project-Based Matching
           </button>
         </div>
-        
+
         {/* Conditional Rendering Based on Active Tab */}
         {activeTab === 'search' ? (
           <ComprehensiveTeacherSearch />
@@ -178,9 +176,9 @@ export default function App() {
           <ProjectExpertiseMatcher />
         )}
       </main>
-      
+
       {/* Right Sidebar */}
-      <aside className="w-64 bg-gradient-to-t from-purple-300 via-indigo-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black shadow-lg px-4 py-6 flex flex-col justify-between overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      {/* <aside className="w-64 bg-gradient-to-t from-purple-300 via-indigo-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black shadow-lg px-4 py-6 flex flex-col justify-between overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <div>
           <button
             className="w-full bg-blue-100 hover:bg-blue-200 text-blue-900 font-bold rounded-xl py-2 mb-4 flex items-center justify-center gap-2 text-xl dark:bg-blue-900/50 dark:hover:bg-blue-800/60 dark:text-blue-200"
@@ -204,7 +202,7 @@ export default function App() {
             label={<span className="text-lg font-semibold">Schedule Meeting</span>}
             onClick={() => setIsScheduleOpen(true)}
           />
-        
+
           <ActivityButton
             icon={<MessageSquare className="w-5 h-10 text-indigo-600" />}
             label={<span className="text-lg font-semibold">Submit Feedback</span>}
@@ -229,7 +227,7 @@ export default function App() {
           </button>
           <p className="text-sm text-gray-600 mt-1 dark:text-slate-400">Support</p>
         </div>
-      </aside>
+      </aside> */}
 
       {/* Modals defined inline */}
       <RequestUpdate
@@ -246,27 +244,27 @@ export default function App() {
         onClose={() => setIsScheduleOpen(false)}
       />
 
-      
+
       {isFeedbackOpen && (
         <Feedback onClose={() => setIsFeedbackOpen(false)} />
       )}
 
-        {/* New modals for Left Sidebar items */}
-          <Modal isOpen={isHomeModalOpen} onClose={() => setIsHomeModalOpen(false)}>
-            <HomePage />
-          </Modal>
+      {/* New modals for Left Sidebar items */}
+      <Modal isOpen={isHomeModalOpen} onClose={() => setIsHomeModalOpen(false)}>
+        <HomePage />
+      </Modal>
 
-          <Modal isOpen={isKnowledgeGraphModalOpen} onClose={() => setIsKnowledgeGraphModalOpen(false)}>
-            <KnowledgeGraphPage />
-          </Modal>
+      <Modal isOpen={isKnowledgeGraphModalOpen} onClose={() => setIsKnowledgeGraphModalOpen(false)}>
+        <KnowledgeGraphPage />
+      </Modal>
 
-          <Modal isOpen={isChatsModalOpen} onClose={() => setIsChatsModalOpen(false)}>
-            <ChatsPage />
-          </Modal>
+      <Modal isOpen={isChatsModalOpen} onClose={() => setIsChatsModalOpen(false)}>
+        <ChatsPage />
+      </Modal>
 
-          <Modal isOpen={isUpdatesModalOpen} onClose={() => setIsUpdatesModalOpen(false)}>
-            <UpdatesPage />
-          </Modal>
+      <Modal isOpen={isUpdatesModalOpen} onClose={() => setIsUpdatesModalOpen(false)}>
+        <UpdatesPage />
+      </Modal>
     </div>
 
   );

@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: prism_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-prism123}
+      MYSQL_DATABASE: ${DB_NAME:-prism_professors}
+    ports:
+      - "3307:3306"  # Map to 3307 on host to avoid conflicts with local MySQL
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: prism_backend
+    environment:
+      DB_HOST: db
+      DB_NAME: ${DB_NAME:-prism_professors}
+      DB_USER: root
+      DB_PASSWORD: ${DB_PASSWORD:-prism123}
+      DB_PORT: 3306
+      PORT: 5000
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://localhost:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-gemma3:4b}
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    command: python app.py
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: prism_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_BASE: http://localhost:5000
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
