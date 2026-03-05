@@ -108,7 +108,7 @@ export default function App() {
 
     <div className="flex h-screen w-full bg-slate-50 text-gray-800 overflow-hidden dark:bg-slate-900 dark:text-slate-200">
       {/* Left Sidebar */}
-      <aside className="w-20 lg:w-30 bg-gradient-to-t from-purple-300 via-indigo-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black flex flex-col py-2 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      {/* <aside className="w-20 lg:w-30 bg-gradient-to-t from-purple-300 via-indigo-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black flex flex-col py-2 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <nav className="flex flex-col gap-6 items-center">
           <SidebarItem icon={<Home className="w-5 h-5" />} label="Home" onClick={() => window.location.reload()} />
           <SidebarItem icon={<BarChart className="w-5 h-5" />} label="Knowledge Graph" onClick={() => setIsKnowledgeGraphModalOpen(true)} />
@@ -116,7 +116,7 @@ export default function App() {
           <SidebarItem icon={<Bell className="w-5 h-5" />} label="Updates" onClick={() => setIsUpdatesModalOpen(true)} />
           <SidebarItem icon={<MessageCircle className="w-5 h-5" />} label="Feedbacks" onClick={() => setIsFeedbackOpen(true)} />
         </nav>
-      </aside>
+      </aside> */}
 
       {/* Main Content */}
       <main className="flex-1 px-8 py-6 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -178,7 +178,7 @@ export default function App() {
       </main>
 
       {/* Right Sidebar */}
-      <aside className="w-64 bg-gradient-to-t from-purple-300 via-indigo-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black shadow-lg px-4 py-6 flex flex-col justify-between overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      {/* <aside className="w-64 bg-gradient-to-t from-purple-300 via-indigo-50 to-blue-100 dark:from-slate-800 dark:via-slate-900 dark:to-black shadow-lg px-4 py-6 flex flex-col justify-between overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <div>
           <button
             className="w-full bg-blue-100 hover:bg-blue-200 text-blue-900 font-bold rounded-xl py-2 mb-4 flex items-center justify-center gap-2 text-xl dark:bg-blue-900/50 dark:hover:bg-blue-800/60 dark:text-blue-200"
@@ -227,7 +227,7 @@ export default function App() {
           </button>
           <p className="text-sm text-gray-600 mt-1 dark:text-slate-400">Support</p>
         </div>
-      </aside>
+      </aside> */}
 
       {/* Modals defined inline */}
       <RequestUpdate

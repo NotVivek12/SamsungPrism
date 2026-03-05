@@ -586,27 +586,38 @@ def api_analyze_project():
         matching_professors = []
         
         required_expertise = analysis.get('required_expertise', [])
+        key_skills = analysis.get('key_skills', [])
+        # Combine required expertise and key skills for broader matching
+        all_search_terms = required_expertise + key_skills
         
         for professor in professors:
             if not professor.get('domain_expertise'):
                 continue
-                
-            professor_domains = [d.strip().lower() for d in professor['domain_expertise'].split(',')]
             
-            # Calculate match percentage
+            # Split domains by comma, pipe, and semicolon to handle all formats
+            import re as _re
+            professor_domains = [d.strip().lower() for d in _re.split(r'[,|;]', professor['domain_expertise']) if d.strip()]
+            
+            # Calculate match score using keyword overlap
             matches = 0
             matching_domains = []
             
-            for expertise in required_expertise:
+            for expertise in all_search_terms:
                 expertise_lower = expertise.lower()
+                expertise_words = set(expertise_lower.split())
+                
                 for domain in professor_domains:
-                    if expertise_lower in domain or domain in expertise_lower:
+                    domain_words = set(domain.split())
+                    # Match if: substring match OR significant word overlap
+                    if (expertise_lower in domain or domain in expertise_lower or
+                        len(expertise_words & domain_words) >= 1):
                         matches += 1
-                        matching_domains.append(expertise)
+                        if expertise in required_expertise and expertise not in matching_domains:
+                            matching_domains.append(expertise)
                         break
             
             if matches > 0:
-                match_percentage = int((matches / len(required_expertise)) * 100)
+                match_percentage = min(100, int((matches / max(len(all_search_terms), 1)) * 100))
                 
                 professor_match = professor.copy()
                 professor_match['match_percentage'] = match_percentage

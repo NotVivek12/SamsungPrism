@@ -871,7 +871,7 @@ const Statistics = () => {
   const [selectedProfessor, setSelectedProfessor] = useState(null);
   const [selectedExpertiseArea, setSelectedExpertiseArea] = useState(null);
   const [isGraphFullscreen, setIsGraphFullscreen] = useState(false);
-  const [activeView, setActiveView] = useState('hierarchical'); // 'hierarchical', 'graph' or 'stats'
+  const [activeView, setActiveView] = useState('stats'); // 'hierarchical', 'graph' or 'stats'
 
   // Stats computed from real data
   const [stats, setStats] = useState({
@@ -1008,9 +1008,9 @@ const Statistics = () => {
               </p>
             </div>
 
-            {/* View Toggle */}
+            {/* View Toggle - temporarily hidden */}
             <div className="flex bg-gray-200 dark:bg-gray-700 rounded-xl p-1">
-              <button
+              {/* <button
                 onClick={() => setActiveView('hierarchical')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${activeView === 'hierarchical'
                   ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-md'
@@ -1029,7 +1029,7 @@ const Statistics = () => {
               >
                 <Network className="w-5 h-5" />
                 Expertise
-              </button>
+              </button> */}
               <button
                 onClick={() => setActiveView('stats')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${activeView === 'stats'
